@@ -1,0 +1,18 @@
+{% extends "base.html" %}
+
+{% block content %}
+  {# Inclui a barra de navegação #}
+  {% include "components/navbar.html" %}
+
+  <div class="parent">
+    {# Itera de 1 a 10 – precisa passar 'niveis' no contexto da view #}
+    {% for nivel in niveis %}
+      <div 
+        class="card div{{ nivel }}" 
+        onclick="window.location.href='{% url 'game_page' %}'"
+      >
+        {{ nivel }}
+      </div>
+    {% endfor %}
+  </div>
+{% endblock %}

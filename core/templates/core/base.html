@@ -1,0 +1,21 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Melodia Mágica{% endblock %}</title>
+    <link rel="stylesheet" href="{% static 'core/css/Menu.css' %}">
+    {% block extra_css %}{% endblock %}
+</head>
+<body>
+    {% include 'core/navbar.html' %}
+    
+    <main>
+        {% block content %}
+        {% endblock %}
+    </main>
+
+    {% block extra_js %}{% endblock %}
+</body>
+</html>

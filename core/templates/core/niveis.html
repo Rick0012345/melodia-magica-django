@@ -1,0 +1,16 @@
+{% extends 'core/base.html' %}
+
+{% block title %}Níveis - Melodia Mágica{% endblock %}
+
+{% block content %}
+<div class="niveis-container">
+    <h1>Escolha um Nível</h1>
+    <div class="niveis-grid">
+        {% for nivel in niveis %}
+            <a href="{% url 'game_page' %}" class="nivel-card">
+                <h2>Nível {{ nivel }}</h2>
+            </a>
+        {% endfor %}
+    </div>
+</div>
+{% endblock %} 

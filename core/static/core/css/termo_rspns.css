@@ -1,0 +1,34 @@
+/* Estilos para o container principal */
+.termo-container {
+    text-align: center;
+    padding: 20px;
+    color: white;
+  }
+  
+  /* Estilos para o título */
+  .termo-title {
+    font-size: 24px;
+    margin-bottom: 10px;
+  }
+  
+  /* Estilos para o texto */
+  .termo-text {
+    font-size: 16px;
+    margin-bottom: 20px;
+  }
+  
+  /* Estilos para o botão */
+  .termo-button {
+    padding: 10px 20px;
+    font-size: 16px;
+    background-color: #007bff;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+  }
+  
+  /* Efeito hover para o botão */
+  .termo-button:hover {
+    background-color: #0056b3;
+  }

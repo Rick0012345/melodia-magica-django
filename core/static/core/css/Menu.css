@@ -1,0 +1,150 @@
+.container {
+  text-align: center;
+  padding: 40px;
+  background: rgba(64, 63, 63, 0.559);
+  border-radius: 15px;
+  box-shadow: 0 4px 20px rgba(0, 255, 255, 0.1), 0 6px 30px rgba(0, 255, 255, 0.15);
+  
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width: 350px;
+  transition: all 0.3s ease;
+  z-index: 1;
+  margin: auto;
+}
+
+/* Estilo do cabeçalho */
+.header {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 20px 40px;
+  margin-bottom: 20px;
+  color: rgb(253, 114, 0);
+  font-size: 30px;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  text-shadow: 0 0 20px rgba(0, 255, 255, 0.8), 0 0 30px rgba(0, 255, 255, 0.6);
+  border-top-left-radius: 30px;
+  border-top-right-radius: 30px;
+}
+
+
+.menu-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+/* Estilos para o texto de perfil */
+.profile {
+  font-size: 1.5rem;
+  font-weight: bold;
+  text-shadow: 0 0 20px #00ffff, 0 0 10px #ff00ff;
+}
+
+/* Estilo dos botões */
+.menu-button {
+  font-size: 16px;
+  background: linear-gradient(to bottom, #7c9112f1 30%, #d9652c 100%);
+  color: white;
+  border-radius: 50px;
+  cursor: pointer;
+  width: 180px;
+  margin: 8px 0;
+  position: relative;
+  overflow: hidden;
+  box-shadow: 0 4px 15px rgba(0, 255, 255, 0.2);
+  transition: all 0.3s ease;
+}
+
+/* Efeito de hover nos botões */
+.menu-button:hover {
+  background: linear-gradient(45deg, #ff5722, #00bcd4);
+  box-shadow: 0 6px 20px rgba(0, 255, 255, 0.4);
+  transform: scale(1.05);
+  transition: all 0.3s ease;
+}
+
+.menu-button:before {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 300%;
+  height: 300%;
+  background: rgba(255, 255, 255, 0.15);
+  transition: all 0.5s;
+  border-radius: 50%;
+  transform: translate(-50%, -50%);
+}
+
+.menu-button:hover:before {
+  width: 0;
+  height: 0;
+}
+
+/* Efeito de foco no botão */
+.menu-button:focus {
+  outline: none;
+  box-shadow: 0 0 10px #ff5722, 0 0 20px #00bcd4;
+}
+
+/* Estilo de transições suaves */
+@keyframes glow {
+  0% {
+    text-shadow: 0 0 20px #13a808, 0 0 30px #15d400, 0 0 50px #00bcd4, 0 0 70px #ff5722;
+  }
+  50% {
+    text-shadow: 0 0 10px #ff5722, 0 0 20px #ff5722, 0 0 30px #ff5722, 0 0 40px #ff5722;
+  }
+  100% {
+    text-shadow: 0 0 20px #33b308, 0 0 30px #10b304, 0 0 50px #3faa05, 0 0 70px #ff5722;
+  }
+}
+
+.profile {
+  animation: glow 1.5s ease-in-out infinite;
+}
+
+@media (max-width: 500px) {
+  .container {
+    padding: 5px 20px 0;
+  }
+}
+
+body {
+  background-image: url("../images/login.jfif");
+  background-repeat: no-repeat;
+  background-attachment: fixed;
+  background-position: center;
+  background-size: 100% 100%;
+  background-size: cover;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  overflow: hidden;
+  position: relative;
+}
+
+
+
+@media (max-width: 768px) {
+  body {
+      height: 100vh;
+      width: 100vw;
+  }
+}
+
+@media (max-width: 480px) {
+  body {
+      height: 100vh;
+      width: 100vw;
+  }
+}

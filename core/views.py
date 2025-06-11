@@ -19,6 +19,15 @@ from django.contrib.auth.mixins import (
 class HomeView(TemplateView):
     template_name = "core/index.html"
 
+class ServicosView(TemplateView):
+    template_name = "core/servicos.html"
+
+class ContatoView(TemplateView):
+    template_name = "core/contato.html"
+
+class LoginView(TemplateView):
+    template_name = "core/login.html"
+
 class NiveisView(TemplateView):
     template_name = "core/niveis.html"
 

@@ -1,5 +1,9 @@
 {% extends 'core/base.html' %}
+{% load static %}
 
+{% block extrahead %}
+<link rel="stylesheet" href="{% static 'css/cadastrar_questoes.css' %}">
+{% endblock extrahead %}
 {% block title %}Cadastrar Questões - Melodia Mágica{% endblock %}
 
 {% block content %}

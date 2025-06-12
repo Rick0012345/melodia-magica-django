@@ -4,21 +4,50 @@
 {% block title %}Níveis - Melodia Mágica{% endblock %}
 
 {% block content %}
-
-<!-- Carregando CSS exclusivo da tela de níveis -->
-<link rel="stylesheet" href="{% static 'core/css/Niveis.css' %}">
-
-<div class="parent">
-    <div class="card div1" onclick="location.href='{{ path_base }}/game_page';">1</div>
-    <div class="card div2" onclick="location.href='{{ path_base }}/game_page';">2</div>
-    <div class="card div3" onclick="location.href='{{ path_base }}/game_page';">3</div>
-    <div class="card div4" onclick="location.href='{{ path_base }}/game_page';">4</div>
-    <div class="card div5" onclick="location.href='{{ path_base }}/game_page';">5</div>
-    <div class="card div6" onclick="location.href='{{ path_base }}/game_page';">6</div>
-    <div class="card div7" onclick="location.href='{{ path_base }}/game_page';">7</div>
-    <div class="card div8" onclick="location.href='{{ path_base }}/game_page';">8</div>
-    <div class="card div9" onclick="location.href='{{ path_base }}/game_page';">9</div>
-    <div class="card div10" onclick="location.href='{{ path_base }}/game_page';">10</div>
+<div class="container mt-4">
+    <h2 class="text-center mb-4">Níveis do Quiz</h2>
+    
+    <div class="row row-cols-1 row-cols-md-3 g-4">
+        {% for quiz in quizzes %}
+            <div class="col">
+                <div class="card h-100">
+                    <div class="card-body">
+                        <h5 class="card-title">Nível {{ quiz.nivel_dificuldade }}</h5>
+                        <h6 class="card-subtitle mb-2 text-muted">{{ quiz.titulo }}</h6>
+                        <p class="card-text">{{ quiz.descricao }}</p>
+                        <a href="{% url 'game_page' quiz.id %}" class="btn btn-primary">Jogar</a>
+                    </div>
+                </div>
+            </div>
+        {% empty %}
+            <div class="col-12 text-center">
+                <p>Nenhum quiz cadastrado ainda.</p>
+                {% if user.is_staff %}
+                    <a href="{% url 'cadastrar_quiz' %}" class="btn btn-primary">Cadastrar Quiz</a>
+                {% endif %}
+            </div>
+        {% endfor %}
+    </div>
 </div>
 
+<style>
+.card {
+    cursor: pointer;
+    transition: transform 0.2s;
+}
+
+.card:hover {
+    transform: scale(1.02);
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+}
+
+.card-body {
+    display: flex;
+    flex-direction: column;
+}
+
+.btn-primary {
+    margin-top: auto;
+}
+</style>
 {% endblock %}

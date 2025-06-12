@@ -7,11 +7,146 @@
 {% block title %}Cadastrar Questões - Melodia Mágica{% endblock %}
 
 {% block content %}
-<div class="cadastrar-questoes-container">
-    <h1>Cadastrar Questões</h1>
-    <div class="form-container">
-        <!-- Aqui será implementado o formulário de cadastro de questões -->
-        <p>Formulário de cadastro em desenvolvimento...</p>
+<div class="container mt-4">
+    <h2>Cadastrar Questões</h2>
+    
+    <form method="POST" class="mt-4">
+        {% csrf_token %}
+        <div class="mb-3">
+            <label for="quiz_id" class="form-label">Quiz:</label>
+            <select name="quiz_id" id="quiz_id" class="form-select" required>
+                <option value="">Selecione um quiz</option>
+                {% for quiz in quizzes %}
+                    <option value="{{ quiz.id }}">{{ quiz.titulo }} - Nível {{ quiz.nivel_dificuldade }}</option>
+                {% endfor %}
+            </select>
+        </div>
+
+        <div class="mb-3">
+            <label for="pergunta" class="form-label">Pergunta:</label>
+            <textarea name="pergunta" id="pergunta" class="form-control" rows="3" required></textarea>
+        </div>
+
+        <div class="mb-3">
+            <label for="tipo" class="form-label">Tipo de Questão:</label>
+            <select name="tipo" id="tipo" class="form-select" required>
+                <option value="multipla_escolha">Múltipla Escolha</option>
+                <option value="verdadeiro_falso">Verdadeiro ou Falso</option>
+            </select>
+        </div>
+
+        <div id="alternativas-container" class="mb-3">
+            <label class="form-label">Alternativas:</label>
+            <div class="alternativa-item mb-2">
+                <div class="input-group">
+                    <input type="text" name="alternativa" class="form-control" placeholder="Digite a alternativa">
+                    <div class="input-group-text">
+                        <input type="checkbox" name="correta" value="0" class="form-check-input">
+                        <label class="form-check-label ms-2">Correta</label>
+                    </div>
+                </div>
+            </div>
+            <div class="alternativa-item mb-2">
+                <div class="input-group">
+                    <input type="text" name="alternativa" class="form-control" placeholder="Digite a alternativa">
+                    <div class="input-group-text">
+                        <input type="checkbox" name="correta" value="1" class="form-check-input">
+                        <label class="form-check-label ms-2">Correta</label>
+                    </div>
+                </div>
+            </div>
+            <div class="alternativa-item mb-2">
+                <div class="input-group">
+                    <input type="text" name="alternativa" class="form-control" placeholder="Digite a alternativa">
+                    <div class="input-group-text">
+                        <input type="checkbox" name="correta" value="2" class="form-check-input">
+                        <label class="form-check-label ms-2">Correta</label>
+                    </div>
+                </div>
+            </div>
+            <div class="alternativa-item mb-2">
+                <div class="input-group">
+                    <input type="text" name="alternativa" class="form-control" placeholder="Digite a alternativa">
+                    <div class="input-group-text">
+                        <input type="checkbox" name="correta" value="3" class="form-check-input">
+                        <label class="form-check-label ms-2">Correta</label>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div id="verdadeiro-falso-container" class="mb-3" style="display: none;">
+            <label class="form-label">Resposta Correta:</label>
+            <div class="form-check">
+                <input class="form-check-input" type="radio" name="resposta_vf" id="verdadeiro" value="true">
+                <label class="form-check-label" for="verdadeiro">
+                    Verdadeiro
+                </label>
+            </div>
+            <div class="form-check">
+                <input class="form-check-input" type="radio" name="resposta_vf" id="falso" value="false">
+                <label class="form-check-label" for="falso">
+                    Falso
+                </label>
+            </div>
+        </div>
+
+        <button type="submit" class="btn btn-primary">Salvar Questão</button>
+    </form>
+
+    <div class="mt-4">
+        <h3>Questões Cadastradas</h3>
+        {% if perguntas %}
+            <div class="list-group">
+                {% for pergunta in perguntas %}
+                    <div class="list-group-item">
+                        <h5>{{ pergunta.pergunta }}</h5>
+                        <p>Tipo: {{ pergunta.get_tipo_display }}</p>
+                        {% if pergunta.tipo == 'multipla_escolha' %}
+                            <ul>
+                                {% for alternativa in pergunta.alternativas.all %}
+                                    <li>
+                                        {{ alternativa.texto }}
+                                        {% if alternativa.correta %}
+                                            <span class="badge bg-success">Correta</span>
+                                        {% endif %}
+                                    </li>
+                                {% endfor %}
+                            </ul>
+                        {% elif pergunta.tipo == 'verdadeiro_falso' %}
+                            <p>Resposta Correta: 
+                                {% for alternativa in pergunta.alternativas.all %}
+                                    {% if alternativa.correta %}
+                                        {{ alternativa.texto }}
+                                    {% endif %}
+                                {% endfor %}
+                            </p>
+                        {% endif %}
+                        <div class="mt-2">
+                            <a href="{% url 'editar_pergunta' pergunta.id %}" class="btn btn-sm btn-warning">Editar</a>
+                            <a href="{% url 'excluir_pergunta' pergunta.id %}" class="btn btn-sm btn-danger" onclick="return confirm('Tem certeza que deseja excluir esta pergunta?')">Excluir</a>
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+        {% else %}
+            <p>Nenhuma questão cadastrada ainda.</p>
+        {% endif %}
     </div>
 </div>
+
+<script>
+document.getElementById('tipo').addEventListener('change', function() {
+    const alternativasContainer = document.getElementById('alternativas-container');
+    const verdadeiroFalsoContainer = document.getElementById('verdadeiro-falso-container');
+    
+    if (this.value === 'verdadeiro_falso') {
+        alternativasContainer.style.display = 'none';
+        verdadeiroFalsoContainer.style.display = 'block';
+    } else {
+        alternativasContainer.style.display = 'block';
+        verdadeiroFalsoContainer.style.display = 'none';
+    }
+});
+</script>
 {% endblock %} 

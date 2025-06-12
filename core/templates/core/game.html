@@ -1,13 +1,102 @@
 {% extends 'core/base.html' %}
+{% load static %}
 
 {% block title %}Jogo - Melodia Mágica{% endblock %}
 
 {% block content %}
-<div class="game-container">
-    <h1>Melodia Mágica</h1>
-    <div class="game-area">
-        <!-- Aqui será implementada a área do jogo -->
-        <p>Área do jogo em desenvolvimento...</p>
+<div class="container mt-4">
+    <div class="quiz-container">
+        <div class="quiz-header">
+            <h2>{{ quiz.titulo }}</h2>
+            <p class="text-muted">{{ quiz.descricao }}</p>
+            <div class="progress mb-4">
+                <div class="progress-bar" role="progressbar" style="width: 0%" id="progress-bar"></div>
+            </div>
+        </div>
+
+        <div id="pergunta-container">
+            {% if pergunta %}
+                <div class="card">
+                    <div class="card-body">
+                        <h4 class="card-title">{{ pergunta.pergunta }}</h4>
+                        
+                        {% if pergunta.tipo == 'multipla_escolha' %}
+                            <form id="resposta-form" method="POST">
+                                {% csrf_token %}
+                                <input type="hidden" name="pergunta_atual_id" value="{{ pergunta.id }}">
+                                <div class="list-group mt-3">
+                                    {% for alternativa in pergunta.alternativas.all %}
+                                        <label class="list-group-item">
+                                            <input class="form-check-input me-1" type="radio" name="resposta" value="{{ alternativa.id }}" required>
+                                            {{ alternativa.texto }}
+                                        </label>
+                                    {% endfor %}
+                                </div>
+                                <button type="submit" class="btn btn-primary mt-3">Responder</button>
+                            </form>
+                        {% elif pergunta.tipo == 'verdadeiro_falso' %}
+                            <form id="resposta-form" method="POST">
+                                {% csrf_token %}
+                                <input type="hidden" name="pergunta_atual_id" value="{{ pergunta.id }}">
+                                <div class="list-group mt-3">
+                                    <label class="list-group-item">
+                                        <input class="form-check-input me-1" type="radio" name="resposta" value="true" required>
+                                        Verdadeiro
+                                    </label>
+                                    <label class="list-group-item">
+                                        <input class="form-check-input me-1" type="radio" name="resposta" value="false" required>
+                                        Falso
+                                    </label>
+                                </div>
+                                <button type="submit" class="btn btn-primary mt-3">Responder</button>
+                            </form>
+                        {% endif %}
+                    </div>
+                </div>
+            {% else %}
+                <div class="text-center">
+                    <h3>Quiz Finalizado!</h3>
+                    <p>Sua pontuação: <span id="pontuacao">0</span></p>
+                    <a href="{% url 'niveis' %}" class="btn btn-primary">Voltar aos Níveis</a>
+                </div>
+            {% endif %}
+        </div>
     </div>
 </div>
+
+<style>
+.quiz-container {
+    max-width: 800px;
+    margin: 0 auto;
+}
+
+.list-group-item {
+    cursor: pointer;
+}
+
+.list-group-item:hover {
+    background-color: #f8f9fa;
+}
+
+.progress {
+    height: 10px;
+}
+</style>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const form = document.getElementById('resposta-form');
+    if (form) {
+        form.addEventListener('submit', function(e) {
+            e.preventDefault();
+            const resposta = document.querySelector('input[name="resposta"]:checked');
+            if (!resposta) {
+                alert('Por favor, selecione uma resposta!');
+                return;
+            }
+            this.submit();
+        });
+    }
+});
+</script>
 {% endblock %} 

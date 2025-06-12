@@ -1,16 +1,24 @@
 {% extends 'core/base.html' %}
+{% load static %}
 
 {% block title %}Níveis - Melodia Mágica{% endblock %}
 
 {% block content %}
-<div class="niveis-container">
-    <h1>Escolha um Nível</h1>
-    <div class="niveis-grid">
-        {% for nivel in niveis %}
-            <a href="{% url 'game_page' %}" class="nivel-card">
-                <h2>Nível {{ nivel }}</h2>
-            </a>
-        {% endfor %}
-    </div>
+
+<!-- Carregando CSS exclusivo da tela de níveis -->
+<link rel="stylesheet" href="{% static 'core/css/Niveis.css' %}">
+
+<div class="parent">
+    <div class="card div1" onclick="location.href='{{ path_base }}/game_page';">1</div>
+    <div class="card div2" onclick="location.href='{{ path_base }}/game_page';">2</div>
+    <div class="card div3" onclick="location.href='{{ path_base }}/game_page';">3</div>
+    <div class="card div4" onclick="location.href='{{ path_base }}/game_page';">4</div>
+    <div class="card div5" onclick="location.href='{{ path_base }}/game_page';">5</div>
+    <div class="card div6" onclick="location.href='{{ path_base }}/game_page';">6</div>
+    <div class="card div7" onclick="location.href='{{ path_base }}/game_page';">7</div>
+    <div class="card div8" onclick="location.href='{{ path_base }}/game_page';">8</div>
+    <div class="card div9" onclick="location.href='{{ path_base }}/game_page';">9</div>
+    <div class="card div10" onclick="location.href='{{ path_base }}/game_page';">10</div>
 </div>
-{% endblock %} 
+
+{% endblock %}

@@ -1,12 +1,14 @@
-is.html
 
 {% extends 'core/base.html' %}
 {% load static %}
 
 {% block title %}Níveis - Melodia Mágica{% endblock %}
-
+{% block extrahead %}
+<link rel="stylesheet" href="{% static 'core/css/background-questoes.css' %}">
+{% endblock %}
 {% block content %}
 
+<div class="background"> 
 <!-- Link para o CSS externo -->
 <link rel="stylesheet" href="{% static 'core/css/Niveis.css' %}">
 
@@ -24,5 +26,5 @@ is.html
         </div>
     {% endif %}
 </div>
-
+</div>
 {% endblock %}

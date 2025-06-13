@@ -6,7 +6,8 @@ from .views import (
     CadastrarQuestoesView,
     ServicosView,
     ContatoView,
-    LoginView
+    LoginView,
+    QuizCreateView
 )
 from . import views
 
@@ -18,7 +19,7 @@ urlpatterns = [
     path("quiz/niveis/", NiveisView.as_view(), name="niveis"),
     path("quiz/game/<int:quiz_id>/", GamePageView.as_view(), name="game_page"),
     path("quiz/cadastrar-questoes/", CadastrarQuestoesView.as_view(), name="cadastrar_questoes"),
-    path('cadastrar-quiz/', views.cadastrar_quiz, name='cadastrar_quiz'),
+    path('cadastrar-quiz/', QuizCreateView.as_view(), name='cadastrar_quiz'),
     path('cadastrar-pergunta/<int:quiz_id>/', views.cadastrar_pergunta, name='cadastrar_pergunta'),
     path('editar-pergunta/<int:pergunta_id>/', views.editar_pergunta, name='editar_pergunta'),
     path('excluir-pergunta/<int:pergunta_id>/', views.excluir_pergunta, name='excluir_pergunta'),

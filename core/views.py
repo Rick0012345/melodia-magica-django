@@ -15,6 +15,7 @@ from django.contrib.auth.mixins import (
 )
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
+from django.urls import reverse_lazy
 from .models import Quiz, Pergunta, Alternativa, Pontuacao
 
 
@@ -205,6 +206,24 @@ class CadastrarQuestoesView(TemplateView):
         context['quizzes'] = Quiz.objects.all()
         return context
 
+class QuizCreateView(CreateView):
+    model = Quiz
+    template_name = 'core/cadastrar_quiz.html'
+    fields = ['titulo', 'descricao', 'nivel_dificuldade']
+    success_url = reverse_lazy('cadastrar_quiz')
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['quizzes'] = Quiz.objects.all().order_by('-data_criacao')
+        return context
+
+    def form_valid(self, form):
+        messages.success(self.request, 'Quiz criado com sucesso!')
+        return super().form_valid(form)
+
+    def form_invalid(self, form):
+        messages.error(self.request, 'Por favor, corrija os erros abaixo.')
+        return super().form_invalid(form)
 
 def cadastrar_quiz(request):
     if request.method == 'POST':

@@ -8,145 +8,195 @@
 
 {% block content %}
 <div class="container mt-4">
-    <h2>Cadastrar Questões</h2>
-    
-    <form method="POST" class="mt-4">
-        {% csrf_token %}
-        <div class="mb-3">
-            <label for="quiz_id" class="form-label">Quiz:</label>
-            <select name="quiz_id" id="quiz_id" class="form-select" required>
-                <option value="">Selecione um quiz</option>
-                {% for quiz in quizzes %}
-                    <option value="{{ quiz.id }}">{{ quiz.titulo }} - Nível {{ quiz.nivel_dificuldade }}</option>
-                {% endfor %}
-            </select>
-        </div>
-
-        <div class="mb-3">
-            <label for="pergunta" class="form-label">Pergunta:</label>
-            <textarea name="pergunta" id="pergunta" class="form-control" rows="3" required></textarea>
-        </div>
-
-        <div class="mb-3">
-            <label for="tipo" class="form-label">Tipo de Questão:</label>
-            <select name="tipo" id="tipo" class="form-select" required>
-                <option value="multipla_escolha">Múltipla Escolha</option>
-                <option value="verdadeiro_falso">Verdadeiro ou Falso</option>
-            </select>
-        </div>
-
-        <div id="alternativas-container" class="mb-3">
-            <label class="form-label">Alternativas:</label>
-            <div class="alternativa-item mb-2">
-                <div class="input-group">
-                    <input type="text" name="alternativa" class="form-control" placeholder="Digite a alternativa">
-                    <div class="input-group-text">
-                        <input type="checkbox" name="correta" value="0" class="form-check-input">
-                        <label class="form-check-label ms-2">Correta</label>
-                    </div>
+    <div class="row">
+        <div class="col-md-8">
+            <div class="card">
+                <div class="card-header d-flex justify-content-between align-items-center">
+                    <h2 class="mb-0">Cadastrar Questões</h2>
+                    <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#questoesModal">
+                        Visualizar Questões
+                    </button>
                 </div>
-            </div>
-            <div class="alternativa-item mb-2">
-                <div class="input-group">
-                    <input type="text" name="alternativa" class="form-control" placeholder="Digite a alternativa">
-                    <div class="input-group-text">
-                        <input type="checkbox" name="correta" value="1" class="form-check-input">
-                        <label class="form-check-label ms-2">Correta</label>
-                    </div>
-                </div>
-            </div>
-            <div class="alternativa-item mb-2">
-                <div class="input-group">
-                    <input type="text" name="alternativa" class="form-control" placeholder="Digite a alternativa">
-                    <div class="input-group-text">
-                        <input type="checkbox" name="correta" value="2" class="form-check-input">
-                        <label class="form-check-label ms-2">Correta</label>
-                    </div>
-                </div>
-            </div>
-            <div class="alternativa-item mb-2">
-                <div class="input-group">
-                    <input type="text" name="alternativa" class="form-control" placeholder="Digite a alternativa">
-                    <div class="input-group-text">
-                        <input type="checkbox" name="correta" value="3" class="form-check-input">
-                        <label class="form-check-label ms-2">Correta</label>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <div id="verdadeiro-falso-container" class="mb-3" style="display: none;">
-            <label class="form-label">Resposta Correta:</label>
-            <div class="form-check">
-                <input class="form-check-input" type="radio" name="resposta_vf" id="verdadeiro" value="true">
-                <label class="form-check-label" for="verdadeiro">
-                    Verdadeiro
-                </label>
-            </div>
-            <div class="form-check">
-                <input class="form-check-input" type="radio" name="resposta_vf" id="falso" value="false">
-                <label class="form-check-label" for="falso">
-                    Falso
-                </label>
-            </div>
-        </div>
-
-        <button type="submit" class="btn btn-primary">Salvar Questão</button>
-    </form>
-
-    <div class="mt-4">
-        <h3>Questões Cadastradas</h3>
-        {% if perguntas %}
-            <div class="list-group">
-                {% for pergunta in perguntas %}
-                    <div class="list-group-item">
-                        <h5>{{ pergunta.pergunta }}</h5>
-                        <p>Tipo: {{ pergunta.get_tipo_display }}</p>
-                        {% if pergunta.tipo == 'multipla_escolha' %}
-                            <ul>
-                                {% for alternativa in pergunta.alternativas.all %}
-                                    <li>
-                                        {{ alternativa.texto }}
-                                        {% if alternativa.correta %}
-                                            <span class="badge bg-success">Correta</span>
-                                        {% endif %}
-                                    </li>
+                <div class="card-body">
+                    <form method="POST" class="needs-validation" novalidate>
+                        {% csrf_token %}
+                        
+                        <div class="mb-3">
+                            <label for="quiz_id" class="form-label">Quiz:</label>
+                            <select name="quiz_id" id="quiz_id" class="form-select" required>
+                                <option value="">Selecione um quiz</option>
+                                {% for quiz in quizzes %}
+                                    <option value="{{ quiz.id }}">{{ quiz.titulo }} - Nível {{ quiz.nivel_dificuldade }}</option>
                                 {% endfor %}
-                            </ul>
-                        {% elif pergunta.tipo == 'verdadeiro_falso' %}
-                            <p>Resposta Correta: 
-                                {% for alternativa in pergunta.alternativas.all %}
-                                    {% if alternativa.correta %}
-                                        {{ alternativa.texto }}
-                                    {% endif %}
-                                {% endfor %}
-                            </p>
-                        {% endif %}
-                        <div class="mt-2">
-                            <a href="{% url 'editar_pergunta' pergunta.id %}" class="btn btn-sm btn-warning">Editar</a>
-                            <a href="{% url 'excluir_pergunta' pergunta.id %}" class="btn btn-sm btn-danger" onclick="return confirm('Tem certeza que deseja excluir esta pergunta?')">Excluir</a>
+                            </select>
                         </div>
-                    </div>
-                {% endfor %}
+
+                        <div class="mb-3">
+                            <label for="pergunta" class="form-label">Pergunta:</label>
+                            <textarea name="pergunta" id="pergunta" class="form-control" rows="3" required></textarea>
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="tipo" class="form-label">Tipo de Questão:</label>
+                            <select name="tipo" id="tipo" class="form-select" required>
+                                <option value="multipla_escolha">Múltipla Escolha</option>
+                                <option value="verdadeiro_falso">Verdadeiro ou Falso</option>
+                            </select>
+                        </div>
+
+                        <div id="alternativas-container" class="mb-3">
+                            <label class="form-label">Alternativas:</label>
+                            <div class="alternativa-item mb-2">
+                                <div class="input-group">
+                                    <input type="text" name="alternativa" class="form-control" placeholder="Digite a alternativa">
+                                    <div class="input-group-text">
+                                        <input type="checkbox" name="correta" value="0" class="form-check-input">
+                                        <label class="form-check-label ms-2">Correta</label>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="alternativa-item mb-2">
+                                <div class="input-group">
+                                    <input type="text" name="alternativa" class="form-control" placeholder="Digite a alternativa">
+                                    <div class="input-group-text">
+                                        <input type="checkbox" name="correta" value="1" class="form-check-input">
+                                        <label class="form-check-label ms-2">Correta</label>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="alternativa-item mb-2">
+                                <div class="input-group">
+                                    <input type="text" name="alternativa" class="form-control" placeholder="Digite a alternativa">
+                                    <div class="input-group-text">
+                                        <input type="checkbox" name="correta" value="2" class="form-check-input">
+                                        <label class="form-check-label ms-2">Correta</label>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="alternativa-item mb-2">
+                                <div class="input-group">
+                                    <input type="text" name="alternativa" class="form-control" placeholder="Digite a alternativa">
+                                    <div class="input-group-text">
+                                        <input type="checkbox" name="correta" value="3" class="form-check-input">
+                                        <label class="form-check-label ms-2">Correta</label>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div id="verdadeiro-falso-container" class="mb-3" style="display: none;">
+                            <label class="form-label">Resposta Correta:</label>
+                            <div class="form-check">
+                                <input class="form-check-input" type="radio" name="resposta_vf" id="verdadeiro" value="true">
+                                <label class="form-check-label" for="verdadeiro">
+                                    Verdadeiro
+                                </label>
+                            </div>
+                            <div class="form-check">
+                                <input class="form-check-input" type="radio" name="resposta_vf" id="falso" value="false">
+                                <label class="form-check-label" for="falso">
+                                    Falso
+                                </label>
+                            </div>
+                        </div>
+
+                        <button type="submit" class="btn btn-primary">Salvar Questão</button>
+                    </form>
+                </div>
             </div>
-        {% else %}
-            <p>Nenhuma questão cadastrada ainda.</p>
-        {% endif %}
+        </div>
     </div>
 </div>
 
+<!-- Modal de Questões -->
+<div class="modal fade" id="questoesModal" tabindex="-1" aria-labelledby="questoesModalLabel" role="dialog">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="questoesModalLabel">Questões Cadastradas</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fechar"></button>
+            </div>
+            <div class="modal-body">
+                <div class="accordion" id="accordionQuizzes">
+                    {% for quiz in quizzes %}
+                    <div class="accordion-item">
+                        <h2 class="accordion-header">
+                            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" 
+                                    data-bs-target="#collapse{{ quiz.id }}" aria-expanded="false" 
+                                    aria-controls="collapse{{ quiz.id }}">
+                                {{ quiz.titulo }}
+                            </button>
+                        </h2>
+                        <div id="collapse{{ quiz.id }}" class="accordion-collapse collapse" 
+                             data-bs-parent="#accordionQuizzes" aria-labelledby="heading{{ quiz.id }}">
+                            <div class="accordion-body">
+                                {% for pergunta in quiz.perguntas.all %}
+                                <div class="card mb-3">
+                                    <div class="card-body">
+                                        <h6 class="card-title">{{ pergunta.pergunta }}</h6>
+                                        <p class="card-text">
+                                            <small class="text-muted">Tipo: {{ pergunta.get_tipo_display }}</small>
+                                        </p>
+                                        {% if pergunta.tipo == 'multipla_escolha' %}
+                                        <div class="list-group">
+                                            {% for alternativa in pergunta.alternativas.all %}
+                                            <div class="list-group-item">
+                                                {{ alternativa.texto }}
+                                                {% if alternativa.correta %}
+                                                <span class="badge bg-success float-end">Correta</span>
+                                                {% endif %}
+                                            </div>
+                                            {% endfor %}
+                                        </div>
+                                        {% endif %}
+                                        <div class="mt-2">
+                                            <a href="{% url 'editar_pergunta' pergunta.id %}" class="btn btn-sm btn-warning">Editar</a>
+                                            <a href="{% url 'excluir_pergunta' pergunta.id %}" class="btn btn-sm btn-danger" 
+                                               onclick="return confirm('Tem certeza que deseja excluir esta pergunta?')">Excluir</a>
+                                        </div>
+                                    </div>
+                                </div>
+                                {% empty %}
+                                <p class="text-muted">Nenhuma questão cadastrada para este quiz.</p>
+                                {% endfor %}
+                            </div>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fechar</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
 <script>
-document.getElementById('tipo').addEventListener('change', function() {
-    const alternativasContainer = document.getElementById('alternativas-container');
-    const verdadeiroFalsoContainer = document.getElementById('verdadeiro-falso-container');
-    
-    if (this.value === 'verdadeiro_falso') {
-        alternativasContainer.style.display = 'none';
-        verdadeiroFalsoContainer.style.display = 'block';
-    } else {
-        alternativasContainer.style.display = 'block';
-        verdadeiroFalsoContainer.style.display = 'none';
-    }
+$(document).ready(function() {
+    // Manipulador do tipo de questão
+    $('#tipo').on('change', function() {
+        const alternativasContainer = $('#alternativas-container');
+        const verdadeiroFalsoContainer = $('#verdadeiro-falso-container');
+        
+        if ($(this).val() === 'verdadeiro_falso') {
+            alternativasContainer.hide();
+            verdadeiroFalsoContainer.show();
+        } else {
+            alternativasContainer.show();
+            verdadeiroFalsoContainer.hide();
+        }
+    });
+
+    // Validação do formulário
+    $('form').on('submit', function(e) {
+        if (!this.checkValidity()) {
+            e.preventDefault();
+            e.stopPropagation();
+        }
+        $(this).addClass('was-validated');
+    });
 });
 </script>
 {% endblock %} 

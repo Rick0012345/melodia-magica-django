@@ -1,57 +1,41 @@
-<div class="container">
+{% load static %}
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Menu - Melodia Mágica</title>
+  <link rel="stylesheet" href="{% static 'core/css/Menu.css' %}">
+</head>
+<body>
+  <div class="container">
     <div class="header">
       <div class="profile">Bem-vindo ao Quiz!</div>
     </div>
     <ul class="menu-list">
-     
       <li class="menu-item">
-        <button 
-          class="menu-button" 
-          onclick="window.location.href='{% url 'niveis' %}'"
-        >
-          Iniciar Quiz
-        </button>
+        <button class="menu-button" onclick="window.location.href='{% url 'niveis' %}'">Iniciar Quiz</button>
       </li>
-  
-      <!-- Regras -->
       <li class="menu-item">
-        <button 
-          class="menu-button" 
-          onclick="alert(
-            'REGRAS DO QUIZ:\n' +
-            '1. Responda as perguntas: Você verá uma pergunta com várias opções de resposta. Escolha a opção que você acha correta.\n\n' +
-            '2. Pontuação: Você ganha 1 ponto por cada resposta correta.\n\n' +
-            '3. Resultado final: Ao final, você verá a quantidade de respostas corretas e sua pontuação total.\n\n' +
-            '4. Reiniciar: Você pode tentar o quiz novamente para melhorar sua pontuação.'
-          )"
-        >
-          Regras
-        </button>
+        <button class="menu-button" onclick="alert(
+          'REGRAS DO QUIZ:\n' +
+          '1. Responda as perguntas: Você verá uma pergunta com várias opções de resposta. Escolha a opção que você acha correta.\n\n' +
+          '2. Pontuação: Você ganha 1 ponto por cada resposta correta.\n\n' +
+          '3. Resultado final: Ao final, você verá a quantidade de respostas corretas e sua pontuação total.\n\n' +
+          '4. Reiniciar: Você pode tentar o quiz novamente para melhorar sua pontuação.'
+        )">Regras</button>
       </li>
-  
-      <!-- Sobre -->
       <li class="menu-item">
-        <button 
-          class="menu-button" 
-          onclick="alert(
-            'Sobre o Melodia Mágica:\n\n' +
-            'Bem-vindo ao nosso Quiz Melodia Mágica! 🎶🎉\n\n' +
-            'Aqui, as crianças podem aprender sobre música de maneira divertida e interativa, testando seus conhecimentos com perguntas sobre instrumentos musicais, sons, e muito mais! Nosso quiz foi criado especialmente para os pequenos, com perguntas fáceis e divertidas que tornam o aprendizado um verdadeiro jogo.'
-          )"
-        >
-          Sobre
-        </button>
+        <button class="menu-button" onclick="alert(
+          'Sobre o Melodia Mágica:\n\n' +
+          'Bem-vindo ao nosso Quiz Melodia Mágica! 🎶🎉\n\n' +
+          'Aqui, as crianças podem aprender sobre música de maneira divertida e interativa, testando seus conhecimentos com perguntas sobre instrumentos musicais, sons, e muito mais! Nosso quiz foi criado especialmente para os pequenos, com perguntas fáceis e divertidas que tornam o aprendizado um verdadeiro jogo.'
+        )">Sobre</button>
       </li>
-  
-      <!-- Cadastrar Questões -->
       <li class="menu-item">
-        <button 
-          class="menu-button" 
-          onclick="window.location.href='{% url 'cadastrar_questoes' %}'"
-        >
-          Cadastrar Questões
-        </button>
+        <button class="menu-button" onclick="window.location.href='{% url 'cadastrar_questoes' %}'">Cadastrar Questões</button>
       </li>
     </ul>
   </div>
-  
+</body>
+</html>

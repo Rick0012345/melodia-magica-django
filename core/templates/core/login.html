@@ -1,10 +1,123 @@
-{% extends 'core/base.html' %}
+{% load static %}
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Login</title>
+  <link rel="stylesheet" href="{% static 'core/css/Login.module.css' %}">
 
-{% block content %}
-<div class="container">
-    <h1>Login</h1>
-    <div class="login-content">
-        <!-- Adicione aqui o formulário de login -->
+
+</head>
+<body>
+  <div class="loginContainer">
+    <h2 class="loginTitle">Login</h2>
+    <form method="POST" action="{% url 'login' %}" id="loginForm">
+      {% csrf_token %}
+      <input
+        type="text"
+        id="uname"
+        name="username"
+        placeholder="Usuário"
+        class="loginInput"
+        value="{{ username|default:'' }}"
+        required
+      />
+      <input
+        type="password"
+        id="pass"
+        name="password"
+        placeholder="Senha"
+        class="loginInput"
+        required
+      />
+
+      <div class="loginShowPasswordContainer">
+        <input
+          type="checkbox"
+          id="show-password"
+          class="loginShowPasswordCheckbox"
+          onchange="togglePassword()"
+        />
+        <label for="show-password">Mostrar Senha</label>
+      </div>
+
+      <p class="loginErrorMessage" id="msg">{{ error_message }}</p>
+
+      <div class="loginButtonContainer">
+        <button
+          id="login-btn"
+          class="loginButton"
+          type="submit"
+        >
+          Entrar
+        </button>
+      </div>
+    </form>
+    <div class="loginExtraOptions">
+      <a href="#" class="forgotPasswordLink">Esqueci minha senha</a>
+      <a href="#" class="forgotPasswordLink">Cadastre-se</a>
+      <div class="socialLogin">
+        <button class="socialButton socialButtonGoogle">Login com Google</button>
+        <button class="socialButton socialButtonFacebook">Login com Facebook</button>
+      </div>
+    
+    
     </div>
-</div>
-{% endblock %} 
+  </div>
+
+  <div class="musicNotesContainer">
+    <span class="musicNote">🎵</span>
+    <span class="musicNote2">🎶</span>
+    <span class="musicNote">🎼</span>
+  </div>
+
+<script>
+  const loginBtn = document.getElementById('login-btn');
+  const unameInput = document.getElementById('uname');
+  const passInput = document.getElementById('pass');
+  const msg = document.getElementById('msg');
+
+  function togglePassword() {
+    const pass = document.getElementById('pass');
+    pass.type = pass.type === 'password' ? 'text' : 'password';
+  }
+
+  function shiftButton() {
+    const positions = ['loginButtonShiftLeft', 'loginButtonShiftTop', 'loginButtonShiftRight'];
+    const nextPosition = positions[Math.floor(Math.random() * positions.length)];
+    loginBtn.className = 'loginButton ' + nextPosition;
+  }
+
+  function resetButton() {
+    loginBtn.className = 'loginButton';
+  }
+
+  function validateFields() {
+    if (unameInput.value && passInput.value) {
+      loginBtn.disabled = false;
+      msg.textContent = '';
+      resetButton();
+    } else {
+      loginBtn.disabled = true;
+      msg.textContent = 'Não dê uma de Espertinho kkk';
+      shiftButton();
+    }
+  }
+
+  unameInput.addEventListener('input', validateFields);
+  passInput.addEventListener('input', validateFields);
+
+  loginBtn.addEventListener('click', function(event) {
+    if (loginBtn.disabled) {
+      event.preventDefault();
+      shiftButton();
+    }
+  });
+
+  // Inicializa estado do botão
+  validateFields();
+</script>
+
+</body>
+</html>

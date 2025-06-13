@@ -32,22 +32,26 @@
     background: rgba(255, 255, 255, 0.9);
 }
 
-.loginTitle{
-    position: absolute;
-    top: 20px;
-    z-index: 1000;
+.loginTitle {
+    font-size: 28px;
+    color: #00ffff;
+    margin-bottom: 20px;
+    position: relative;
+    text-shadow: 0 0 8px #00ffff80;
 }
+
 .loginButton {
     padding: 12px;
     border: none;
-    border-radius: 15px;
+    border-radius: 115px;
     background: #ff5722;
     color: white;
     cursor: pointer;
     transition: all 0.3s ease-in-out;
-    width: 100%;
+    width: 29%;
     font-size: 16px;
     position: relative;
+
 }
 
 .loginButton:hover {
@@ -303,4 +307,23 @@
     .musicNote2 {
         font-size: 40px;
     }
+}
+
+body {
+  margin: 0;
+  padding: 0;
+  height: 100vh;
+  display: flex;
+  justify-content: center; /* Centraliza horizontalmente */
+  align-items: center;     /* Centraliza verticalmente */
+  background: #111; /* ou qualquer fundo que quiser */
+}
+
+
+
+.socialLogin {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    width: 100%;
 }

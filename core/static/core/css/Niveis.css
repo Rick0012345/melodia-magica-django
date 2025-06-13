@@ -9,6 +9,7 @@
     transform-origin: center center;
     cursor: pointer;
     perspective: 1200px;
+    
 }
 
 /* Cards posicionados no centro, mas transformados via JS */

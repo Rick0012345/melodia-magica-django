@@ -9,6 +9,7 @@
         <div class="quiz-header">
             <h2>{{ quiz.titulo }}</h2>
             <p class="text-muted">{{ quiz.descricao }}</p>
+            <link rel="stylesheet" href="{% static 'core/css/Game.css' %}">
             <div class="progress mb-4">
                 <div class="progress-bar" role="progressbar" style="width: {{ progresso }}%" id="progress-bar"></div>
             </div>

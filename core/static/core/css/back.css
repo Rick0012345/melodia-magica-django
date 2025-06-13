@@ -12,3 +12,14 @@ body {
      overflow: hidden;
      position: relative;
 }
+
+.quiz-header{
+     background-color: rgba(255, 255, 255, 0.5) !important;
+     border-radius: 50px !important;
+}
+
+.card{
+     background-color: rgba(255, 255, 255, 0.5) !important;
+     border-radius: 25px !important;
+
+}

@@ -11,16 +11,9 @@ is.html
 <link rel="stylesheet" href="{% static 'core/css/Niveis.css' %}">
 
 <div class="parent">
-    <div class="card" onclick="location.href='{{ path_base }}/game_page';">1</div>
-    <div class="card" onclick="location.href='{{ path_base }}/game_page';">2</div>
-    <div class="card" onclick="location.href='{{ path_base }}/game_page';">3</div>
-    <div class="card" onclick="location.href='{{ path_base }}/game_page';">4</div>
-    <div class="card" onclick="location.href='{{ path_base }}/game_page';">5</div>
-    <div class="card" onclick="location.href='{{ path_base }}/game_page';">6</div>
-    <div class="card" onclick="location.href='{{ path_base }}/game_page';">7</div>
-    <div class="card" onclick="location.href='{{ path_base }}/game_page';">8</div>
-    <div class="card" onclick="location.href='{{ path_base }}/game_page';">9</div>
-    <div class="card" onclick="location.href='{{ path_base }}/game_page';">10</div>
+    {% for quiz in quizzes %}
+    <div class="card" onclick="location.href='{% url 'game_page' quiz.id %}';">{{ quiz.nivel_dificuldade }}</div>
+    {% endfor %}
 </div>
 
 <!-- Script JS para o carrossel 3D -->

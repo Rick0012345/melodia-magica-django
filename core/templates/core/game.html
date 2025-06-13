@@ -10,7 +10,7 @@
             <h2>{{ quiz.titulo }}</h2>
             <p class="text-muted">{{ quiz.descricao }}</p>
             <div class="progress mb-4">
-                <div class="progress-bar" role="progressbar" style="width: 0%" id="progress-bar"></div>
+                <div class="progress-bar" role="progressbar" style="width: {{ progresso }}%" id="progress-bar"></div>
             </div>
         </div>
 
@@ -20,10 +20,11 @@
                     <div class="card-body">
                         <h4 class="card-title">{{ pergunta.pergunta }}</h4>
                         
-                        {% if pergunta.tipo == 'multipla_escolha' %}
-                            <form id="resposta-form" method="POST">
-                                {% csrf_token %}
-                                <input type="hidden" name="pergunta_atual_id" value="{{ pergunta.id }}">
+                        <form id="resposta-form" method="POST">
+                            {% csrf_token %}
+                            <input type="hidden" name="pergunta_atual_id" value="{{ pergunta.id }}">
+                            
+                            {% if pergunta.tipo == 'multipla_escolha' %}
                                 <div class="list-group mt-3">
                                     {% for alternativa in pergunta.alternativas.all %}
                                         <label class="list-group-item">
@@ -32,12 +33,7 @@
                                         </label>
                                     {% endfor %}
                                 </div>
-                                <button type="submit" class="btn btn-primary mt-3">Responder</button>
-                            </form>
-                        {% elif pergunta.tipo == 'verdadeiro_falso' %}
-                            <form id="resposta-form" method="POST">
-                                {% csrf_token %}
-                                <input type="hidden" name="pergunta_atual_id" value="{{ pergunta.id }}">
+                            {% elif pergunta.tipo == 'verdadeiro_falso' %}
                                 <div class="list-group mt-3">
                                     <label class="list-group-item">
                                         <input class="form-check-input me-1" type="radio" name="resposta" value="true" required>
@@ -48,16 +44,42 @@
                                         Falso
                                     </label>
                                 </div>
-                                <button type="submit" class="btn btn-primary mt-3">Responder</button>
-                            </form>
-                        {% endif %}
+                            {% endif %}
+                            <button type="submit" class="btn btn-primary mt-3">Responder</button>
+                        </form>
                     </div>
                 </div>
             {% else %}
                 <div class="text-center">
                     <h3>Quiz Finalizado!</h3>
-                    <p>Sua pontuação: <span id="pontuacao">0</span></p>
-                    <a href="{% url 'niveis' %}" class="btn btn-primary">Voltar aos Níveis</a>
+                    <div class="resultado-container mt-4">
+                        <div class="card">
+                            <div class="card-body">
+                                <h4 class="card-title mb-4">Seu Resultado</h4>
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="acertos-box p-3 mb-3 bg-success text-white rounded">
+                                            <h5>Acertos</h5>
+                                            <h2>{{ acertos }}</h2>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="erros-box p-3 mb-3 bg-danger text-white rounded">
+                                            <h5>Erros</h5>
+                                            <h2>{{ erros }}</h2>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="mt-4">
+                                    <h5>Pontuação Total</h5>
+                                    <h3>{{ pontuacao }} pontos</h3>
+                                </div>
+                                <div class="mt-4">
+                                    <a href="{% url 'game_page' quiz.id %}?voltar=true" class="btn btn-primary">Voltar aos Níveis</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             {% endif %}
         </div>
@@ -81,6 +103,20 @@
 .progress {
     height: 10px;
 }
+
+.resultado-container {
+    max-width: 600px;
+    margin: 0 auto;
+}
+
+.acertos-box, .erros-box {
+    text-align: center;
+    transition: transform 0.3s ease;
+}
+
+.acertos-box:hover, .erros-box:hover {
+    transform: scale(1.05);
+}
 </style>
 
 <script>
@@ -88,13 +124,12 @@ document.addEventListener('DOMContentLoaded', function() {
     const form = document.getElementById('resposta-form');
     if (form) {
         form.addEventListener('submit', function(e) {
-            e.preventDefault();
             const resposta = document.querySelector('input[name="resposta"]:checked');
             if (!resposta) {
+                e.preventDefault();
                 alert('Por favor, selecione uma resposta!');
                 return;
             }
-            this.submit();
         });
     }
 });

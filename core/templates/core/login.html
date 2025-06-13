@@ -1,3 +1,4 @@
+
 {% load static %}
 <!DOCTYPE html>
 <html lang="pt-br">
@@ -10,6 +11,7 @@
 
 </head>
 <body>
+  {% include "core/navbar.html" %}
   <div class="loginContainer">
     <h2 class="loginTitle">Login</h2>
     <form method="POST" action="{% url 'login' %}" id="loginForm">

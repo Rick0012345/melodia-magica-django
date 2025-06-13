@@ -11,12 +11,18 @@ is.html
 <link rel="stylesheet" href="{% static 'core/css/Niveis.css' %}">
 
 <div class="parent">
-    {% for quiz in quizzes %}
-    <div class="card" onclick="location.href='{% url 'game_page' quiz.id %}';">{{ quiz.nivel_dificuldade }}</div>
-    {% endfor %}
+    {% if quizzes %}
+        {% for quiz in quizzes %}
+        <div class="card" onclick="location.href='{% url 'game_page' quiz.id %}';">
+            {{ quiz.nivel_dificuldade }}
+        </div>
+        {% endfor %}
+    {% else %}
+        <div class="no-quizzes">
+            <h2>Nenhum nível disponível no momento</h2>
+            <p>Os níveis serão adicionados em breve!</p>
+        </div>
+    {% endif %}
 </div>
-
-<!-- Script JS para o carrossel 3D -->
-<script src="{% static 'core/css/Niveis.js' %}"></script>
 
 {% endblock %}

@@ -8,9 +8,16 @@
 {% endblock extrahead %}
 
 {% block content %}
-<div class="container">
-    <h1>Fale Conosco</h1>
+ <!--Adicionei umas animações, não necessáriamente elas ficaram.-->
+<div class="balao"></div>
+<div class="balao"></div>
+<div class="balao"></div>
+<div class="balao"></div>
+<div class="balao"></div>
 
+<div class="container">
+    <img src="{% static 'core/images/LogoLogin.png' %}" class="contato-imagem" alt="Imagem de contato">
+    <h1>Fale Conosco</h1>
     {% if messages %}
         <div class="message">
             {% for message in messages %}

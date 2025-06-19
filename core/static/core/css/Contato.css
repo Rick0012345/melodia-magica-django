@@ -1,24 +1,27 @@
 body {
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    background: #f0f2f5;
+    background: #000000;
     margin: 0;
     padding: 0;
+
 }
 
 .container {
     max-width: 800px;
     margin: 60px auto;
-    background: #fff;
+    background: linear-gradient(to bottom, #7c9112f1 30%, #d9652c 100%);
     padding: 40px 50px;
     box-shadow: 0 8px 24px rgba(0,0,0,0.1);
     border-radius: 12px;
+    
 }
 
 h1 {
     text-align: center;
-    color: #2c3e50;
+     background: linear-gradient(to bottom, #7c9112f1 30%, #d9652c 100%);
     margin-bottom: 30px;
     font-size: 32px;
+    border-radius: 10px;
 }
 
 .message {
@@ -59,10 +62,12 @@ h1 {
 
 .redes-sociais a {
     text-decoration: none;
-    color: #4caf50;
+    color: #000000;
     font-weight: bold;
     font-size: 16px;
     transition: color 0.3s;
+    
+
 }
 
 .redes-sociais a i {
@@ -72,7 +77,7 @@ h1 {
 }
 
 .redes-sociais a:hover {
-    color: #2e7d32;
+    color: #00d50b;
 }
 
 form {
@@ -106,14 +111,14 @@ textarea {
 }
 
 button {
-    background-color: #4caf50;
-    color: white;
+    background-color: #7c9112f1 30%, #d9652c 100%;
+    color: rgb(7, 5, 5);
     border: none;
     padding: 14px;
     font-size: 16px;
-    border-radius: 6px;
+    border-radius: 130px;
     cursor: pointer;
-    width: 100%;
+    width: 34%;
     transition: background 0.3s;
 }
 
@@ -122,5 +127,75 @@ button i {
 }
 
 button:hover {
-    background-color: #43a047;
+    background-color: #00ff0d;
+}
+
+.contato-imagem {
+    display: block;
+    max-width: 200px; /* Ajuste conforme necessário */
+    height: auto;
+    margin: 40px auto 20px; /* Centraliza a imagem */
+    z-index: 0;
+    position: relative;
+   
+}
+
+
+body::before {
+    content: "";
+    position: fixed;
+    top: 0; left: 0; right: 0; bottom: 0;
+    z-index: -1;
+    background: linear-gradient(to top, #a2d9f7, #ffffff);
+    overflow: hidden;
+}
+
+.balao {
+    position: fixed;
+    bottom: -150px;
+    width: 60px;
+    height: 80px;
+    background-color: red;
+    border-radius: 50% 50% 50% 50%;
+    animation: subir 20s linear infinite;
+    opacity: 0.8;
+    z-index: -1;
+}
+
+@keyframes subir {
+    0% {
+        transform: translateY(0) scale(1);
+        opacity: 1;
+    }
+    100% {
+        transform: translateY(-120vh) scale(1.2);
+        opacity: 0;
+    }
+}
+
+/* Variações de balões */
+.balao:nth-child(1) {
+    left: 10%;
+    background: #ff6b6b;
+    animation-delay: 0s;
+}
+.balao:nth-child(2) {
+    left: 30%;
+    background: #feca57;
+    animation-delay: 5s;
+}
+.balao:nth-child(3) {
+    left: 50%;
+    background: #48dbfb;
+    animation-delay: 10s;
+}
+.balao:nth-child(4) {
+    left: 70%;
+    background: #68ff4e;
+    animation-delay: 15s;
+}
+.balao:nth-child(5) {                                                                                                                                           
+    left: 90%;
+    background: #ffc635;
+    animation-delay: 3s;
 }

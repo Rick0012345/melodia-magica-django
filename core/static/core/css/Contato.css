@@ -1,23 +1,82 @@
 body {
-    font-family: Arial, sans-serif;
-    background: #f7f7f7;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background: #f0f2f5;
     margin: 0;
     padding: 0;
 }
 
 .container {
-    max-width: 600px;
+    max-width: 800px;
     margin: 60px auto;
     background: #fff;
-    padding: 30px 40px;
-    box-shadow: 0 0 15px rgba(0,0,0,0.1);
-    border-radius: 8px;
+    padding: 40px 50px;
+    box-shadow: 0 8px 24px rgba(0,0,0,0.1);
+    border-radius: 12px;
 }
 
 h1 {
     text-align: center;
-    color: #333;
+    color: #2c3e50;
     margin-bottom: 30px;
+    font-size: 32px;
+}
+
+.message {
+    background: #e1f9e4;
+    border: 1px solid #a1e0b5;
+    color: #2e7d32;
+    padding: 12px;
+    border-radius: 8px;
+    margin-bottom: 20px;
+    text-align: center;
+}
+
+.contato-grid {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 40px;
+    justify-content: space-between;
+}
+
+.contatos {
+    flex: 1 1 40%;
+    text-align: center;
+}
+
+.contatos h2 {
+    margin-bottom: 20px;
+    color: #333;
+}
+
+.redes-sociais {
+    list-style: none;
+    padding: 0;
+}
+
+.redes-sociais li {
+    margin-bottom: 15px;
+}
+
+.redes-sociais a {
+    text-decoration: none;
+    color: #4caf50;
+    font-weight: bold;
+    font-size: 16px;
+    transition: color 0.3s;
+}
+
+.redes-sociais a i {
+    margin-right: 8px;
+    font-size: 18px;
+    vertical-align: middle;
+}
+
+.redes-sociais a:hover {
+    color: #2e7d32;
+}
+
+form {
+    flex: 1 1 50%;
 }
 
 form p {
@@ -27,7 +86,7 @@ form p {
 label {
     display: block;
     margin-bottom: 6px;
-    font-weight: bold;
+    font-weight: 600;
     color: #555;
 }
 
@@ -35,33 +94,33 @@ input[type="text"],
 input[type="email"],
 textarea {
     width: 100%;
-    padding: 10px;
-    border: 1px solid #ddd;
-    border-radius: 5px;
+    padding: 12px;
+    border: 1px solid #ccc;
+    border-radius: 6px;
     font-size: 16px;
 }
 
 textarea {
     resize: vertical;
+    min-height: 100px;
 }
 
 button {
-    background-color: #4CAF50;
+    background-color: #4caf50;
     color: white;
     border: none;
-    padding: 12px 20px;
+    padding: 14px;
     font-size: 16px;
-    border-radius: 5px;
+    border-radius: 6px;
     cursor: pointer;
     width: 100%;
+    transition: background 0.3s;
+}
+
+button i {
+    margin-right: 8px;
 }
 
 button:hover {
-    background-color: #45a049;
-}
-
-.message {
-    color: green;
-    text-align: center;
-    margin-bottom: 20px;
+    background-color: #43a047;
 }

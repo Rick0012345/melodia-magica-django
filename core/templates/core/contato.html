@@ -1,24 +1,40 @@
 {% extends 'core/base.html' %}
 {% load static %}
+
 {% block extrahead %}
 <link rel="stylesheet" href="{% static 'core/css/Contato.css' %}">
+<!-- Font Awesome -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
 {% endblock extrahead %}
 
-
 {% block content %}
-<!-- templates/contato/contato.html -->
+<div class="container">
     <h1>Fale Conosco</h1>
 
     {% if messages %}
-        {% for message in messages %}
-            <p style="color:green;">{{ message }}</p>
-        {% endfor %}
+        <div class="message">
+            {% for message in messages %}
+                <p>{{ message }}</p>
+            {% endfor %}
+        </div>
     {% endif %}
 
-    <form method="post">
-        {% csrf_token %}
-        {{ form.as_p }}
-        <button type="submit">Enviar</button>
-    </form>
+    <div class="contato-grid">
+        <div class="contatos">
+            <h2>Entre em contato conosco</h2>
+            <ul class="redes-sociais">
+                <li><a href="contato:melodiamagica.com"><i class="fas fa-envelope"></i> grupofaculpji@gmail.com</a></li>
+                <li><a href="https://www.instagram.com/melodiamagicabj/" target="_blank"><i class="fab fa-instagram"></i> Instagram</a></li>
+                <li><a href="https://www.facebook.com/melodiamagicabj/" target="_blank"><i class="fab fa-facebook"></i> Facebook</a></li>
+                <li><a href="https://api.whatsapp.com/send?phone=5521970000000" target="_blank"><i class="fab fa-whatsapp"></i> WhatsApp</a></li>
+            </ul>
+        </div>
 
+        <form method="post">
+            {% csrf_token %}
+            {{ form.as_p }}
+            <button type="submit"><i class="fas fa-paper-plane"></i> Enviar</button>
+        </form>
+    </div>
+</div>
 {% endblock %}

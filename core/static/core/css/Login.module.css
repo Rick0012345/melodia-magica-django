@@ -1,329 +1,260 @@
+/* Fundo geral */
+body {
+  margin: 0px;
+  padding: 0px;
+  height: 100vh;
+  background: radial-gradient(ellipse at center, #1a1a1a 0%, #000000 100%);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  overflow: hidden;
+}
 
+/* Container do login */
 .loginContainer {
-    background: linear-gradient(145deg, rgba(0, 255, 255, 0.15), rgba(0, 0, 0, 0.4));
-    padding: 45px 20px;
-    border-radius: 15px;
-    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3), 0 10px 30px rgba(0, 255, 255, 0.3);
-    width: 320px;
-    height: 75vh;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    transition: all 0.3s ease-in-out;
-    border: 1px solid rgba(0, 255, 255, 0.4);
-    backdrop-filter: blur(9px);
+  background: rgba(255, 255, 255, 0.05);
+  backdrop-filter: blur(10px);
+  border-radius: 20px;
+  padding: 40px 30px;
+  width: 350px;
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  box-shadow: 0 0 25px rgba(0, 255, 255, 0.15);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  transition: 0.3s ease;
 }
 
 .loginContainer:hover {
-    backdrop-filter: blur(12px);
-    transform: scale(1.05);
-    box-shadow: 0 20px 50px rgba(0, 255, 255, 0.5), 0 10px 50px rgba(0, 255, 255, 0.4);
-    border: 1px solid rgba(0, 255, 255, 0.6);
+  transform: scale(1.02);
+  box-shadow: 0 0 35px rgba(0, 255, 255, 0.3);
 }
 
-.loginInput {
-    width: 90%;
-    padding: 8px;
-    margin: 8px 0;
-    position: relative;
-    top: 25px;
-    border: 1px solid #ccc;
-    border-radius: 5px;
-    background: rgba(255, 255, 255, 0.9);
-}
-
+/* Título */
 .loginTitle {
-    font-size: 28px;
-    color: #00ffff;
-    margin-bottom: 20px;
-    position: relative;
-    text-shadow: 0 0 8px #00ffff80;
+  font-size: 32px;
+  color: #00ffff;
+  margin-bottom: 25px;
+  text-shadow: 0 0 10px rgba(0, 255, 255, 0.4);
 }
 
-.loginButton {
-    padding: 12px;
-    border: none;
-    border-radius: 115px;
-    background: #ff5722;
-    color: white;
-    cursor: pointer;
-    transition: all 0.3s ease-in-out;
-    width: 29%;
-    font-size: 16px;
-    position: relative;
+/* Inputs */
+.loginInput {
+  width: 100%;
+  padding: 12px;
+  margin: 10px 0;
+  border: none;
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.1);
+  color: #fff;
+  outline: none;
+  transition: 0.2s;
+}
 
+.loginInput:focus {
+  background: rgba(255, 255, 255, 0.2);
+  box-shadow: 0 0 8px rgba(0, 255, 255, 0.4);
+}
+
+/* Botão login */
+.loginButton {
+  padding: 12px;
+  width: 100%;
+  border: none;
+  border-radius: 40px;
+  background: linear-gradient(145deg, #00ffff, #0066ff);
+  color: black;
+  font-weight: bold;
+  font-size: 16px;
+  cursor: pointer;
+  transition: all 0.3s ease;
 }
 
 .loginButton:hover {
-    background-color: #e64a19;
-    transform: scale(1.05);
+  transform: scale(1.05);
+  filter: brightness(1.1);
 }
 
 .loginButton:active {
-    transform: scale(0.95);
+  transform: scale(0.95);
 }
 
+/* Efeitos de movimento */
 .loginButtonShiftLeft {
-    transform: translateX(-120px);
+  transform: translateX(-120px);
 }
-
 .loginButtonShiftRight {
-    transform: translateX(120px);
+  transform: translateX(120px);
 }
-
 .loginButtonShiftTop {
-    transform: translateY(-120px);
+  transform: translateY(-120px);
 }
 
-.loginButtonShiftBottom {
-    transform: translateY(120px);
-}
-
-.socialButton {
-    padding: 12px 20px;
-    margin: 5px 0;
-    width: 100%;
-    border-radius: 70px;
-    color: white;
-    border: none;
-    cursor: pointer;
-    font-size: 14px;
-    transition: all 0.3s ease;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 8px;
-}
-
-.socialButtonGoogle {
-    background-color: #db4437;
-    border: 1px solid #c23d32;
-}
-
-.socialButtonGoogle:hover {
-    background-color: #c23327;
-}
-
-.socialButtonFacebook {
-    background-color: #3b5998;
-    border: 1px solid #344e86;
-}
-
-.socialButtonFacebook:hover {
-    background-color: #2d4373;
-}
-
-.signupButton {
-    background-color: #4CAF50;
-    border: 1px solid #45a049;
-}
-
-.signupButton:hover {
-    background-color: #45a049;
-}
-
+/* Mostrar senha */
 .loginShowPasswordContainer {
-    display: flex;
-    align-items: center;
-    margin: 10px 0;
-    margin-top: 20px;
-    width: 90%;
+  display: flex;
+  align-items: center;
+  margin-top: 15px;
+  width: 100%;
+  font-size: 13px;
+  color: #00ffff;
 }
 
 .loginShowPasswordCheckbox {
-    margin-right: 8px;
-    accent-color: #00ffff;
+  margin-right: 8px;
+  accent-color: #00ffff;
 }
 
-.musicNotesContainer {
-    position: absolute;
-    top: 10%;
-    left: 50%;
-    transform: translateX(-50%);
-    display: flex;
-    justify-content: space-evenly;
-    width: 100%;
-    z-index: 9999;
-    height: 0px;
-}
-
-.musicNote {
-    font-size: 50px;
-    animation: floatNotes 3s ease-in-out infinite;
-    opacity: 1;
-}
-
-.musicNote2 {
-    font-size: 40px;
-    animation: floatNotes2 3s ease-in-out infinite;
-    opacity: 1;
-}
-
+/* Mensagem de erro */
 .loginErrorMessage {
-    color: #ff4444;
-    font-size: 14px;
-    min-height: 20px;
-    margin: 8px 0;
+  color: #000000;
+  font-size: 14px;
+  min-height: 20px;
+  margin: 8px 0;
 }
 
+/* Botão container */
 .loginButtonContainer {
-    width: 90%;
-    margin: 15px 0;
-    position: relative;
+  width: 100%;
+  margin-top: 20px;
+  position: relative;
 }
 
+/* Links extras */
 .loginExtraOptions {
-    display: flex;
-    flex-direction: column;
-    margin-top: 50px;
-    gap: 12px;
-    width: 90%;
+  margin-top: 30px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  width: 100%;
 }
 
 .forgotPasswordLink {
-    color: #00ffff;
-    text-decoration: none;
-    font-size: 14px;
+  color: #00ffff;
+  text-decoration: none;
+  font-size: 14px;
 }
 
 .forgotPasswordLink:hover {
-    text-decoration: underline;
+  text-decoration: underline;
+}
+
+/* Botões sociais */
+.socialLogin {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.socialButton {
+  padding: 10px 20px;
+  border-radius: 50px;
+  border: none;
+  color: white;
+  font-size: 14px;
+  cursor: pointer;
+  transition: 0.2s;
+}
+
+.socialButtonGoogle {
+  background: linear-gradient(to right, #000000, #fb1d1d);
+  border-radius: 150%;
+}
+.socialButtonGoogle:hover {
+  background: #c23327;
+}
+
+.socialButtonFacebook {
+  background: linear-gradient(to right, #0c0b0b, #42a5f5);
+  border-radius: 150%;
+}
+.socialButtonFacebook:hover {
+  background: #2d4373;
+}
+
+/* Animações das notas */
+.musicNotesContainer {
+  position: absolute;
+  top: 10%;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  justify-content: space-evenly;
+  width: 100%;
+  pointer-events: none;
+}
+
+.musicNote,
+.musicNote2 {
+  font-size: 40px;
+  animation: floatNotes 3s ease-in-out infinite;
 }
 
 @keyframes floatNotes {
-    0% { transform: translateY(0); opacity: 1; }
-    50% { transform: translateY(-50px); opacity: 0.7; }
-    100% { transform: translateY(0); opacity: 1; }
+  0% { transform: translateY(0); opacity: 1; }
+  50% { transform: translateY(-30px); opacity: 0.7; }
+  100% { transform: translateY(0); opacity: 1; }
 }
 
-@keyframes floatNotes2 {
-    0% { transform: translateY(-47px); opacity: 1; }
-    50% { transform: translateY(-25px); opacity: 0.7; }
-    100% { transform: translateY(-47px); opacity: 1; }
-}
-.Cadastro_loginButtonContainer{
-    width: 90%;
-    margin: 15px 0;
-    position: relative;
-
-}
-.Cadastro_loginButton{
-    padding: 12px;
-    border: none;
-    border-radius: 15px;
-    background: #ff5722;
-    color: white;
-    cursor: pointer;
-    transition: all 0.3s ease-in-out;
-    width: 100%;
-    font-size: 16px;
-    position: relative;
-}
-.Cadastro_loginButton:hover {
-    background-color: #e64a19;
-    transform: scale(1.05);
-}
-
-.Cadastro_loginButton:active {
-    transform: scale(0.95);
-}
-
-.Cadastro_socialButton{
-    padding: 12px 20px;
-    margin: 5px 0;
-    width: 100%;
-    border-radius: 70px;
-    color: white;
-    border: none;
-    cursor: pointer;
-    font-size: 14px;
-    transition: all 0.3s ease;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 8px;
-}
-
-.Cadastro_signupButton{
-    background-color: #4CAF50;
-    border: 1px solid #45a049;
-    height: 5px;
-}
-.Cadastro_signupButton:hover {
-    background-color: #45a049;
-}
-.Cadastro_loginContainer {
-    background: linear-gradient(145deg, rgba(0, 255, 255, 0.15), rgba(0, 0, 0, 0.4));
-    padding: 45px 20px;
-    border-radius: 15px;
-    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3), 0 10px 30px rgba(0, 255, 255, 0.3);
-    width: 320px;
-    height: 75vh;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    transition: all 0.3s ease-in-out;
-    border: 1px solid rgba(0, 255, 255, 0.4);
-    backdrop-filter: blur(9px);
-}
-.Cadastro_loginExtraOptions {
-    display: flex;
-    flex-direction: column;
-    gap: 12px;
-    width: 90%;
-}
-.Cadastro_loginTitle{
-    position: absolute;
-    top: 0px;
-}
-
+/* Responsivo */
 @media (max-width: 500px) {
-    .loginContainer {
-        width: 300px;
-        height: 70vh;
-        padding: 0;
-        backdrop-filter: blur(3px);
-    }
+  .loginContainer {
+    width: 90%;
+    padding: 30px 20px;
+  }
 
-    .loginTitle {
-        position: relative;
-    }
-
-    .Cadastro_loginContainer {
-        width: 300px;
-        height: 70vh;
-        padding: 0;
-        backdrop-filter: blur(3px);
-    }
-
-    .Cadastro_loginTitle {
-        position: relative;
-    }
-
-    .musicNote {
-        font-size: 40px;
-    }
-
-    .musicNote2 {
-        font-size: 40px;
-    }
+  .musicNote,
+  .musicNote2 {
+    font-size: 30px;
+  }
 }
 
-body {
-  margin: 0;
-  padding: 0;
-  height: 100vh;
-  display: flex;
-  justify-content: center; /* Centraliza horizontalmente */
-  align-items: center;     /* Centraliza verticalmente */
-  background: #111; /* ou qualquer fundo que quiser */
+/* Adiconando Tema Escurooo */
+
+@media (prefers-color-scheme: light) {
+  body {
+    background: linear-gradient(to bottom, #7c9112f1 30%, #d9652c 100%);
+    color: #000;
+  }
+
+  .loginContainer {
+    background: linear-gradient(to bottom, #687b09f1 30%, #cc591f 300%);
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.2);
+    border: 1px solid rgba(0, 0, 0, 0.1);
+  }
+
+  .loginTitle {
+    background: linear-gradient(to right, #000000, #42a5f5);
+    text-shadow: none;
+    border-radius: 150px;
+    max-width: 100%;
+    padding: 10px 15px;
+    color: #fff;
 }
 
+  .loginInput {
+    background: #fff;
+    color: #000;
+  }
 
+  .loginInput:focus {
+    box-shadow: 0 0 8px rgba(25, 118, 210, 0.4);
+  }
 
-.socialLogin {
-    display: flex;
-    flex-direction: column;
-    gap: 8px;
-    width: 100%;
+  .loginButton {
+    background: linear-gradient(to right, #000000, #42a5f5);
+    color: white;
+    border-radius: 150px;
+    max-width: 80px;
+  
+  }
+
+  .loginShowPasswordCheckbox {
+    accent-color: #1976d2;
+  }
+
+  .forgotPasswordLink {
+    color: #1976d2;
+  }
 }

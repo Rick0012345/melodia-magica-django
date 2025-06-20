@@ -1,4 +1,3 @@
-
 {% load static %}
 <!DOCTYPE html>
 <html lang="pt-br">
@@ -7,15 +6,17 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Login</title>
   <link rel="stylesheet" href="{% static 'core/css/Login.module.css' %}">
-
-
 </head>
 <body>
+
   {% include "core/navbar.html" %}
+
   <div class="loginContainer">
-    <h2 class="loginTitle">Login</h2>
+    <h2 class="loginTitle">Bem-vindo 🎧</h2>
+
     <form method="POST" action="{% url 'login' %}" id="loginForm">
       {% csrf_token %}
+
       <input
         type="text"
         id="uname"
@@ -25,6 +26,7 @@
         value="{{ username|default:'' }}"
         required
       />
+
       <input
         type="password"
         id="pass"
@@ -47,24 +49,24 @@
       <p class="loginErrorMessage" id="msg">{{ error_message }}</p>
 
       <div class="loginButtonContainer">
-        <button
-          id="login-btn"
-          class="loginButton"
-          type="submit"
-        >
+        <button id="login-btn" class="loginButton" type="submit">
           Entrar
         </button>
       </div>
     </form>
+
     <div class="loginExtraOptions">
       <a href="#" class="forgotPasswordLink">Esqueci minha senha</a>
       <a href="#" class="forgotPasswordLink">Cadastre-se</a>
+
       <div class="socialLogin">
-        <button class="socialButton socialButtonGoogle">Login com Google</button>
-        <button class="socialButton socialButtonFacebook">Login com Facebook</button>
+        <button class="socialButton socialButtonGoogle">
+          <span>🔴</span> Login com Google
+        </button>
+        <button class="socialButton socialButtonFacebook">
+          <span>📘</span> Login com Facebook
+        </button>
       </div>
-    
-    
     </div>
   </div>
 
@@ -74,52 +76,50 @@
     <span class="musicNote">🎼</span>
   </div>
 
-<script>
-  const loginBtn = document.getElementById('login-btn');
-  const unameInput = document.getElementById('uname');
-  const passInput = document.getElementById('pass');
-  const msg = document.getElementById('msg');
+  <script>
+    const loginBtn = document.getElementById('login-btn');
+    const unameInput = document.getElementById('uname');
+    const passInput = document.getElementById('pass');
+    const msg = document.getElementById('msg');
 
-  function togglePassword() {
-    const pass = document.getElementById('pass');
-    pass.type = pass.type === 'password' ? 'text' : 'password';
-  }
-
-  function shiftButton() {
-    const positions = ['loginButtonShiftLeft', 'loginButtonShiftTop', 'loginButtonShiftRight'];
-    const nextPosition = positions[Math.floor(Math.random() * positions.length)];
-    loginBtn.className = 'loginButton ' + nextPosition;
-  }
-
-  function resetButton() {
-    loginBtn.className = 'loginButton';
-  }
-
-  function validateFields() {
-    if (unameInput.value && passInput.value) {
-      loginBtn.disabled = false;
-      msg.textContent = '';
-      resetButton();
-    } else {
-      loginBtn.disabled = true;
-      msg.textContent = 'Não dê uma de Espertinho kkk';
-      shiftButton();
+    function togglePassword() {
+      const pass = document.getElementById('pass');
+      pass.type = pass.type === 'password' ? 'text' : 'password';
     }
-  }
 
-  unameInput.addEventListener('input', validateFields);
-  passInput.addEventListener('input', validateFields);
-
-  loginBtn.addEventListener('click', function(event) {
-    if (loginBtn.disabled) {
-      event.preventDefault();
-      shiftButton();
+    function shiftButton() {
+      const positions = ['loginButtonShiftLeft', 'loginButtonShiftTop', 'loginButtonShiftRight'];
+      const nextPosition = positions[Math.floor(Math.random() * positions.length)];
+      loginBtn.className = 'loginButton ' + nextPosition;
     }
-  });
 
-  // Inicializa estado do botão
-  validateFields();
-</script>
+    function resetButton() {
+      loginBtn.className = 'loginButton';
+    }
 
+    function validateFields() {
+      if (unameInput.value && passInput.value) {
+        loginBtn.disabled = false;
+        msg.textContent = '';
+        resetButton();
+      } else {
+        loginBtn.disabled = true;
+        msg.textContent = 'Não dê uma de Espertinho kkk';
+        shiftButton();
+      }
+    }
+
+    unameInput.addEventListener('input', validateFields);
+    passInput.addEventListener('input', validateFields);
+
+    loginBtn.addEventListener('click', function(event) {
+      if (loginBtn.disabled) {
+        event.preventDefault();
+        shiftButton();
+      }
+    });
+
+    validateFields(); // Estado inicial
+  </script>
 </body>
 </html>

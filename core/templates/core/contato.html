@@ -3,34 +3,31 @@
 
 {% block extrahead %}
 <link rel="stylesheet" href="{% static 'core/css/Contato.css' %}">
-<!-- Font Awesome -->
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
 {% endblock extrahead %}
 
 {% block content %}
- <!--Adicionei umas animações, não necessáriamente elas ficaram.-->
-<div class="balao"></div>
-<div class="balao"></div>
-<div class="balao"></div>
-<div class="balao"></div>
-<div class="balao"></div>
+<video autoplay muted loop id="video-bg">
+    <source src="{% static 'core/pix-art.mp4' %}" type="video/mp4">
+</video>
 
 <div class="container">
-    <img src="{% static 'core/images/LogoLogin.png' %}" class="contato-imagem" alt="Imagem de contato">
+    <img src="{% static 'core/images/LogoLogin.png' %}" class="contato-imagem" alt="Logo Contato">
     <h1>Fale Conosco</h1>
+
     {% if messages %}
-        <div class="message">
-            {% for message in messages %}
-                <p>{{ message }}</p>
-            {% endfor %}
-        </div>
+    <div class="message">
+        {% for message in messages %}
+            <p>{{ message }}</p>
+        {% endfor %}
+    </div>
     {% endif %}
 
     <div class="contato-grid">
         <div class="contatos">
-            <h2>Entre em contato conosco</h2>
+            <h2>Entre em contato</h2>
             <ul class="redes-sociais">
-                <li><a href="contato:melodiamagica.com"><i class="fas fa-envelope"></i> grupofaculpji@gmail.com</a></li>
+                <li><a href="#"><i class="fas fa-envelope"></i> grupofaculpji@gmail.com</a></li>
                 <li><a href="https://www.instagram.com/melodiamagicabj/" target="_blank"><i class="fab fa-instagram"></i> Instagram</a></li>
                 <li><a href="https://www.facebook.com/melodiamagicabj/" target="_blank"><i class="fab fa-facebook"></i> Facebook</a></li>
                 <li><a href="https://api.whatsapp.com/send?phone=5521970000000" target="_blank"><i class="fab fa-whatsapp"></i> WhatsApp</a></li>

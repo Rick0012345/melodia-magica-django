@@ -1,260 +1,166 @@
-/* Fundo geral */
-body {
-  margin: 0px;
-  padding: 0px;
-  height: 100vh;
-  background: radial-gradient(ellipse at center, #1a1a1a 0%, #000000 100%);
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-  overflow: hidden;
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
 }
 
-/* Container do login */
-.loginContainer {
+body {
+  font-family: 'Poppins', sans-serif;
+  height: 100vh;
+ background: linear-gradient(to bottom, #54910ef1 30%, #fc5c0d 100%);
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  animation: pulseBg 10s infinite alternate;
+}
+
+@keyframes pulseBg {
+  0% { background-color: #0a0a0a; }
+  100% { background-color: #1a1a1a; }
+}
+
+.loginWrapper {
+  width: 100%;
+  max-width: 400px;
+  padding: 20px;
+}
+
+.loginCard {
   background: rgba(255, 255, 255, 0.05);
-  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.2);
   border-radius: 20px;
-  padding: 40px 30px;
-  width: 350px;
-  border: 1px solid rgba(255, 255, 255, 0.15);
-  box-shadow: 0 0 25px rgba(0, 255, 255, 0.15);
+  padding: 40px;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5);
+  backdrop-filter: blur(20px);
+  animation: fadeIn 1s ease;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: scale(0.95); }
+  to { opacity: 1; transform: scale(1); }
+}
+
+.loginHeader {
+  text-align: center;
+  margin-bottom: 30px;
+}
+
+.loginHeader h2 {
+  font-size: 28px;
+  color: #00ffff;
+}
+
+.loginHeader p {
+  font-size: 14px;
+  color: #aaa;
+}
+
+.inputGroup {
   display: flex;
   flex-direction: column;
-  align-items: center;
-  transition: 0.3s ease;
+  margin-bottom: 18px;
 }
 
-.loginContainer:hover {
-  transform: scale(1.02);
-  box-shadow: 0 0 35px rgba(0, 255, 255, 0.3);
+.inputGroup label {
+  font-size: 13px;
+  margin-bottom: 5px;
+  color: #ccc;
 }
 
-/* Título */
-.loginTitle {
-  font-size: 32px;
-  color: #00ffff;
-  margin-bottom: 25px;
-  text-shadow: 0 0 10px rgba(0, 255, 255, 0.4);
-}
-
-/* Inputs */
-.loginInput {
-  width: 100%;
+.inputGroup input {
   padding: 12px;
-  margin: 10px 0;
+  border-radius: 10px;
   border: none;
-  border-radius: 8px;
-  background: rgba(255, 255, 255, 0.1);
-  color: #fff;
   outline: none;
-  transition: 0.2s;
+  background-color: rgba(255, 255, 255, 0.1);
+  color: white;
+  transition: 0.3s;
 }
 
-.loginInput:focus {
-  background: rgba(255, 255, 255, 0.2);
-  box-shadow: 0 0 8px rgba(0, 255, 255, 0.4);
+.inputGroup input:focus {
+  box-shadow: 0 0 0 2px #00ffff70;
 }
 
-/* Botão login */
-.loginButton {
-  padding: 12px;
+.showPass {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 10px;
+  font-size: 12px;
+  color: #aaa;
+}
+
+.errorMessage {
+  color: #ff4d4d;
+  font-size: 13px;
+  min-height: 20px;
+  margin-bottom: 10px;
+  text-align: center;
+}
+
+.btnLogin {
   width: 100%;
-  border: none;
-  border-radius: 40px;
-  background: linear-gradient(145deg, #00ffff, #0066ff);
+  padding: 12px;
+  background: linear-gradient(135deg, #00ffff, #1e90ff);
   color: black;
   font-weight: bold;
-  font-size: 16px;
+  border: none;
+  border-radius: 30px;
   cursor: pointer;
+  font-size: 16px;
   transition: all 0.3s ease;
 }
 
-.loginButton:hover {
+.btnLogin:hover {
   transform: scale(1.05);
-  filter: brightness(1.1);
+  background: linear-gradient(135deg, #1e90ff, #00ffff);
 }
 
-.loginButton:active {
-  transform: scale(0.95);
-}
-
-/* Efeitos de movimento */
-.loginButtonShiftLeft {
-  transform: translateX(-120px);
-}
-.loginButtonShiftRight {
-  transform: translateX(120px);
-}
-.loginButtonShiftTop {
-  transform: translateY(-120px);
-}
-
-/* Mostrar senha */
-.loginShowPasswordContainer {
-  display: flex;
-  align-items: center;
+.loginLinks {
+  text-align: center;
   margin-top: 15px;
-  width: 100%;
   font-size: 13px;
-  color: #00ffff;
+  color: #bbb;
 }
 
-.loginShowPasswordCheckbox {
-  margin-right: 8px;
-  accent-color: #00ffff;
-}
-
-/* Mensagem de erro */
-.loginErrorMessage {
-  color: #000000;
-  font-size: 14px;
-  min-height: 20px;
-  margin: 8px 0;
-}
-
-/* Botão container */
-.loginButtonContainer {
-  width: 100%;
-  margin-top: 20px;
-  position: relative;
-}
-
-/* Links extras */
-.loginExtraOptions {
-  margin-top: 30px;
-  display: flex;
-  flex-direction: column;
-  gap: 12px;
-  width: 100%;
-}
-
-.forgotPasswordLink {
+.loginLinks a {
   color: #00ffff;
   text-decoration: none;
-  font-size: 14px;
 }
 
-.forgotPasswordLink:hover {
+.loginLinks a:hover {
   text-decoration: underline;
 }
 
-/* Botões sociais */
 .socialLogin {
+  margin-top: 20px;
   display: flex;
   flex-direction: column;
   gap: 10px;
 }
 
-.socialButton {
+.btnSocial {
   padding: 10px 20px;
-  border-radius: 50px;
   border: none;
-  color: white;
+  border-radius: 30px;
   font-size: 14px;
   cursor: pointer;
-  transition: 0.2s;
+  transition: 0.3s;
 }
 
-.socialButtonGoogle {
-  background: linear-gradient(to right, #000000, #fb1d1d);
-  border-radius: 150%;
-}
-.socialButtonGoogle:hover {
-  background: #c23327;
+.btnSocial.google {
+  background: #db4437;
+  color: white;
 }
 
-.socialButtonFacebook {
-  background: linear-gradient(to right, #0c0b0b, #42a5f5);
-  border-radius: 150%;
-}
-.socialButtonFacebook:hover {
-  background: #2d4373;
+.btnSocial.facebook {
+  background: #3b5998;
+  color: white;
 }
 
-/* Animações das notas */
-.musicNotesContainer {
-  position: absolute;
-  top: 10%;
-  left: 50%;
-  transform: translateX(-50%);
-  display: flex;
-  justify-content: space-evenly;
-  width: 100%;
-  pointer-events: none;
+.btnSocial:hover {
+  filter: brightness(1.1);
 }
 
-.musicNote,
-.musicNote2 {
-  font-size: 40px;
-  animation: floatNotes 3s ease-in-out infinite;
-}
-
-@keyframes floatNotes {
-  0% { transform: translateY(0); opacity: 1; }
-  50% { transform: translateY(-30px); opacity: 0.7; }
-  100% { transform: translateY(0); opacity: 1; }
-}
-
-/* Responsivo */
-@media (max-width: 500px) {
-  .loginContainer {
-    width: 90%;
-    padding: 30px 20px;
-  }
-
-  .musicNote,
-  .musicNote2 {
-    font-size: 30px;
-  }
-}
-
-/* Adiconando Tema Escurooo */
-
-@media (prefers-color-scheme: light) {
-  body {
-    background: linear-gradient(to bottom, #7c9112f1 30%, #d9652c 100%);
-    color: #000;
-  }
-
-  .loginContainer {
-    background: linear-gradient(to bottom, #687b09f1 30%, #cc591f 300%);
-    box-shadow: 0 0 20px rgba(0, 0, 0, 0.2);
-    border: 1px solid rgba(0, 0, 0, 0.1);
-  }
-
-  .loginTitle {
-    background: linear-gradient(to right, #000000, #42a5f5);
-    text-shadow: none;
-    border-radius: 150px;
-    max-width: 100%;
-    padding: 10px 15px;
-    color: #fff;
-}
-
-  .loginInput {
-    background: #fff;
-    color: #000;
-  }
-
-  .loginInput:focus {
-    box-shadow: 0 0 8px rgba(25, 118, 210, 0.4);
-  }
-
-  .loginButton {
-    background: linear-gradient(to right, #000000, #42a5f5);
-    color: white;
-    border-radius: 150px;
-    max-width: 80px;
-  
-  }
-
-  .loginShowPasswordCheckbox {
-    accent-color: #1976d2;
-  }
-
-  .forgotPasswordLink {
-    color: #1976d2;
-  }
-}

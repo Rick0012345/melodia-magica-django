@@ -4,122 +4,81 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Login</title>
+  <title>🎧 Melodia Mágica</title>
   <link rel="stylesheet" href="{% static 'core/css/Login.module.css' %}">
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;600&display=swap" rel="stylesheet">
 </head>
 <body>
 
   {% include "core/navbar.html" %}
 
-  <div class="loginContainer">
-    <h2 class="loginTitle">Bem-vindo 🎧</h2>
-
-    <form method="POST" action="{% url 'login' %}" id="loginForm">
-      {% csrf_token %}
-
-      <input
-        type="text"
-        id="uname"
-        name="username"
-        placeholder="Usuário"
-        class="loginInput"
-        value="{{ username|default:'' }}"
-        required
-      />
-
-      <input
-        type="password"
-        id="pass"
-        name="password"
-        placeholder="Senha"
-        class="loginInput"
-        required
-      />
-
-      <div class="loginShowPasswordContainer">
-        <input
-          type="checkbox"
-          id="show-password"
-          class="loginShowPasswordCheckbox"
-          onchange="togglePassword()"
-        />
-        <label for="show-password">Mostrar Senha</label>
+  <div class="loginWrapper">
+    <div class="loginCard">
+      <div class="loginHeader">
+        <h2>🎧 Melodia Mágica</h2>
+        <p>Entre no ritmo e conecte-se</p>
       </div>
 
-      <p class="loginErrorMessage" id="msg">{{ error_message }}</p>
+      <form method="POST" action="{% url 'login' %}" id="loginForm">
+        {% csrf_token %}
 
-      <div class="loginButtonContainer">
-        <button id="login-btn" class="loginButton" type="submit">
-          Entrar
-        </button>
-      </div>
-    </form>
+        <div class="inputGroup">
+          <label for="uname">Usuário</label>
+          <input type="text" id="uname" name="username" value="{{ username|default:'' }}" required />
+        </div>
 
-    <div class="loginExtraOptions">
-      <a href="#" class="forgotPasswordLink">Esqueci minha senha</a>
-      <a href="#" class="forgotPasswordLink">Cadastre-se</a>
+        <div class="inputGroup">
+          <label for="pass">Senha</label>
+          <input type="password" id="pass" name="password" required />
+        </div>
 
-      <div class="socialLogin">
-        <button class="socialButton socialButtonGoogle">
-          <span>🔴</span> Login com Google
+        <div class="showPass">
+          <input type="checkbox" id="show-password" onchange="togglePassword()" />
+          <label for="show-password">Mostrar senha</label>
+        </div>
+
+        <p class="errorMessage" id="msg">{{ error_message }}</p>
+
+        <button type="submit" id="login-btn" class="btnLogin">
+          🔓 Entrar
         </button>
-        <button class="socialButton socialButtonFacebook">
-          <span>📘</span> Login com Facebook
-        </button>
-      </div>
+
+        <div class="loginLinks">
+          <a href="#">Esqueceu a senha?</a> • <a href="#">Cadastre-se</a>
+        </div>
+
+        <div class="socialLogin">
+          <button class="btnSocial google">🟢 Google</button>
+          <button class="btnSocial facebook">🔵 Facebook</button>
+        </div>
+      </form>
     </div>
   </div>
 
-  <div class="musicNotesContainer">
-    <span class="musicNote">🎵</span>
-    <span class="musicNote2">🎶</span>
-    <span class="musicNote">🎼</span>
-  </div>
-
   <script>
-    const loginBtn = document.getElementById('login-btn');
-    const unameInput = document.getElementById('uname');
-    const passInput = document.getElementById('pass');
-    const msg = document.getElementById('msg');
-
     function togglePassword() {
       const pass = document.getElementById('pass');
       pass.type = pass.type === 'password' ? 'text' : 'password';
     }
 
-    function shiftButton() {
-      const positions = ['loginButtonShiftLeft', 'loginButtonShiftTop', 'loginButtonShiftRight'];
-      const nextPosition = positions[Math.floor(Math.random() * positions.length)];
-      loginBtn.className = 'loginButton ' + nextPosition;
-    }
-
-    function resetButton() {
-      loginBtn.className = 'loginButton';
-    }
+    const unameInput = document.getElementById('uname');
+    const passInput = document.getElementById('pass');
+    const loginBtn = document.getElementById('login-btn');
+    const msg = document.getElementById('msg');
 
     function validateFields() {
       if (unameInput.value && passInput.value) {
         loginBtn.disabled = false;
         msg.textContent = '';
-        resetButton();
       } else {
         loginBtn.disabled = true;
-        msg.textContent = 'Não dê uma de Espertinho kkk';
-        shiftButton();
+        msg.textContent = 'Preencha os dois campos!';
       }
     }
 
     unameInput.addEventListener('input', validateFields);
     passInput.addEventListener('input', validateFields);
-
-    loginBtn.addEventListener('click', function(event) {
-      if (loginBtn.disabled) {
-        event.preventDefault();
-        shiftButton();
-      }
-    });
-
-    validateFields(); // Estado inicial
+    validateFields();
   </script>
 </body>
 </html>

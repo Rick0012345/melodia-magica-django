@@ -1,8 +1,11 @@
 {% extends 'core/base.html' %}
-
+{% load static %}
 {% block content %}
+{% block extra_head %}
+<link rel="stylesheet" href="{% static 'core/css/back.css' %}">
+{% endblock  %}
 <div class="container">
-    <h1>Nossos Serviços</h1>
+    <h1 class="teste-mudar-cor">Nossos Serviços</h1>
     <div class="servicos-content">
         <!-- Adicione aqui o conteúdo da página de serviços -->
     </div>

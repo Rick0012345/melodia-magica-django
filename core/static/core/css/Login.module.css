@@ -1,3 +1,11 @@
+:root {
+  --neon-blue: #00ffff;
+  --neon-purple: #6f00ff;
+  --neon-gradient: linear-gradient(135deg, var(--neon-blue), var(--neon-purple));
+  --text-glow: 0 0 10px rgba(0, 255, 255, 0.8);
+  --box-glow: 0 0 25px rgba(0, 255, 255, 0.2);
+}
+
 * {
   margin: 0;
   padding: 0;
@@ -7,21 +15,40 @@
 body {
   font-family: 'Poppins', sans-serif;
   height: 100vh;
- background: linear-gradient(to bottom, #54910ef1 30%, #fc5c0d 100%);
+  background: radial-gradient(circle at top left, #1b003a, #0a0a0a 80%);
   color: white;
   display: flex;
   align-items: center;
   justify-content: center;
+  position: relative;
   overflow: hidden;
-  animation: pulseBg 10s infinite alternate;
 }
 
-@keyframes pulseBg {
-  0% { background-color: #0a0a0a; }
-  100% { background-color: #1a1a1a; }
+.stars {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  background: transparent;
+  z-index: 0;
+}
+
+.stars::before {
+  content: '';
+  position: absolute;
+  width: 200%;
+  height: 200%;
+  background: repeating-radial-gradient(circle, white 1px, transparent 2px);
+  animation: moveStars 60s linear infinite;
+  opacity: 0.04;
+}
+
+@keyframes moveStars {
+  from { transform: translate(0, 0); }
+  to { transform: translate(-50%, -50%); }
 }
 
 .loginWrapper {
+  z-index: 1;
   width: 100%;
   max-width: 400px;
   padding: 20px;
@@ -29,17 +56,17 @@ body {
 
 .loginCard {
   background: rgba(255, 255, 255, 0.05);
-  border: 1px solid rgba(255, 255, 255, 0.2);
+  border: 1px solid rgba(255, 255, 255, 0.15);
   border-radius: 20px;
   padding: 40px;
-  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5);
-  backdrop-filter: blur(20px);
+  backdrop-filter: blur(25px);
+  box-shadow: var(--box-glow);
   animation: fadeIn 1s ease;
 }
 
 @keyframes fadeIn {
-  from { opacity: 0; transform: scale(0.95); }
-  to { opacity: 1; transform: scale(1); }
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
 }
 
 .loginHeader {
@@ -49,7 +76,10 @@ body {
 
 .loginHeader h2 {
   font-size: 28px;
-  color: #00ffff;
+  background: var(--neon-gradient);
+  -webkit-background-clip: text;
+  color: transparent;
+  text-shadow: var(--text-glow);
 }
 
 .loginHeader p {
@@ -73,49 +103,50 @@ body {
   padding: 12px;
   border-radius: 10px;
   border: none;
-  outline: none;
   background-color: rgba(255, 255, 255, 0.1);
   color: white;
   transition: 0.3s;
 }
 
 .inputGroup input:focus {
-  box-shadow: 0 0 0 2px #00ffff70;
+  box-shadow: 0 0 8px var(--neon-blue);
+  outline: none;
 }
 
 .showPass {
   display: flex;
   align-items: center;
   gap: 8px;
-  margin-bottom: 10px;
   font-size: 12px;
   color: #aaa;
+  margin-bottom: 10px;
 }
 
 .errorMessage {
   color: #ff4d4d;
   font-size: 13px;
+  text-align: center;
   min-height: 20px;
   margin-bottom: 10px;
-  text-align: center;
 }
 
 .btnLogin {
   width: 100%;
   padding: 12px;
-  background: linear-gradient(135deg, #00ffff, #1e90ff);
+  background: var(--neon-gradient);
   color: black;
   font-weight: bold;
   border: none;
   border-radius: 30px;
   cursor: pointer;
   font-size: 16px;
-  transition: all 0.3s ease;
+  box-shadow: 0 0 12px rgba(0, 255, 255, 0.4);
+  transition: 0.3s ease;
 }
 
 .btnLogin:hover {
   transform: scale(1.05);
-  background: linear-gradient(135deg, #1e90ff, #00ffff);
+  filter: brightness(1.1);
 }
 
 .loginLinks {
@@ -126,7 +157,7 @@ body {
 }
 
 .loginLinks a {
-  color: #00ffff;
+  color: var(--neon-blue);
   text-decoration: none;
 }
 
@@ -148,19 +179,58 @@ body {
   font-size: 14px;
   cursor: pointer;
   transition: 0.3s;
+  color: white;
 }
 
 .btnSocial.google {
-  background: #db4437;
-  color: white;
+  background: linear-gradient(45deg, #ff5f5f, #ff0000);
 }
 
 .btnSocial.facebook {
-  background: #3b5998;
-  color: white;
+  background: linear-gradient(45deg, #3b5998, #1e3c72);
 }
 
 .btnSocial:hover {
+  transform: scale(1.05);
   filter: brightness(1.1);
 }
 
+.navbar {
+  width: 100%;
+  padding: 1rem 2rem;
+  position: absolute;
+  top: 0;
+  left: 0;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  backdrop-filter: blur(15px);
+  background: rgba(255, 255, 255, 0.05);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  z-index: 10;
+}
+
+.navbar-brand {
+  font-weight: bold;
+  font-size: 1.2rem;
+  color: var(--neon-blue);
+  text-shadow: 0 0 5px rgba(0, 255, 255, 0.7);
+}
+
+.navbar-links {
+  display: flex;
+  list-style: none;
+  gap: 1.5rem;
+}
+
+.navbar-links a {
+  text-decoration: none;
+  color: #fff;
+  font-size: 0.9rem;
+  transition: 0.3s;
+}
+
+.navbar-links a:hover {
+  color: var(--neon-blue);
+  text-shadow: 0 0 10px var(--neon-blue);
+}

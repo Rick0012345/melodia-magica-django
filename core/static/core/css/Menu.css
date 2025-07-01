@@ -12,8 +12,7 @@ body {
   height: 100vh;
   overflow: hidden;
   position: relative;
-
-
+  color: #00ffff;
 }
 
 #particles-js {
@@ -26,16 +25,16 @@ body {
 .container {
   text-align: center;
   padding: 40px;
-  background: rgba(255, 255, 255, 0.05);
-  backdrop-filter: blur(15px);
-  border: 1px solid rgba(255, 255, 255, 0.1);
+  background: rgba(0, 0, 0, 0.6);
+  backdrop-filter: blur(20px);
+  border: 1px solid rgba(0, 255, 255, 0.2);
   border-radius: 15px;
-  box-shadow: 0 4px 20px rgba(0, 255, 255, 0.2), 0 6px 30px rgba(0, 255, 255, 0.25);
+  box-shadow: 0 0 25px #00ffff, 0 0 35px #ff00ff;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  width: 350px;
+  width: 360px;
   z-index: 1;
   position: relative;
 }
@@ -44,20 +43,18 @@ body {
 .header {
   padding: 20px 40px;
   margin-bottom: 20px;
-  color: rgb(253, 114, 0);
-  font-size: 30px;
-  letter-spacing: 1px;
+  color: #ff00ff;
+  font-size: 32px;
+  letter-spacing: 2px;
   text-transform: uppercase;
-  text-shadow: 0 0 20px rgba(0, 255, 255, 0.8), 0 0 30px rgba(0, 255, 255, 0.6);
-  border-top-left-radius: 30px;
-  border-top-right-radius: 30px;
+  text-shadow: 0 0 25px #00ffff, 0 0 40px #ff00ff;
 }
 
 .profile {
-  font-size: 1.5rem;
+  font-size: 1.6rem;
   font-weight: bold;
-  text-shadow: 0 0 20px #00ffff, 0 0 10px #ff00ff;
-  animation: glow 1.5s ease-in-out infinite;
+  text-shadow: 0 0 15px #00ffff, 0 0 10px #ff00ff;
+  animation: glow 2s infinite alternate;
 }
 
 /* Lista de menu */
@@ -84,25 +81,25 @@ body {
 .menu-button {
   font-size: 16px;
   font-weight: bold;
-  background: linear-gradient(to bottom, #7c9112f1 30%, #d9652c 100%);
-  color: white;
+  background: linear-gradient(135deg, #00ffff, #ff00ff);
+  color: black;
   border-radius: 50px;
   cursor: pointer;
-  width: 180px;
-  margin: 8px 0;
+  width: 200px;
+  margin: 10px 0;
   position: relative;
   overflow: hidden;
-  box-shadow: 0 4px 15px rgba(0, 255, 255, 0.2);
-  transition: all 0.3s ease;
+  box-shadow: 0 0 15px #00ffff;
+  transition: all 0.3s ease-in-out;
   text-transform: uppercase;
   letter-spacing: 1px;
   border: none;
 }
 
 .menu-button:hover {
-  background: linear-gradient(45deg, #ff5722, #00bcd4);
-  box-shadow: 0 6px 20px rgba(0, 255, 255, 0.4);
-  transform: scale(1.05);
+  background: linear-gradient(135deg, #ff00ff, #00ffff);
+  box-shadow: 0 0 30px #00ffff, 0 0 40px #ff00ff;
+  transform: scale(1.08);
 }
 
 .menu-button:before {
@@ -112,10 +109,10 @@ body {
   left: 50%;
   width: 300%;
   height: 300%;
-  background: rgba(255, 255, 255, 0.15);
-  transition: all 0.5s;
+  background: rgba(255, 255, 255, 0.2);
   border-radius: 50%;
   transform: translate(-50%, -50%);
+  transition: width 0.5s, height 0.5s;
 }
 
 .menu-button:hover:before {
@@ -125,19 +122,16 @@ body {
 
 .menu-button:focus {
   outline: none;
-  box-shadow: 0 0 10px #ff5722, 0 0 20px #00bcd4;
+  box-shadow: 0 0 10px #ff00ff, 0 0 20px #00ffff;
 }
 
 /* Animações */
 @keyframes glow {
   0% {
-    text-shadow: 0 0 20px #13a808, 0 0 30px #15d400, 0 0 50px #00bcd4, 0 0 70px #ff5722;
-  }
-  50% {
-    text-shadow: 0 0 10px #ff5722, 0 0 20px #ff5722, 0 0 30px #ff5722, 0 0 40px #ff5722;
+    text-shadow: 0 0 10px #00ffff, 0 0 20px #ff00ff;
   }
   100% {
-    text-shadow: 0 0 20px #33b308, 0 0 30px #10b304, 0 0 50px #3faa05, 0 0 70px #ff5722;
+    text-shadow: 0 0 20px #00ffff, 0 0 30px #ff00ff;
   }
 }
 
@@ -155,8 +149,7 @@ body {
 /* Responsivo */
 @media (max-width: 500px) {
   .container {
-    padding: 5px 20px 0;
+    width: 90%;
+    padding: 30px 20px;
   }
 }
- 
-

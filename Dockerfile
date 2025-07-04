@@ -2,27 +2,22 @@ FROM python:3.11-slim
 
 WORKDIR /app
 
-ENV PYTHONDONTWRITEBYTECODE=1 \
-    PYTHONUNBUFFERED=1
+ENV PYTHONDONTWRITEBYTECODE 1
+ENV PYTHONUNBUFFERED 1
 
-# Instalar dependências do sistema
-RUN apt-get update \
-    && apt-get install -y --no-install-recommends \
-        postgresql-client \
-        gcc \
-        g++ \
-    && rm -rf /var/lib/apt/lists/*
+# Criar usuário não-root
+RUN adduser --disabled-password --gecos '' appuser
 
-# Copiar requirements primeiro para aproveitar cache do Docker
+# Instalar dependências
 COPY requirements.txt .
-
-# Instalar dependências Python
-RUN pip install --no-cache-dir --upgrade pip \
-    && pip install --no-cache-dir -r requirements.txt
+RUN pip install --no-cache-dir -r requirements.txt
 
 # Copiar código fonte
-COPY . /app
+COPY . .
+
+# Mudar para usuário não-root
+USER appuser
 
 EXPOSE 8000
 
-CMD ["python", "manage.py", "runserver", "0.0.0.0:8000"] 
+CMD ["python", "melodiaMagica/manage.py", "runserver", "0.0.0.0:8000"] 

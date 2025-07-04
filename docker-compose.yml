@@ -11,15 +11,9 @@ services:
     environment:
       - DEBUG=1
       - DJANGO_SETTINGS_MODULE=melodiaMagica.settings
-      - SECRET_KEY=django-insecure-j^8$!!ais38&4nce@^%+7b2r^d_i&1%%bb8@#!%salg*fmf-n8
+      - DATABASE_URL=postgres://postgres:postgres@db:5432/postgres
     depends_on:
       - db
-    deploy:
-      resources:
-        limits:
-          memory: 300M
-        reservations:
-          memory: 200M
 
   db:
     image: postgres:15
@@ -31,12 +25,6 @@ services:
       - POSTGRES_PASSWORD=postgres
     ports:
       - "5432:5432"
-    deploy:
-      resources:
-        limits:
-          memory: 300M
-        reservations:
-          memory: 200M
 
 volumes:
   postgres_data: 

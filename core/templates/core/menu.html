@@ -14,7 +14,13 @@
   <div class="main-wrapper">
     <div class="container">
       <div class="header">
-        <div class="profile">Bem-vindo ao Quiz!</div>
+        <div class="profile">
+          <p>Bem-vindo, {{ user.username }}!</p>
+          <p>Email: {{ user.email }}</p>
+        </div>
+        <div class="user-actions">
+          <a href="{% url 'account_logout' %}" class="logout-btn">Sair</a>
+        </div>
       </div>
       <ul class="menu-list">
         <li class="menu-item">

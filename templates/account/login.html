@@ -1,0 +1,108 @@
+{% load static %}
+{% load i18n %}
+{% load account socialaccount %}
+
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% trans "Entrar" %} - Melodia Mágica</title>
+    <link rel="stylesheet" href="{% static 'core/css/Login.module.css' %}">
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500&display=swap" rel="stylesheet">
+</head>
+<body>
+    <canvas id="particles-js"></canvas>
+    
+    <div class="main-wrapper">
+        <div class="container">
+            <div class="header">
+                <h1>{% trans "Entrar" %}</h1>
+                <p>{% trans "Bem-vindo de volta ao Melodia Mágica!" %}</p>
+            </div>
+
+            {% get_providers as socialaccount_providers %}
+
+            {% if socialaccount_providers %}
+            <div class="social-login">
+                <p>{% blocktrans with site.name as site_name %}Faça login com uma das suas contas existentes:{% endblocktrans %}</p>
+                <div class="socialaccount_providers">
+                    {% include "socialaccount/snippets/provider_list.html" with process="login" %}
+                </div>
+                <div class="login-or">{% trans 'ou' %}</div>
+            </div>
+            {% endif %}
+
+            <form class="login-form" method="POST" action="{% url 'account_login' %}">
+                {% csrf_token %}
+                
+                {% if form.errors %}
+                <div class="error-messages">
+                    {% for field in form %}
+                        {% for error in field.errors %}
+                            <div class="error">{{ error }}</div>
+                        {% endfor %}
+                    {% endfor %}
+                    {% for error in form.non_field_errors %}
+                        <div class="error">{{ error }}</div>
+                    {% endfor %}
+                </div>
+                {% endif %}
+
+                <div class="form-group">
+                    <label for="{{ form.login.id_for_label }}">{% trans "Usuário ou E-mail" %}</label>
+                    {{ form.login }}
+                </div>
+
+                <div class="form-group">
+                    <label for="{{ form.password.id_for_label }}">{% trans "Senha" %}</label>
+                    {{ form.password }}
+                </div>
+
+                <div class="form-group checkbox-group">
+                    <label class="checkbox-label">
+                        {{ form.remember }}
+                        <span>{% trans "Lembrar de mim" %}</span>
+                    </label>
+                </div>
+
+                {% if redirect_field_value %}
+                <input type="hidden" name="{{ redirect_field_name }}" value="{{ redirect_field_value }}" />
+                {% endif %}
+
+                <div class="form-actions">
+                    <button type="submit" class="btn-primary">{% trans "Entrar" %}</button>
+                </div>
+
+                <div class="form-links">
+                    <a href="{% url 'account_reset_password' %}">{% trans "Esqueceu sua senha?" %}</a>
+                    <span class="separator">|</span>
+                    <a href="{% url 'account_signup' %}">{% trans "Não tem uma conta? Cadastre-se" %}</a>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/particles.js@2.0.0/particles.min.js"></script>
+    <script>
+        particlesJS("particles-js", {
+            particles: {
+                number: { value: 50 },
+                color: { value: "#00ffff" },
+                shape: { type: "circle" },
+                opacity: { value: 0.4 },
+                size: { value: 3 },
+                move: { enable: true, speed: 1 }
+            }
+        });
+
+        // Adicionar classes CSS aos campos do formulário
+        document.addEventListener('DOMContentLoaded', function() {
+            const inputs = document.querySelectorAll('input[type="text"], input[type="email"], input[type="password"]');
+            inputs.forEach(input => {
+                input.classList.add('form-input');
+            });
+        });
+    </script>
+</body>
+</html> 

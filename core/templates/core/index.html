@@ -1,5 +1,83 @@
 {% extends 'core/base.html' %}
 
 {% block content %}
-    {% include 'core/menu.html' %}
+{% load static %}
+<div class="hero-section">
+    <div class="container">
+        <div class="hero-content">
+            <h1>Bem-vindo ao Melodia Mágica</h1>
+            <p>Aprenda música de forma divertida e interativa!</p>
+            
+            {% if user.is_authenticated %}
+                <div class="hero-buttons">
+                    <a href="{% url 'menu' %}" class="btn btn-primary btn-lg">Acessar Quiz</a>
+                    <a href="{% url 'niveis' %}" class="btn btn-outline-primary btn-lg">Ver Níveis</a>
+                </div>
+            {% else %}
+                <div class="hero-buttons">
+                    <a href="{% url 'account_login' %}" class="btn btn-primary btn-lg">Entrar</a>
+                    <a href="{% url 'account_signup' %}" class="btn btn-outline-primary btn-lg">Cadastrar</a>
+                </div>
+                <div class="hero-info">
+                    <p>Faça login ou cadastre-se para começar a jogar!</p>
+                </div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+
+<style>
+.hero-section {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    padding: 100px 0;
+    text-align: center;
+    min-height: 60vh;
+    display: flex;
+    align-items: center;
+}
+
+.hero-content h1 {
+    font-size: 3rem;
+    margin-bottom: 1rem;
+    font-weight: bold;
+}
+
+.hero-content p {
+    font-size: 1.2rem;
+    margin-bottom: 2rem;
+    opacity: 0.9;
+}
+
+.hero-buttons {
+    margin-bottom: 2rem;
+}
+
+.hero-buttons .btn {
+    margin: 0 10px;
+    padding: 12px 30px;
+    font-size: 1.1rem;
+    border-radius: 50px;
+    text-decoration: none;
+    transition: all 0.3s ease;
+}
+
+.hero-buttons .btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+}
+
+.hero-info {
+    margin-top: 2rem;
+    padding: 20px;
+    background: rgba(255,255,255,0.1);
+    border-radius: 10px;
+    backdrop-filter: blur(10px);
+}
+
+.hero-info p {
+    margin: 0;
+    font-size: 1rem;
+}
+</style>
 {% endblock %}

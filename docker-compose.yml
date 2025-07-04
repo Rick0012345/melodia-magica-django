@@ -5,7 +5,9 @@ services:
     build: .
     command: python manage.py runserver 0.0.0.0:8000
     volumes:
-      - .:/app
+      - ./melodiaMagica:/app/melodiaMagica
+      - ./manage.py:/app/manage.py
+      - ./core:/app/core
     ports:
       - "8000:8000"
     environment:

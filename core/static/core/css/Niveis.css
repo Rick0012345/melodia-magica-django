@@ -1,15 +1,6 @@
-
-.parent {
-    width: 100%;
-    max-width: 800px;
-    margin: 50px auto;
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: center;
-    gap: 20px;
-    padding: 20px;
+body{
+    background-color: black;
 }
-
 .card {
     position: relative;
     width: 150px;
@@ -33,20 +24,8 @@
 
 .card:hover {
     transform: scale(1.05);
-    box-shadow: 0 0 25px rgb(255, 251, 12), 0 0 50px rgba(253, 0, 0, 0.9);
+    box-shadow: 0 0 25px rgb(12, 255, 154), 0 0 50px rgba(253, 0, 0, 0.9);
     animation: pulsar 1.5s infinite ease-in-out;
-}
-
-.card::before {
-    content: '';
-    position: absolute;
-    width: 120%;
-    height: 120%;
-    background: radial-gradient(circle, rgba(255, 255, 255, 0.3) 10%, transparent 70%);
-    top: -50%;
-    left: -50%;
-    transform: rotate(30deg);
-    animation: brilho 3s infinite linear;
 }
 
 .no-quizzes {
@@ -68,23 +47,16 @@
     font-size: 18px;
 }
 
-@keyframes brilho {
-    0% { transform: rotate(30deg) translate(-100%, -100%); }
-    100% { transform: rotate(30deg) translate(100%, 100%); }
-}
-
 @keyframes pulsar {
     0% { transform: scale(1); }
     50% { transform: scale(1.05); }
     100% { transform: scale(1); }
 }
 
-/* Responsividade */
 @media (max-width: 850px) {
     .parent {
         padding: 15px;
     }
-    
     .card {
         width: 120px;
         height: 120px;

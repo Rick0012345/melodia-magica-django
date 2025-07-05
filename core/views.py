@@ -60,6 +60,16 @@ class GamePageView(TemplateView):
         quiz_id = self.kwargs.get('quiz_id')
         quiz = get_object_or_404(Quiz, id=quiz_id)
         
+        # Verifica se o usuário quer reiniciar o quiz
+        reiniciar = self.request.GET.get('reiniciar') == 'true'
+        if reiniciar:
+            # Limpa toda a sessão do quiz
+            self.request.session.pop('pontuacao', None)
+            self.request.session.pop('acertos', None)
+            self.request.session.pop('erros', None)
+            self.request.session.pop('pergunta_atual_id', None)
+            self.request.session.pop('quiz_finalizado', None)
+        
         # Verifica se o quiz está finalizado
         quiz_finalizado = self.request.session.get('quiz_finalizado', False)
         
@@ -80,11 +90,33 @@ class GamePageView(TemplateView):
         
         # Calcula o progresso
         total_perguntas = quiz.perguntas.count()
+        
+        # Pega todas as perguntas ordenadas por ID
+        todas_perguntas = list(quiz.perguntas.order_by('id').values_list('id', flat=True))
+        
         if pergunta_atual_id:
-            perguntas_respondidas = quiz.perguntas.filter(id__lte=pergunta_atual_id).count()
-            progresso = (perguntas_respondidas / total_perguntas) * 100
+            # Encontra a posição da pergunta atual na lista
+            try:
+                posicao_atual = todas_perguntas.index(int(pergunta_atual_id))
+                # Progresso baseado na posição (0-indexed)
+                progresso = ((posicao_atual + 1) / total_perguntas) * 100
+            except ValueError:
+                progresso = 0
         else:
-            progresso = 0
+            # Se não há pergunta atual, é a primeira pergunta
+            progresso = (1 / total_perguntas) * 100 if total_perguntas > 0 else 0
+        
+        # Garante que o progresso esteja entre 0 e 100
+        progresso = max(0, min(100, progresso))
+        
+        # Debug: Adiciona informações de debug ao contexto
+        context['debug_info'] = {
+            'total_perguntas': total_perguntas,
+            'pergunta_atual_id': pergunta_atual_id,
+            'todas_perguntas_ids': todas_perguntas,
+            'posicao_atual': todas_perguntas.index(int(pergunta_atual_id)) if pergunta_atual_id else 0,
+            'progresso_calculado': progresso
+        }
         
         context['quiz'] = quiz
         context['pergunta'] = pergunta

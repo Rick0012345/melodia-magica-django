@@ -7,6 +7,18 @@ $(document).ready(function() {
             alert('Por favor, selecione uma resposta!');
             return;
         }
+        
+        // Adiciona um efeito sutil de loading sem impedir o envio
+        const $button = $(this).find('button[type="submit"]');
+        const originalText = $button.text();
+        
+        $button.prop('disabled', true)
+               .html('<span class="spinner-border spinner-border-sm me-2"></span>Processando...');
+        
+        // Reabilita o botão após 5 segundos (caso não haja redirecionamento)
+        setTimeout(function() {
+            $button.prop('disabled', false).text(originalText);
+        }, 5000);
     });
     
     // Força a atualização da barra de progresso
@@ -64,18 +76,4 @@ $(document).ready(function() {
             }, 200);
         }
     );
-    
-    // Efeito de loading no botão de responder
-    $('#resposta-form button[type="submit"]').on('click', function() {
-        const $button = $(this);
-        const originalText = $button.text();
-        
-        $button.prop('disabled', true)
-               .html('<span class="spinner-border spinner-border-sm me-2"></span>Processando...');
-        
-        // Reabilita o botão após 3 segundos (caso não haja redirecionamento)
-        setTimeout(function() {
-            $button.prop('disabled', false).text(originalText);
-        }, 3000);
-    });
 }); 

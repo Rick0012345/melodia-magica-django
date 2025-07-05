@@ -1,9 +1,10 @@
 {% load static %}
 <link rel="stylesheet" href="{% static 'core/css/Navbar.css' %}">
-<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+<nav class="navbar navbar-expand-lg">
     <div class="container-fluid">
         <a class="navbar-brand" href="{% url 'home' %}">
             <img src="{% static 'core/images/logo.jpeg' %}" alt="Logo" class="logo" />
+            <span class="brand-text">Melodia Mágica</span>
         </a>
         
         <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
@@ -13,35 +14,58 @@
         <div class="collapse navbar-collapse" id="navbarNav">
             <ul class="navbar-nav ms-auto">
                 <li class="nav-item">
-                    <a class="nav-link" href="{% url 'home' %}">Home</a>
+                    <a class="nav-link" href="{% url 'home' %}">
+                        <i class="fas fa-home"></i>
+                        <span>Home</span>
+                    </a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="{% url 'servicos' %}">Serviços</a>
+                    <a class="nav-link" href="{% url 'servicos' %}">
+                        <i class="fas fa-music"></i>
+                        <span>Serviços</span>
+                    </a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="{% url 'contato' %}">Contato</a>
+                    <a class="nav-link" href="{% url 'contato' %}">
+                        <i class="fas fa-envelope"></i>
+                        <span>Contato</span>
+                    </a>
                 </li>
                 
                 {% if user.is_authenticated %}
                     <li class="nav-item">
-                        <a class="nav-link" href="{% url 'menu' %}">Menu</a>
+                        <a class="nav-link" href="{% url 'menu' %}">
+                            <i class="fas fa-gamepad"></i>
+                            <span>Menu</span>
+                        </a>
                     </li>
                     <li class="nav-item dropdown">
-                        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                            {{ user.username }}
+                        <a class="nav-link dropdown-toggle user-menu" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                            <i class="fas fa-user-circle"></i>
+                            <span>{{ user.username }}</span>
                         </a>
                         <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
-                            <li><a class="dropdown-item" href="{% url 'profile' %}">Meu Perfil</a></li>
+                            <li><a class="dropdown-item" href="{% url 'profile' %}">
+                                <i class="fas fa-user"></i> Meu Perfil
+                            </a></li>
                             <li><hr class="dropdown-divider"></li>
-                            <li><a class="dropdown-item" href="{% url 'account_logout' %}">Sair</a></li>
+                            <li><a class="dropdown-item" href="{% url 'account_logout' %}">
+                                <i class="fas fa-sign-out-alt"></i> Sair
+                            </a></li>
                         </ul>
                     </li>
                 {% else %}
                     <li class="nav-item">
-                        <a class="nav-link" href="{% url 'account_login' %}">Entrar</a>
+                        <a class="nav-link auth-link login-link" href="{% url 'account_login' %}">
+                            <i class="fas fa-sign-in-alt"></i>
+                            <span>Entrar</span>
+                        </a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="{% url 'account_signup' %}">Cadastrar</a>
+                        <a class="nav-link auth-link signup-link" href="{% url 'account_signup' %}">
+                            <i class="fas fa-user-plus"></i>
+                            <span>Cadastrar</span>
+                        </a>
                     </li>
                 {% endif %}
             </ul>

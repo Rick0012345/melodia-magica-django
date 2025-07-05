@@ -1,17 +1,40 @@
 {% extends 'core/base.html' %}
 {% load static %}
-{% block content %}
-{% block extra_head %}
-<link rel="stylesheet" href="{% static 'core/css/back.css' %}">
+
+{% block extra_css %}
 <link rel="stylesheet" href="{% static 'core/css/Servicos.css' %}">
 <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&display=swap" rel="stylesheet">
+{% endblock %}
 
+{% block content %}
+<section class="hero-section">
+  <div class="container">
+    <div class="hero-content">
+      <h1>Nossos Serviços</h1>
 
-{% endblock  %}
-<div class="container">
-    <h1 class="teste-mudar-cor">Nossos Serviços</h1>
-    <div class="servicos-content">
-        <!-- Adicione aqui o conteúdo da página de serviços -->
+      <div class="servicos-content">
+        <div class="service-card">
+          <div class="service-icon">🎵</div>
+          <h3>Curso de Música Interativa</h3>
+          <p>Aprenda música de forma divertida com quizzes e jogos personalizados.</p>
+          <a href="#" class="btn btn-primary">Saiba Mais</a>
+        </div>
+
+        <div class="service-card">
+          <div class="service-icon">🎧</div>
+          <h3>Treinamento Auditivo</h3>
+          <p>Desenvolva seu ouvido musical com exercícios práticos e desafios diários.</p>
+          <a href="#" class="btn btn-primary">Saiba Mais</a>
+        </div>
+
+        <div class="service-card">
+          <div class="service-icon">📈</div>
+          <h3>Acompanhamento de Progresso</h3>
+          <p>Monitore sua evolução com relatórios detalhados e metas personalizadas.</p>
+          <a href="#" class="btn btn-primary">Saiba Mais</a>
+        </div>
+      </div>
     </div>
-</div>
-{% endblock %} 
+  </div>
+</section>
+{% endblock %}

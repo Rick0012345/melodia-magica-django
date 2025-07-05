@@ -1,0 +1,291 @@
+{% load static %}
+{% load i18n %}
+
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% trans "Meu Perfil" %} - Melodia Mágica</title>
+    <link rel="stylesheet" href="{% static 'core/css/Login.module.css' %}">
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div class="main-wrapper">
+        <div class="container">
+            <div class="header">
+                <h1>{% trans "Meu Perfil" %}</h1>
+                <p>{% trans "Gerencie suas informações pessoais" %}</p>
+            </div>
+
+            <!-- Informações do Usuário -->
+            <div class="profile-info">
+                <h3>{% trans "Informações Pessoais" %}</h3>
+                
+                <div class="info-item">
+                    <label>{% trans "Nome de Usuário" %}:</label>
+                    <span class="info-value">{{ user.username }}</span>
+                </div>
+                
+                <div class="info-item">
+                    <label>{% trans "E-mail Principal" %}:</label>
+                    <span class="info-value">{{ user.email }}</span>
+                </div>
+                
+                <div class="info-item">
+                    <label>{% trans "Data de Cadastro" %}:</label>
+                    <span class="info-value">{{ user.date_joined|date:"d/m/Y H:i" }}</span>
+                </div>
+                
+                <div class="info-item">
+                    <label>{% trans "Último Acesso" %}:</label>
+                    <span class="info-value">{{ user.last_login|date:"d/m/Y H:i" }}</span>
+                </div>
+            </div>
+
+            <!-- Ações do Perfil -->
+            <div class="profile-actions">
+                <h3>{% trans "Gerenciar Conta" %}</h3>
+                
+                <div class="action-buttons">
+                    <a href="{% url 'account_email' %}" class="action-btn email-btn">
+                        <div class="btn-icon">📧</div>
+                        <div class="btn-content">
+                            <div class="btn-title">{% trans "Gerenciar E-mails" %}</div>
+                            <div class="btn-description">{% trans "Adicionar, remover ou alterar e-mails" %}</div>
+                        </div>
+                    </a>
+                    
+                    <a href="{% url 'account_change_password' %}" class="action-btn password-btn">
+                        <div class="btn-icon">🔐</div>
+                        <div class="btn-content">
+                            <div class="btn-title">{% trans "Alterar Senha" %}</div>
+                            <div class="btn-description">{% trans "Altere sua senha de acesso" %}</div>
+                        </div>
+                    </a>
+                </div>
+            </div>
+
+            <!-- Estatísticas do Usuário (se houver) -->
+            {% if user.pontuacao_set.exists %}
+            <div class="profile-stats">
+                <h3>{% trans "Suas Estatísticas" %}</h3>
+                
+                <div class="stats-grid">
+                    <div class="stat-item">
+                        <div class="stat-number">{{ user.pontuacao_set.count }}</div>
+                        <div class="stat-label">{% trans "Quizzes Realizados" %}</div>
+                    </div>
+                    
+                    <div class="stat-item">
+                        <div class="stat-number">{{ user.pontuacao_set.all|length }}</div>
+                        <div class="stat-label">{% trans "Pontuação Total" %}</div>
+                    </div>
+                </div>
+            </div>
+            {% endif %}
+
+            <div class="form-links">
+                <a href="{% url 'menu' %}">{% trans "Voltar ao Menu" %}</a>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Adicionar efeitos de hover
+        document.addEventListener('DOMContentLoaded', function() {
+            const actionBtns = document.querySelectorAll('.action-btn');
+            actionBtns.forEach(btn => {
+                btn.addEventListener('mouseenter', function() {
+                    this.style.transform = 'translateY(-2px)';
+                });
+                btn.addEventListener('mouseleave', function() {
+                    this.style.transform = 'translateY(0)';
+                });
+            });
+        });
+    </script>
+
+    <style>
+        .profile-info {
+            margin-bottom: 2rem;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 15px;
+            padding: 1.5rem;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+        
+        .profile-info h3 {
+            color: #00ffff;
+            margin-bottom: 1rem;
+            font-size: 1.2rem;
+            text-align: center;
+        }
+        
+        .info-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0.75rem 0;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .info-item:last-child {
+            border-bottom: none;
+        }
+        
+        .info-item label {
+            color: #aaa;
+            font-weight: 500;
+        }
+        
+        .info-value {
+            color: white;
+            font-weight: 600;
+        }
+        
+        .profile-actions {
+            margin-bottom: 2rem;
+        }
+        
+        .profile-actions h3 {
+            color: #00ffff;
+            margin-bottom: 1rem;
+            font-size: 1.2rem;
+            text-align: center;
+        }
+        
+        .action-buttons {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 1rem;
+        }
+        
+        .action-btn {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            padding: 1.5rem;
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 15px;
+            text-decoration: none;
+            color: white;
+            transition: all 0.3s ease;
+            backdrop-filter: blur(10px);
+        }
+        
+        .action-btn:hover {
+            background: rgba(255, 255, 255, 0.2);
+            border-color: #00ffff;
+            box-shadow: 0 5px 15px rgba(0, 255, 255, 0.3);
+        }
+        
+        .btn-icon {
+            font-size: 2rem;
+            min-width: 50px;
+            text-align: center;
+        }
+        
+        .btn-content {
+            flex: 1;
+        }
+        
+        .btn-title {
+            font-size: 1.1rem;
+            font-weight: 600;
+            margin-bottom: 0.25rem;
+        }
+        
+        .btn-description {
+            font-size: 0.9rem;
+            color: #aaa;
+        }
+        
+        .email-btn:hover {
+            border-color: #28a745;
+        }
+        
+        .password-btn:hover {
+            border-color: #ffc107;
+        }
+        
+        .profile-stats {
+            margin-bottom: 2rem;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 15px;
+            padding: 1.5rem;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+        
+        .profile-stats h3 {
+            color: #00ffff;
+            margin-bottom: 1rem;
+            font-size: 1.2rem;
+            text-align: center;
+        }
+        
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 1rem;
+        }
+        
+        .stat-item {
+            text-align: center;
+            padding: 1rem;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 10px;
+        }
+        
+        .stat-number {
+            font-size: 2rem;
+            font-weight: bold;
+            color: #00ffff;
+            margin-bottom: 0.5rem;
+        }
+        
+        .stat-label {
+            color: #aaa;
+            font-size: 0.9rem;
+        }
+        
+        .form-links {
+            text-align: center;
+            margin-top: 2rem;
+        }
+        
+        .form-links a {
+            color: #00ffff;
+            text-decoration: none;
+            transition: all 0.3s ease;
+            padding: 0.5rem 1rem;
+            border: 1px solid #00ffff;
+            border-radius: 25px;
+            display: inline-block;
+        }
+        
+        .form-links a:hover {
+            background: #00ffff;
+            color: black;
+            text-shadow: none;
+        }
+        
+        @media (max-width: 768px) {
+            .action-buttons {
+                grid-template-columns: 1fr;
+            }
+            
+            .info-item {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 0.5rem;
+            }
+            
+            .stats-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</body>
+</html> 

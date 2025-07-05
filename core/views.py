@@ -40,6 +40,10 @@ class MenuView(TemplateView):
             return redirect('account_login')
         return super().dispatch(request, *args, **kwargs)
 
+class ProfileView(LoginRequiredMixin, TemplateView):
+    template_name = "core/profile.html"
+    login_url = 'account_login'
+
 class NiveisView(TemplateView):
     template_name = "core/niveis.html"
 

@@ -7,6 +7,7 @@ from .views import (
     ContatoView,
     LoginView,
     MenuView,
+    ProfileView,
 
 )
 
@@ -14,6 +15,7 @@ from .views import (
 urlpatterns = [
     path('', HomeView.as_view(), name='home'),
     path('menu/', MenuView.as_view(), name='menu'),
+    path('profile/', ProfileView.as_view(), name='profile'),
     path('servicos/', ServicosView.as_view(), name='servicos'),
     path('contato/', ContatoView.as_view(), name='contato'),
     path('login/', LoginView.as_view(), name='login'),

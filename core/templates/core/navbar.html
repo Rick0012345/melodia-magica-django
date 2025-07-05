@@ -31,8 +31,7 @@
                             {{ user.username }}
                         </a>
                         <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
-                            <li><a class="dropdown-item" href="{% url 'account_email' %}">Gerenciar Email</a></li>
-                            <li><a class="dropdown-item" href="{% url 'account_change_password' %}">Alterar Senha</a></li>
+                            <li><a class="dropdown-item" href="{% url 'profile' %}">Meu Perfil</a></li>
                             <li><hr class="dropdown-divider"></li>
                             <li><a class="dropdown-item" href="{% url 'account_logout' %}">Sair</a></li>
                         </ul>

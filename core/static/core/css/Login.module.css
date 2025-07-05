@@ -1,10 +1,3 @@
-:root {
-  --neon-blue: #00ffff;
-  --neon-purple: #6f00ff;
-  --neon-gradient: linear-gradient(135deg, var(--neon-blue), var(--neon-purple));
-  --text-glow: 0 0 10px rgba(0, 255, 255, 0.8);
-  --box-glow: 0 0 25px rgba(0, 255, 255, 0.2);
-}
 
 * {
   margin: 0;
@@ -15,7 +8,7 @@
 body {
   font-family: 'Orbitron', sans-serif;
   height: 100vh;
-  background: radial-gradient(circle at top left, #1b003a, #0a0a0a 80%);
+  background-color: #000000;
   color: white;
   display: flex;
   align-items: center;

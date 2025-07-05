@@ -1,20 +1,6 @@
-body {
-     background-image: url("../images/login.jfif") !important;
-     background-repeat: no-repeat;
-     background-attachment: fixed;
-     background-position: center;
-     background-size: 100% 100%;
-     background-size: cover;
-     display: flex;
-     justify-content: center;
-     align-items: center;
-     height: 100vh;
-     overflow: hidden;
-     position: relative;
-}
 
 .quiz-header{
-     background-color: rgba(255, 255, 255, 0.5) !important;
+     background-color: rgba(181, 24, 24, 0.5) !important;
      border-radius: 50px !important;
 }
 
@@ -24,6 +10,3 @@ body {
 
 }
 
-.teste-mudar-cor{
-     color: #1527ca !important;
-}

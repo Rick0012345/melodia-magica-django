@@ -1,18 +1,12 @@
 body {
   margin: 0;
-  font-family: 'Orbitron', sans-serif;
-  background-image: url("../images/login.jfif");
-  background-repeat: no-repeat;
-  background-attachment: fixed;
-  background-position: center;
-  background-size: cover;
   display: flex;
   justify-content: center;
   align-items: center;
   height: 100vh;
   overflow: hidden;
   position: relative;
-  color: #00ffff;
+  background-color: #000000;
 }
 
 #particles-js {

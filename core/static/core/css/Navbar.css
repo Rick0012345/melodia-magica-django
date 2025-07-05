@@ -320,3 +320,46 @@ body {
   background: rgba(15, 15, 25, 0.98);
   box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5);
 }
+
+/* Item ativo do menu */
+.nav-link.active {
+  background: var(--gradient-primary);
+  color: #000;
+  font-weight: 600;
+}
+
+.nav-link.active::before {
+  left: 0;
+}
+
+/* Logo animado */
+.logo.animated {
+  animation: logoPulse 2s ease-in-out infinite;
+}
+
+@keyframes logoPulse {
+  0%, 100% {
+    transform: scale(1);
+    box-shadow: var(--shadow-neon);
+  }
+  50% {
+    transform: scale(1.05);
+    box-shadow: var(--shadow-hover);
+  }
+}
+
+/* Menu mobile melhorado */
+.navbar-collapse {
+  transition: all 0.3s ease;
+}
+
+@media (max-width: 991.98px) {
+  .navbar-collapse {
+    max-height: 0;
+    overflow: hidden;
+  }
+  
+  .navbar-collapse.show {
+    max-height: 500px;
+  }
+}

@@ -4,6 +4,7 @@
 {% block title %}Menu - Melodia Mágica{% endblock %}
 
 {% block extra_css %}
+<link rel="stylesheet" href="{% static 'core/css/Menu.css' %}">
 <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500&display=swap" rel="stylesheet">
 {% endblock %}
 
@@ -15,7 +16,6 @@
     <div class="header">
       <div class="profile">
         <p>Bem-vindo, {{ user.username }}!</p>
-        <p>Email: {{ user.email }}</p>
       </div>
       <div class="user-actions">
         <a href="{% url 'account_logout' %}" class="logout-btn">Sair</a>

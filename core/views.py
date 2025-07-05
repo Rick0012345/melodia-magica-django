@@ -140,16 +140,12 @@ class GamePageView(TemplateView):
                     defaults={'pontuacao': pontuacao}
                 )
             
-            # Marca o quiz como finalizado
             request.session['quiz_finalizado'] = True
             
-            # Redireciona para a mesma página para mostrar os resultados
             return redirect('game_page', quiz_id=quiz_id)
 
     def get(self, request, *args, **kwargs):
-        # Se o quiz estiver finalizado e o usuário clicar em "Voltar aos Níveis"
         if request.session.get('quiz_finalizado', False) and request.GET.get('voltar') == 'true':
-            # Limpa a sessão
             request.session.pop('pontuacao', None)
             request.session.pop('acertos', None)
             request.session.pop('erros', None)

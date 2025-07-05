@@ -1,3 +1,7 @@
+body{
+  background-color: black;
+}
+
 .servicos-content {
   display: flex;
   gap: 30px;

@@ -16,6 +16,8 @@ from django.contrib.auth.mixins import (
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 from django.urls import reverse_lazy
+from django.core.mail import send_mail
+from django.conf import settings
 from .models import Quiz, Pergunta, Alternativa, Pontuacao
 
 
@@ -28,6 +30,48 @@ class ServicosView(TemplateView):
 
 class ContatoView(TemplateView):
     template_name = "core/contato.html"
+    
+    def post(self, request, *args, **kwargs):
+        nome = request.POST.get('nome')
+        email = request.POST.get('email')
+        assunto = request.POST.get('assunto')
+        mensagem = request.POST.get('mensagem')
+        
+        # Validação básica
+        if not all([nome, email, assunto, mensagem]):
+            messages.error(request, 'Por favor, preencha todos os campos obrigatórios.')
+            return self.get(request, *args, **kwargs)
+        
+        try:
+            # Aqui você pode implementar o envio de email
+            # Por enquanto, vamos apenas simular o envio
+            subject = f'Contato via site: {assunto}'
+            message = f"""
+            Nova mensagem de contato:
+            
+            Nome: {nome}
+            Email: {email}
+            Assunto: {assunto}
+            
+            Mensagem:
+            {mensagem}
+            """
+            
+            # Se você tiver configurado o email no settings.py, descomente estas linhas:
+            # send_mail(
+            #     subject,
+            #     message,
+            #     email,
+            #     [settings.DEFAULT_FROM_EMAIL],
+            #     fail_silently=False,
+            # )
+            
+            messages.success(request, 'Mensagem enviada com sucesso! Entraremos em contato em breve.')
+            
+        except Exception as e:
+            messages.error(request, 'Erro ao enviar mensagem. Tente novamente mais tarde.')
+        
+        return redirect('contato')
 
 class LoginView(TemplateView):
     template_name = "core/login.html"

@@ -50,7 +50,7 @@
     {% csrf_token %}
 
     <div class="form-floating">
-        {{ form.username }}
+        <input type="text" class="form-control" id="{{ form.username.id_for_label }}" name="username" placeholder="{% trans 'Nome de usuário' %}" value="{{ form.username.value|default:'' }}">
         <label for="{{ form.username.id_for_label }}">
             <i class="fas fa-user me-2"></i>
             {% trans "Nome de usuário" %}
@@ -58,7 +58,7 @@
     </div>
 
     <div class="form-floating">
-        {{ form.email }}
+        <input type="email" class="form-control" id="{{ form.email.id_for_label }}" name="email" placeholder="{% trans 'E-mail' %}" value="{{ form.email.value|default:'' }}">
         <label for="{{ form.email.id_for_label }}">
             <i class="fas fa-envelope me-2"></i>
             {% trans "E-mail" %}
@@ -66,7 +66,7 @@
     </div>
 
     <div class="form-floating">
-        {{ form.password1 }}
+        <input type="password" class="form-control" id="{{ form.password1.id_for_label }}" name="password1" placeholder="{% trans 'Senha' %}">
         <label for="{{ form.password1.id_for_label }}">
             <i class="fas fa-lock me-2"></i>
             {% trans "Senha" %}
@@ -74,7 +74,7 @@
     </div>
 
     <div class="form-floating">
-        {{ form.password2 }}
+        <input type="password" class="form-control" id="{{ form.password2.id_for_label }}" name="password2" placeholder="{% trans 'Confirmar Senha' %}">
         <label for="{{ form.password2.id_for_label }}">
             <i class="fas fa-lock me-2"></i>
             {% trans "Confirmar Senha" %}
@@ -97,4 +97,4 @@
         </a>
     </div>
 </form>
-{% endblock %} 
+{% endblock %}

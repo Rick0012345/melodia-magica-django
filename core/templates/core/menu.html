@@ -9,37 +9,16 @@
 {% endblock %}
 
 {% block content %}
-<canvas id="particles-js"></canvas>
-
 <div class="main-wrapper">
   <div class="container">
     <div class="header">
       <div class="profile">
         <p>Bem-vindo, {{ user.username }}!</p>
       </div>
-      <div class="user-actions">
-        <a href="{% url 'account_logout' %}" class="logout-btn">Sair</a>
-      </div>
     </div>
     <ul class="menu-list">
       <li class="menu-item">
         <button class="menu-button" onclick="window.location.href='{% url 'niveis' %}'">Iniciar Quiz</button>
-      </li>
-      <li class="menu-item">
-        <button class="menu-button" onclick="alert(
-          'REGRAS DO QUIZ:\\n' +
-          '1. Responda as perguntas: Você verá uma pergunta com várias opções de resposta. Escolha a opção que você acha correta.\\n\\n' +
-          '2. Pontuação: Você ganha 1 ponto por cada resposta correta.\\n\\n' +
-          '3. Resultado final: Ao final, você verá a quantidade de respostas corretas e sua pontuação total.\\n\\n' +
-          '4. Reiniciar: Você pode tentar o quiz novamente para melhorar sua pontuação.'
-        )">Regras</button>
-      </li>
-      <li class="menu-item">
-        <button class="menu-button" onclick="alert(
-          'Sobre o Melodia Mágica:\\n\\n' +
-          'Bem-vindo ao nosso Quiz Melodia Mágica! 🎶🎉\\n\\n' +
-          'Aqui, as crianças podem aprender sobre música de maneira divertida e interativa, testando seus conhecimentos com perguntas sobre instrumentos musicais, sons, e muito mais! Nosso quiz foi criado especialmente para os pequenos, com perguntas fáceis e divertidas que tornam o aprendizado um verdadeiro jogo.'
-        )">Sobre</button>
       </li>
     </ul>
   </div>
@@ -49,19 +28,8 @@
 {% endblock %}
 
 {% block extra_js %}
-<script src="https://cdn.jsdelivr.net/npm/particles.js@2.0.0/particles.min.js"></script>
-<script>
-  particlesJS("particles-js", {
-    particles: {
-      number: { value: 50 },
-      color: { value: "#00ffff" },
-      shape: { type: "circle" },
-      opacity: { value: 0.4 },
-      size: { value: 3 },
-      move: { enable: true, speed: 1 }
-    }
-  });
 
+<script>
   const buttons = document.querySelectorAll('.menu-button');
   const sound = document.getElementById('hover-sound');
 

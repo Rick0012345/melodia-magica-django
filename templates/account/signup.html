@@ -12,7 +12,6 @@
     <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500&display=swap" rel="stylesheet">
 </head>
 <body>
-    <canvas id="particles-js"></canvas>
     
     <div class="main-wrapper">
         <div class="container">
@@ -84,26 +83,6 @@
         </div>
     </div>
 
-    <script src="https://cdn.jsdelivr.net/npm/particles.js@2.0.0/particles.min.js"></script>
-    <script>
-        particlesJS("particles-js", {
-            particles: {
-                number: { value: 50 },
-                color: { value: "#00ffff" },
-                shape: { type: "circle" },
-                opacity: { value: 0.4 },
-                size: { value: 3 },
-                move: { enable: true, speed: 1 }
-            }
-        });
 
-        // Adicionar classes CSS aos campos do formulário
-        document.addEventListener('DOMContentLoaded', function() {
-            const inputs = document.querySelectorAll('input[type="text"], input[type="email"], input[type="password"]');
-            inputs.forEach(input => {
-                input.classList.add('form-input');
-            });
-        });
-    </script>
 </body>
 </html> 

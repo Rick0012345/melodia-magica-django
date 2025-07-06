@@ -9,7 +9,7 @@
 <section class="hero-section">
   <div class="container">
     <div class="hero-content">
-      <h1>Melodia Mágica</h1>
+      <h1 class="text-gradient">Melodia Mágica</h1>
 
       <div class="hero-buttons">
         {% if user.is_authenticated %}
@@ -23,4 +23,10 @@
     </div>
   </div>
 </section>
+
+<!-- Contêiner para as partículas -->
+<div id="particle-container"></div>
+
+<script src="{% static 'core/js/Index.js' %}"></script>
+
 {% endblock %}

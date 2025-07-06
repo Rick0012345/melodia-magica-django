@@ -4,39 +4,51 @@ html, body {
 }
 
 :root {
-    --primary-color: #6366f1;
-    --secondary-color: #8b5cf6;
-    --accent-color: #f59e0b;
-    --dark-bg: #1f2937;
+    --primary-color: #00ffe0;
+    --secondary-color: #007cf0;
+    --accent-color: #ff61a6;
+    --dark-bg: #0f0c29;
     --light-bg: #f8fafc;
-    --text-dark: #1f2937;
-    --text-light: #6b7280;
-    --border-color: #e5e7eb;
+    --text-dark: #ffffff;
+    --text-light: #b1b3b8;
+    --border-color: rgba(255, 255, 255, 0.2);
     --success-color: #10b981;
     --danger-color: #ef4444;
 }
 
 body {
-    font-family: 'Inter', sans-serif;
-    background: linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color) 100%);
+    font-family: 'Orbitron', sans-serif;
+    background: radial-gradient(circle, var(--dark-bg), #302b63, var(--dark-bg));
     min-height: 100vh;
     display: flex;
     justify-content: center;  /* Centraliza horizontalmente */
     align-items: center;  /* Centraliza verticalmente */
-    padding: 40px 0;  /* Ajuste o padding para mover o conteúdo mais para cima */
+    padding: 40px 0;
+    color: var(--text-dark);
+    overflow: hidden;
+    position: relative;
 }
 
 .auth-container {
-    max-width: 450px;
+    max-width: 500px;
     margin: 0 auto;
+    width: 100%;
+    z-index: 2;
 }
 
 .auth-card {
-    background: white;
-    border-radius: 500px;
-    box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
-    border: 1px solid rgba(255, 255, 255, 0.1);
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 25px;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3), 0 10px 30px rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(10px);
     padding: 2.5rem;
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    transition: transform 0.3s ease-in-out, box-shadow 0.3s ease;
+}
+
+.auth-card:hover {
+    transform: translateY(-10px);
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.6), 0 30px 60px rgba(255, 255, 255, 0.2);
 }
 
 .auth-header {
@@ -46,25 +58,35 @@ body {
 
 .auth-header h1 {
     font-family: 'Orbitron', monospace;
-    font-weight: 700;
-    color: var(--text-dark);
-    font-size: 2rem;
+    font-weight: 900;
+    color: var(--primary-color);
+    font-size: 3rem;
     margin-bottom: 0.5rem;
+    letter-spacing: 2px;
+    text-shadow: 0 0 15px var(--primary-color);
+    animation: neon 1.5s ease-in-out infinite alternate;
 }
 
 .auth-header p {
     color: var(--text-light);
     font-size: 1rem;
     margin-bottom: 0;
+    letter-spacing: 0.5px;
+}
+
+@keyframes neon {
+    0% { text-shadow: 0 0 10px var(--primary-color), 0 0 20px var(--primary-color), 0 0 30px var(--primary-color); }
+    50% { text-shadow: 0 0 20px var(--primary-color), 0 0 30px var(--primary-color), 0 0 50px var(--primary-color); }
+    100% { text-shadow: 0 0 10px var(--primary-color), 0 0 20px var(--primary-color), 0 0 30px var(--primary-color); }
 }
 
 .btn-google {
-    background: #4285f4;
+    background: linear-gradient(to right, #4285f4, #357ae8);
     border: none;
     color: white;
     padding: 12px 24px;
-    border-radius: 12px;
-    font-weight: 500;
+    border-radius: 30px;
+    font-weight: 600;
     text-decoration: none;
     display: inline-flex;
     align-items: center;
@@ -73,14 +95,17 @@ body {
     width: 100%;
     transition: all 0.3s ease;
     margin-bottom: 1rem;
+    font-size: 1rem;
+    letter-spacing: 1px;
+    box-shadow: 0 0 15px rgba(66, 133, 244, 0.4);
 }
 
 .btn-google:hover {
-    background: #357ae8;
+    background: linear-gradient(to right, #357ae8, #4285f4);
     color: white;
     text-decoration: none;
     transform: translateY(-2px);
-    box-shadow: 0 8px 25px rgba(66, 133, 244, 0.3);
+    box-shadow: 0 0 25px rgba(66, 133, 244, 0.6);
 }
 
 .divider {
@@ -101,24 +126,29 @@ body {
 
 .divider span {
     padding: 0 1rem;
-    background: white;
+    background: #222;
+    color: #fff;
 }
 
 .form-floating {
-    margin-bottom: 1rem;
+    margin-bottom: 1.5rem;
 }
 
 .form-floating > .form-control {
     border: 2px solid var(--border-color);
-    border-radius: 12px;
+    border-radius: 15px;
     padding: 1rem 0.75rem;
     font-size: 1rem;
     transition: all 0.3s ease;
+    background-color: #202020;
+    color: #fff;
+    box-shadow: 0 0 10px rgba(0, 255, 255, 0.2);
 }
 
 .form-floating > .form-control:focus {
     border-color: var(--primary-color);
-    box-shadow: 0 0 0 0.2rem rgba(99, 102, 241, 0.25);
+    box-shadow: 0 0 0 0.2rem rgba(0, 255, 255, 0.25);
+    outline: none;
 }
 
 .form-floating > label {
@@ -129,20 +159,21 @@ body {
 .btn-primary {
     background: linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color) 100%);
     border: none;
-    border-radius: 102px;
-    padding: 8px 16px;
+    border-radius: 50px;
+    padding: 12px 24px;
     font-weight: 600;
-    font-size: 0.9rem;
-    width: 100%;  /* Garantir que o botão ocupe toda a largura disponível */
-    max-width: 400px;  /* Limitar o tamanho máximo para não ficar muito largo */
+    font-size: 1rem;
+    width: 100%;
+    max-width: 400px;
     margin: 20px auto;
     display: block;
     transition: all 0.3s ease;
+    box-shadow: 0 0 15px var(--primary-color);
 }
 
 .btn-primary:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 8px 25px rgba(99, 102, 241, 0.3);
+    transform: translateY(-5px);
+    box-shadow: 0 0 25px var(--primary-color), 0 0 50px var(--secondary-color);
 }
 
 .auth-links {
@@ -156,11 +187,12 @@ body {
     color: var(--primary-color);
     text-decoration: none;
     font-weight: 500;
-    transition: color 0.3s ease;
+    transition: color 0.3s ease-in-out;
 }
 
 .auth-links a:hover {
     color: var(--secondary-color);
+    text-shadow: 0 0 5px var(--secondary-color);
 }
 
 .alert {
@@ -190,10 +222,15 @@ body {
     }
 
     .auth-header h1 {
-        font-size: 1.75rem;
+        font-size: 2rem;
     }
 
     .btn-primary {
-        padding: 12px 24px;  /* Ajustar o padding do botão para ser maior em telas pequenas */
+        padding: 12px 24px;
+    }
+
+    .btn-google {
+        font-size: 1.1rem;
+        padding: 14px 28px;
     }
 }

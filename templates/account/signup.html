@@ -32,16 +32,34 @@
 
 <!-- Mensagens de erro -->
 {% if form.errors %}
-<div class="alert alert-danger" role="alert">
-    <i class="fas fa-exclamation-triangle me-2"></i>
-    <strong>Ops!</strong> Verifique os dados inseridos.
+<div class="messages-container">
     {% for field in form %}
         {% for error in field.errors %}
-            <div class="mt-2">{{ error }}</div>
+            <div class="message message-error">
+                <div class="message-icon">
+                    <i class="fas fa-exclamation-circle"></i>
+                </div>
+                <div class="message-content">
+                    <p>{{ error }}</p>
+                </div>
+                <button class="message-close">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
         {% endfor %}
     {% endfor %}
     {% for error in form.non_field_errors %}
-        <div class="mt-2">{{ error }}</div>
+        <div class="message message-error">
+            <div class="message-icon">
+                <i class="fas fa-exclamation-circle"></i>
+            </div>
+            <div class="message-content">
+                <p>{{ error }}</p>
+            </div>
+            <button class="message-close">
+                <i class="fas fa-times"></i>
+            </button>
+        </div>
     {% endfor %}
 </div>
 {% endif %}

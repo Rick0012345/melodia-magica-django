@@ -16,6 +16,29 @@
         <p>Bem-vindo, {{ user.username }}!</p>
       </div>
     </div>
+    
+    <!-- Mensagens informativas do menu -->
+    <div class="menu-messages">
+      {% if user.is_authenticated %}
+        <div class="menu-message menu-message-info">
+          <i class="fas fa-user-circle"></i>
+          <span>Você está logado como {{ user.username }}</span>
+        </div>
+        
+        {% if user.pontuacao_set.exists %}
+          <div class="menu-message menu-message-success">
+            <i class="fas fa-trophy"></i>
+            <span>Você já completou {{ user.pontuacao_set.count }} quiz(zes)!</span>
+          </div>
+        {% else %}
+          <div class="menu-message menu-message-warning">
+            <i class="fas fa-info-circle"></i>
+            <span>Complete seu primeiro quiz para começar a ganhar pontos!</span>
+          </div>
+        {% endif %}
+      {% endif %}
+    </div>
+    
     <ul class="menu-list">
       <li class="menu-item">
         <button class="menu-button" onclick="window.location.href='{% url 'niveis' %}'">Iniciar Quiz</button>
@@ -40,5 +63,7 @@
     });
   });
 </script>
+
+
 
 {% endblock %}

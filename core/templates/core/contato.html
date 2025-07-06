@@ -14,12 +14,47 @@
     <h1>Fale Conosco</h1>
 
     {% if messages %}
-    <div class="message">
+    <div class="messages-container">
         {% for message in messages %}
-            <p>{{ message }}</p>
+            <div class="message message-{{ message.tags }}">
+                <div class="message-icon">
+                    {% if message.tags == 'success' %}
+                        <i class="fas fa-check-circle"></i>
+                    {% elif message.tags == 'error' %}
+                        <i class="fas fa-exclamation-circle"></i>
+                    {% elif message.tags == 'warning' %}
+                        <i class="fas fa-exclamation-triangle"></i>
+                    {% else %}
+                        <i class="fas fa-info-circle"></i>
+                    {% endif %}
+                </div>
+                <div class="message-content">
+                    <p>{{ message }}</p>
+                </div>
+                <button class="message-close">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
         {% endfor %}
     </div>
     {% endif %}
+
+    <!-- Botões de teste para demonstrar o sistema de mensagens -->
+    <div class="test-buttons" style="text-align: center; margin-bottom: 20px;">
+        <h3 style="color: #00ffff; margin-bottom: 15px;">Teste o Sistema de Mensagens</h3>
+        <button onclick="testMessage('success')" style="background: #2ecc71; margin: 5px; padding: 8px 15px; border: none; border-radius: 5px; color: white; cursor: pointer;">
+            <i class="fas fa-check"></i> Sucesso
+        </button>
+        <button onclick="testMessage('error')" style="background: #e74c3c; margin: 5px; padding: 8px 15px; border: none; border-radius: 5px; color: white; cursor: pointer;">
+            <i class="fas fa-times"></i> Erro
+        </button>
+        <button onclick="testMessage('warning')" style="background: #f39c12; margin: 5px; padding: 8px 15px; border: none; border-radius: 5px; color: white; cursor: pointer;">
+            <i class="fas fa-exclamation-triangle"></i> Aviso
+        </button>
+        <button onclick="testMessage('info')" style="background: #3498db; margin: 5px; padding: 8px 15px; border: none; border-radius: 5px; color: white; cursor: pointer;">
+            <i class="fas fa-info"></i> Info
+        </button>
+    </div>
 
     <div class="contato-grid">
         <div class="contatos">
@@ -32,5 +67,55 @@
             </ul>
         </div>
 
+        <div class="formulario-contato">
+            <h2>Envie uma mensagem</h2>
+            <form method="post" action="{% url 'contato' %}">
+                {% csrf_token %}
+                <div class="form-group">
+                    <label for="nome">Nome:</label>
+                    <input type="text" id="nome" name="nome" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="email">E-mail:</label>
+                    <input type="email" id="email" name="email" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="assunto">Assunto:</label>
+                    <input type="text" id="assunto" name="assunto" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="mensagem">Mensagem:</label>
+                    <textarea id="mensagem" name="mensagem" rows="5" required></textarea>
+                </div>
+                
+                <button type="submit" class="btn-enviar">
+                    <i class="fas fa-paper-plane"></i>
+                    Enviar Mensagem
+                </button>
+            </form>
+        </div>
+    </div>
+</div>
+
+<script>
+// Função para testar mensagens dinâmicas
+function testMessage(type) {
+    const messages = {
+        'success': 'Operação realizada com sucesso!',
+        'error': 'Ocorreu um erro. Tente novamente.',
+        'warning': 'Atenção: Esta ação não pode ser desfeita.',
+        'info': 'Informação importante sobre o sistema.'
+    };
+    
+    if (window.messageManager) {
+        window.messageManager[type](messages[type]);
+    } else {
+        console.log('MessageManager não está disponível');
+    }
+}
+</script>
 
 {% endblock %}

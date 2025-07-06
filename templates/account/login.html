@@ -6,92 +6,97 @@
 {% block head_title %}{% trans "Entrar" %}{% endblock %}
 
 {% block content %}
-<div class="auth-header">
-    <h1>{% trans "Entrar" %}</h1>
-    <p>{% trans "Bem-vindo de volta ao Melodia Mágica!" %}</p>
-</div>
-
-{% get_providers as socialaccount_providers %}
-
-{% if socialaccount_providers %}
-<div class="social-login">
-    {# Carrega o JS necessário para fluxos OAuth #}
-    {% providers_media_js %}
-    
-    {# Botão direto do Google #}
-    <a href="{% provider_login_url "google" process="login" %}" class="btn btn-google">
-        <i class="fab fa-google"></i>
-        Entrar com Google
-    </a>
-    
-    <div class="divider">
-        <span>{% trans 'ou' %}</span>
-    </div>
-</div>
-{% endif %}
-
-<!-- Mensagens de erro -->
-{% if form.errors %}
-<div class="alert alert-danger" role="alert">
-    <i class="fas fa-exclamation-triangle me-2"></i>
-    <strong>Ops!</strong> Verifique os dados inseridos.
-    {% for field in form %}
-        {% for error in field.errors %}
-            <div class="mt-2">{{ error }}</div>
-        {% endfor %}
-    {% endfor %}
-    {% for error in form.non_field_errors %}
-        <div class="mt-2">{{ error }}</div>
-    {% endfor %}
-</div>
-{% endif %}
-
-<form method="POST" action="{% url 'account_login' %}">
-    {% csrf_token %}
-
-    <div class="form-floating">
-        {{ form.login }}
-        <label for="{{ form.login.id_for_label }}">
-            <i class="fas fa-user me-2"></i>
-            {% trans "Usuário ou E-mail" %}
-        </label>
-    </div>
-
-    <div class="form-floating">
-        {{ form.password }}
-        <label for="{{ form.password.id_for_label }}">
-            <i class="fas fa-lock me-2"></i>
-            {% trans "Senha" %}
-        </label>
-    </div>
-
-    <div class="form-check">
-        {{ form.remember }}
-        <label class="form-check-label" for="{{ form.remember.id_for_label }}">
-            {% trans "Lembrar de mim" %}
-        </label>
-    </div>
-
-    {% if redirect_field_value %}
-    <input type="hidden" name="{{ redirect_field_name }}" value="{{ redirect_field_value }}" />
-    {% endif %}
-
-    <button type="submit" class="btn btn-primary">
-        <i class="fas fa-sign-in-alt me-2"></i>
-        {% trans "Entrar" %}
-    </button>
-
-    <div class="auth-links">
-        <a href="{% url 'account_reset_password' %}">
-            <i class="fas fa-key me-1"></i>
-            {% trans "Esqueceu sua senha?" %}
-        </a>
-        <div class="mt-2">
-            <a href="{% url 'account_signup' %}">
-                <i class="fas fa-user-plus me-1"></i>
-                {% trans "Não tem uma conta? Cadastre-se" %}
-            </a>
+<div class="auth-container">
+    <div class="auth-card">
+        <div class="auth-header">
+            <h1>{% trans "Entrar" %}</h1>
+            <p>{% trans "Bem-vindo de volta ao Melodia Mágica!" %}</p>
         </div>
+
+        {% get_providers as socialaccount_providers %}
+
+        {% if socialaccount_providers %}
+        <div class="social-login">
+            {% providers_media_js %}
+            
+            <a href="{% provider_login_url 'google' process='login' %}" class="btn btn-google">
+                <i class="fab fa-google"></i> {% trans "Entrar com Google" %}
+            </a>
+            
+            <div class="divider">
+                <span>{% trans 'ou' %}</span>
+            </div>
+        </div>
+        {% endif %}
+
+        <!-- Mensagens de Erro -->
+        {% if form.errors %}
+        <div class="alert alert-danger" role="alert">
+            <i class="fas fa-exclamation-triangle me-2"></i>
+            <strong>Ops!</strong> {% trans "Verifique os dados inseridos." %}
+            {% for field in form %}
+                {% for error in field.errors %}
+                    <div class="mt-2">{{ error }}</div>
+                {% endfor %}
+            {% endfor %}
+            {% for error in form.non_field_errors %}
+                <div class="mt-2">{{ error }}</div>
+            {% endfor %}
+        </div>
+        {% endif %}
+
+        <!-- Formulário de Login -->
+        <form method="POST" action="{% url 'account_login' %}">
+            {% csrf_token %}
+
+            <!-- Usuário ou E-mail -->
+            <div class="form-floating">
+                <input type="text" class="form-control" id="login" name="login" placeholder="Usuário ou E-mail">
+                <label for="login">
+                    <i class="fas fa-user me-2"></i>
+                    {% trans "Usuário ou E-mail" %}
+                </label>
+            </div>
+            
+            
+
+            <!-- Senha -->
+            <div class="form-floating">
+                <input type="password" class="form-control" id="password" name="password" placeholder="{% trans 'Senha' %}">
+                <label for="password">
+                    <i class="fas fa-lock me-2"></i>
+                    {% trans "Senha" %}
+                </label>
+            </div>
+            
+
+            <!-- Lembrar de mim -->
+            <div class="form-check">
+                {{ form.remember }}
+                <label class="form-check-label" for="{{ form.remember.id_for_label }}">
+                    {% trans "Lembrar de mim" %}
+                </label>
+            </div>
+
+            {% if redirect_field_value %}
+            <input type="hidden" name="{{ redirect_field_name }}" value="{{ redirect_field_value }}" />
+            {% endif %}
+
+            <button type="submit" class="btn btn-primary">
+                <i class="fas fa-sign-in-alt me-2"></i> {% trans "Entrar" %}
+            </button>
+
+            <div class="auth-links">
+                <a href="{% url 'account_reset_password' %}">
+                    <i class="fas fa-key me-1"></i> {% trans "Esqueceu sua senha?" %}
+                </a>
+                <div class="mt-2">
+                    <a href="{% url 'account_signup' %}">
+                        <i class="fas fa-user-plus me-1"></i> {% trans "Não tem uma conta? Cadastre-se" %}
+                    </a>
+                </div>
+            </div>
+        </form>
     </div>
-</form>
-{% endblock %} 
+</div>
+{% endblock %}

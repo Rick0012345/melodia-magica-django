@@ -1,51 +1,35 @@
-{% load static %}
+{% extends "account/base.html" %}
+
 {% load i18n %}
-{% load account %}
 
-<!DOCTYPE html>
-<html lang="pt-br">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{% trans "Sair" %} - Melodia Mágica</title>
-    <link rel="stylesheet" href="{% static 'core/css/Login.module.css' %}">
-    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500&display=swap" rel="stylesheet">
-</head>
-<body>
+{% block head_title %}{% trans "Sair" %}{% endblock %}
+
+{% block content %}
+<div class="auth-header">
+    <h1>{% trans "Sair" %}</h1>
+    <p>{% trans "Tem certeza que deseja sair da sua conta?" %}</p>
+</div>
+
+<div class="text-center mb-4">
+    <i class="fas fa-sign-out-alt fa-4x text-muted mb-3"></i>
+</div>
+
+<form method="post" action="{% url 'account_logout' %}">
+    {% csrf_token %}
+    {% if redirect_field_value %}
+    <input type="hidden" name="{{ redirect_field_name }}" value="{{ redirect_field_value }}"/>
+    {% endif %}
     
-    <div class="main-wrapper">
-        <div class="container">
-            <div class="header">
-                <h1>{% trans "Sair" %}</h1>
-                <p>{% trans "Tem certeza que deseja sair?" %}</p>
-            </div>
+    <button type="submit" class="btn btn-primary">
+        <i class="fas fa-sign-out-alt me-2"></i>
+        {% trans "Confirmar Saída" %}
+    </button>
+</form>
 
-            <form method="post" action="{% url 'account_logout' %}">
-                {% csrf_token %}
-                {% if redirect_field_value %}
-                <input type="hidden" name="{{ redirect_field_name }}" value="{{ redirect_field_value }}"/>
-                {% endif %}
-                
-                <div class="form-actions">
-                    <button type="submit" class="btn-primary">{% trans 'Sair' %}</button>
-                    <a href="{% url 'menu' %}" class="btn-secondary">{% trans 'Cancelar' %}</a>
-                </div>
-            </form>
-        </div>
-    </div>
-
-    <script src="https://cdn.jsdelivr.net/npm/particles.js@2.0.0/particles.min.js"></script>
-    <script>
-        particlesJS("particles-js", {
-            particles: {
-                number: { value: 50 },
-                color: { value: "#00ffff" },
-                shape: { type: "circle" },
-                opacity: { value: 0.4 },
-                size: { value: 3 },
-                move: { enable: true, speed: 1 }
-            }
-        });
-    </script>
-</body>
-</html> 
+<div class="auth-links">
+    <a href="{% url 'account_login' %}">
+        <i class="fas fa-arrow-left me-1"></i>
+        {% trans "Cancelar" %}
+    </a>
+</div>
+{% endblock %} 

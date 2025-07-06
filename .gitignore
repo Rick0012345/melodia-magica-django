@@ -80,3 +80,10 @@ coverage.xml
 media/
 uploads/
 PEXT-MELODIA-MAGICA
+
+# Environment variables
+.env
+.env.local
+.env.production
+
+.cursorrules

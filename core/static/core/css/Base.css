@@ -1,214 +1,199 @@
 html, body {
     overflow: hidden;
+    height: 100%;  /* Garantir que a altura do body ocupe toda a tela */
 }
-        
-        :root {
-            --primary-color: #6366f1;
-            --secondary-color: #8b5cf6;
-            --accent-color: #f59e0b;
-            --dark-bg: #1f2937;
-            --light-bg: #f8fafc;
-            --text-dark: #1f2937;
-            --text-light: #6b7280;
-            --border-color: #e5e7eb;
-            --success-color: #10b981;
-            --danger-color: #ef4444;
-        }
 
-        body {
-            font-family: 'Inter', sans-serif;
-            background: linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color) 100%);
-            min-height: 100vh;
-            display: flex;
-            justify-content: center;  /* Centraliza horizontalmente */
-            padding: 40px 0;  /* Ajuste o padding para mover o conteúdo mais para cima */
-            margin-top: -50px; /* Subir ainda mais o conteúdo */
-        }
-        
+:root {
+    --primary-color: #6366f1;
+    --secondary-color: #8b5cf6;
+    --accent-color: #f59e0b;
+    --dark-bg: #1f2937;
+    --light-bg: #f8fafc;
+    --text-dark: #1f2937;
+    --text-light: #6b7280;
+    --border-color: #e5e7eb;
+    --success-color: #10b981;
+    --danger-color: #ef4444;
+}
 
-        /* Card de Login */
+body {
+    font-family: 'Inter', sans-serif;
+    background: linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color) 100%);
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;  /* Centraliza horizontalmente */
+    align-items: center;  /* Centraliza verticalmente */
+    padding: 40px 0;  /* Ajuste o padding para mover o conteúdo mais para cima */
+}
 
-        .auth-container {
-            max-width: 450px;
-            margin: 0 auto;
-        }
+.auth-container {
+    max-width: 450px;
+    margin: 0 auto;
+}
 
-        .auth-card {
-            background: white;
-            border-radius: 500px;
-            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            padding: 2.5rem;
-            
+.auth-card {
+    background: white;
+    border-radius: 500px;
+    box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    padding: 2.5rem;
+}
 
-        }
+.auth-header {
+    text-align: center;
+    margin-bottom: 2rem;
+}
 
-        .auth-header {
-            text-align: center;
-            margin-bottom: 2rem;
-        }
+.auth-header h1 {
+    font-family: 'Orbitron', monospace;
+    font-weight: 700;
+    color: var(--text-dark);
+    font-size: 2rem;
+    margin-bottom: 0.5rem;
+}
 
-        .auth-header h1 {
-            font-family: 'Orbitron', monospace;
-            font-weight: 700;
-            color: var(--text-dark);
-            font-size: 2rem;
-            margin-bottom: 0.5rem;
-        }
+.auth-header p {
+    color: var(--text-light);
+    font-size: 1rem;
+    margin-bottom: 0;
+}
 
-        .auth-header p {
-            color: var(--text-light);
-            font-size: 1rem;
-            margin-bottom: 0;
-        }
+.btn-google {
+    background: #4285f4;
+    border: none;
+    color: white;
+    padding: 12px 24px;
+    border-radius: 12px;
+    font-weight: 500;
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+    width: 100%;
+    transition: all 0.3s ease;
+    margin-bottom: 1rem;
+}
 
-        /* Terminação do Card de Login */
+.btn-google:hover {
+    background: #357ae8;
+    color: white;
+    text-decoration: none;
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(66, 133, 244, 0.3);
+}
 
+.divider {
+    display: flex;
+    align-items: center;
+    margin: 1.5rem 0;
+    color: var(--text-light);
+    font-size: 0.875rem;
+}
 
-        .btn-google {
-            background: #4285f4;
-            border: none;
-            color: white;
-            padding: 12px 24px;
-            border-radius: 12px;
-            font-weight: 500;
-            text-decoration: none;
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            gap: 12px;
-            width: 100%;
-            transition: all 0.3s ease;
-            margin-bottom: 1rem;
-        }
+.divider::before,
+.divider::after {
+    content: '';
+    flex: 1;
+    height: 1px;
+    background: var(--border-color);
+}
 
-        .btn-google:hover {
-            background: #357ae8;
-            color: white;
-            text-decoration: none;
-            transform: translateY(-2px);
-            box-shadow: 0 8px 25px rgba(66, 133, 244, 0.3);
-        }
+.divider span {
+    padding: 0 1rem;
+    background: white;
+}
 
-        .divider {
-            display: flex;
-            align-items: center;
-            margin: 1.5rem 0;
-            color: var(--text-light);
-            font-size: 0.875rem;
-        }
+.form-floating {
+    margin-bottom: 1rem;
+}
 
-        .divider::before,
-        .divider::after {
-            content: '';
-            flex: 1;
-            height: 1px;
-            background: var(--border-color);
-        }
+.form-floating > .form-control {
+    border: 2px solid var(--border-color);
+    border-radius: 12px;
+    padding: 1rem 0.75rem;
+    font-size: 1rem;
+    transition: all 0.3s ease;
+}
 
-        .divider span {
-            padding: 0 1rem;
-            background: white;
-        }
+.form-floating > .form-control:focus {
+    border-color: var(--primary-color);
+    box-shadow: 0 0 0 0.2rem rgba(99, 102, 241, 0.25);
+}
 
+.form-floating > label {
+    color: var(--text-light);
+    font-weight: 500;
+}
 
-        /* Card de Password Reset */
+.btn-primary {
+    background: linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color) 100%);
+    border: none;
+    border-radius: 102px;
+    padding: 8px 16px;
+    font-weight: 600;
+    font-size: 0.9rem;
+    width: 100%;  /* Garantir que o botão ocupe toda a largura disponível */
+    max-width: 400px;  /* Limitar o tamanho máximo para não ficar muito largo */
+    margin: 20px auto;
+    display: block;
+    transition: all 0.3s ease;
+}
 
+.btn-primary:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(99, 102, 241, 0.3);
+}
 
-        .form-floating {
-            margin-bottom: 1rem;
-        }
+.auth-links {
+    text-align: center;
+    margin-top: 1.5rem;
+    padding-top: 1.5rem;
+    border-top: 1px solid var(--border-color);
+}
 
-        .form-floating > .form-control {
-            border: 2px solid var(--border-color);
-            border-radius: 12px;
-            padding: 1rem 0.75rem;
-            font-size: 1rem;
-            transition: all 0.3s ease;
-        }
+.auth-links a {
+    color: var(--primary-color);
+    text-decoration: none;
+    font-weight: 500;
+    transition: color 0.3s ease;
+}
 
-        .form-floating > .form-control:focus {
-            border-color: var(--primary-color);
-            box-shadow: 0 0 0 0.2rem rgba(99, 102, 241, 0.25);
-            
-        }
+.auth-links a:hover {
+    color: var(--secondary-color);
+}
 
-        .form-floating > label {
-            color: var(--text-light);
-            font-weight: 500;
-        }
+.alert {
+    border-radius: 12px;
+    border: none;
+    margin-bottom: 1rem;
+}
 
-        /* Terminação do Card de Password Reset */
+.form-check {
+    margin: 1rem 0;
+}
 
+.form-check-input:checked {
+    background-color: var(--primary-color);
+    border-color: var(--primary-color);
+}
 
-        .btn-primary {
-            background: linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color) 100%);
-            border: none;
-            border-radius: 102px;
-            padding: 8px 16px;
-            font-weight: 600;
-            font-size: 0.9rem;
-            width: 50%;
-            margin: 0 auto;
-            display: block;
-            transition: all 0.3s ease;
-            
-            
-        }
+.form-check-label {
+    color: var(--text-dark);
+    font-weight: 500;
+}
 
+@media (max-width: 576px) {
+    .auth-card {
+        padding: 2rem 1.5rem;
+        margin: 1rem;
+    }
 
-        
-        .btn-primary:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 8px 25px rgba(99, 102, 241, 0.3);
-        }
+    .auth-header h1 {
+        font-size: 1.75rem;
+    }
 
-        .auth-links {
-            text-align: center;
-            margin-top: 1.5rem;
-            padding-top: 1.5rem;
-            border-top: 1px solid var(--border-color);
-        }
-
-        .auth-links a {
-            color: var(--primary-color);
-            text-decoration: none;
-            font-weight: 500;
-            transition: color 0.3s ease;
-        }
-
-        .auth-links a:hover {
-            color: var(--secondary-color);
-        }
-
-        .alert {
-            border-radius: 12px;
-            border: none;
-            margin-bottom: 1rem;
-        }
-
-        .form-check {
-            margin: 1rem 0;
-        }
-
-        .form-check-input:checked {
-            background-color: var(--primary-color);
-            border-color: var(--primary-color);
-        }
-
-        .form-check-label {
-            color: var(--text-dark);
-            font-weight: 500;
-        }
-
-        @media (max-width: 576px) {
-            .auth-card {
-                padding: 2rem 1.5rem;
-                margin: 1rem;
-            }
-            
-            .auth-header h1 {
-                font-size: 1.75rem;
-            }
-        }
-    
+    .btn-primary {
+        padding: 12px 24px;  /* Ajustar o padding do botão para ser maior em telas pequenas */
+    }
+}

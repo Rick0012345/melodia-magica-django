@@ -39,6 +39,7 @@ INSTALLED_APPS = [
     'allauth.socialaccount.providers.google',
     
     'core',
+    'chatbot',
 ]
 
 MIDDLEWARE = [

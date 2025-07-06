@@ -1,88 +1,81 @@
-{% load static %}
+{% extends "account/base.html" %}
+
 {% load i18n %}
 {% load account socialaccount %}
 
-<!DOCTYPE html>
-<html lang="pt-br">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{% trans "Cadastrar" %} - Melodia Mágica</title>
-    <link rel="stylesheet" href="{% static 'core/css/Login.module.css' %}">
-    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500&display=swap" rel="stylesheet">
-</head>
-<body>
+{% block head_title %}{% trans "Sign Up" %}{% endblock %}
+
+{% block content %}
+<div class="header">
+    <h1>{% trans "Cadastrar" %}</h1>
+    <p>{% trans "Crie sua conta no Melodia Mágica!" %}</p>
+</div>
+
+{% get_providers as socialaccount_providers %}
+
+{% if socialaccount_providers %}
+<div class="social-login">
+    <p>{% blocktrans with site.name as site_name %}Cadastre-se com uma das suas contas existentes:{% endblocktrans %}</p>
     
-    <div class="main-wrapper">
-        <div class="container">
-            <div class="header">
-                <h1>{% trans "Criar Conta" %}</h1>
-                <p>{% trans "Junte-se ao Melodia Mágica!" %}</p>
-            </div>
+    {# Carrega o JS necessário para fluxos OAuth #}
+    {% providers_media_js %}
+    
+    {# Botão direto do Google #}
+    <a href="{% provider_login_url "google" process="signup" %}" class="btn btn-google">
+        <i class="fab fa-google"></i>
+        Cadastrar com Google
+    </a>
+    
+    <div class="login-or">{% trans 'ou' %}</div>
+</div>
+{% endif %}
 
-            {% get_providers as socialaccount_providers %}
+<form class="signup-form" method="POST" action="{% url 'account_signup' %}">
+    {% csrf_token %}
+    
+    {% if form.errors %}
+    <div class="error-messages">
+        {% for field in form %}
+            {% for error in field.errors %}
+                <div class="error">{{ error }}</div>
+            {% endfor %}
+        {% endfor %}
+        {% for error in form.non_field_errors %}
+            <div class="error">{{ error }}</div>
+        {% endfor %}
+    </div>
+    {% endif %}
 
-            {% if socialaccount_providers %}
-            <div class="social-login">
-                <p>{% blocktrans with site.name as site_name %}Cadastre-se usando uma das suas contas existentes:{% endblocktrans %}</p>
-                <div class="socialaccount_providers">
-                    {% include "socialaccount/snippets/provider_list.html" with process="signup" %}
-                </div>
-                <div class="login-or">{% trans 'ou' %}</div>
-            </div>
-            {% endif %}
-
-            <form class="signup-form" method="POST" action="{% url 'account_signup' %}">
-                {% csrf_token %}
-                
-                {% if form.errors %}
-                <div class="error-messages">
-                    {% for field in form %}
-                        {% for error in field.errors %}
-                            <div class="error">{{ error }}</div>
-                        {% endfor %}
-                    {% endfor %}
-                    {% for error in form.non_field_errors %}
-                        <div class="error">{{ error }}</div>
-                    {% endfor %}
-                </div>
-                {% endif %}
-
-                <div class="form-group">
-                    <label for="{{ form.username.id_for_label }}">{% trans "Nome de usuário" %}</label>
-                    {{ form.username }}
-                </div>
-
-                <div class="form-group">
-                    <label for="{{ form.email.id_for_label }}">{% trans "E-mail" %}</label>
-                    {{ form.email }}
-                </div>
-
-                <div class="form-group">
-                    <label for="{{ form.password1.id_for_label }}">{% trans "Senha" %}</label>
-                    {{ form.password1 }}
-                </div>
-
-                <div class="form-group">
-                    <label for="{{ form.password2.id_for_label }}">{% trans "Confirmar senha" %}</label>
-                    {{ form.password2 }}
-                </div>
-
-                {% if redirect_field_value %}
-                <input type="hidden" name="{{ redirect_field_name }}" value="{{ redirect_field_value }}" />
-                {% endif %}
-
-                <div class="form-actions">
-                    <button type="submit" class="btn-primary">{% trans "Cadastrar" %}</button>
-                </div>
-
-                <div class="form-links">
-                    <a href="{% url 'account_login' %}">{% trans "Já tem uma conta? Faça login" %}</a>
-                </div>
-            </form>
-        </div>
+    <div class="form-group">
+        <label for="{{ form.username.id_for_label }}">{% trans "Nome de usuário" %}</label>
+        {{ form.username }}
     </div>
 
+    <div class="form-group">
+        <label for="{{ form.email.id_for_label }}">{% trans "E-mail" %}</label>
+        {{ form.email }}
+    </div>
 
-</body>
-</html> 
+    <div class="form-group">
+        <label for="{{ form.password1.id_for_label }}">{% trans "Senha" %}</label>
+        {{ form.password1 }}
+    </div>
+
+    <div class="form-group">
+        <label for="{{ form.password2.id_for_label }}">{% trans "Confirmar Senha" %}</label>
+        {{ form.password2 }}
+    </div>
+
+    {% if redirect_field_value %}
+    <input type="hidden" name="{{ redirect_field_name }}" value="{{ redirect_field_value }}" />
+    {% endif %}
+
+    <div class="form-actions">
+        <button type="submit" class="btn-primary">{% trans "Cadastrar" %}</button>
+    </div>
+
+    <div class="form-links">
+        <a href="{% url 'account_login' %}">{% trans "Já tem uma conta? Faça login" %}</a>
+    </div>
+</form>
+{% endblock %} 

@@ -1,54 +1,56 @@
-{% load static %}
+{% extends "account/base.html" %}
+
 {% load i18n %}
 {% load account %}
 
-<!DOCTYPE html>
-<html lang="pt-br">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{% trans "Confirmar E-mail" %} - Melodia Mágica</title>
-    <link rel="stylesheet" href="{% static 'core/css/Login.module.css' %}">
-    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500&display=swap" rel="stylesheet">
-</head>
-<body>
-    
-    <div class="main-wrapper">
-        <div class="container">
-            <div class="header">
-                <h1>{% trans "Confirmar E-mail" %}</h1>
-                <p>{% trans "Confirme seu endereço de e-mail" %}</p>
-            </div>
+{% block head_title %}{% trans "Confirmar Email" %}{% endblock %}
 
-            {% if confirmation %}
-                {% user_display confirmation.email_address.user as user_display %}
-                <p>{% blocktrans with confirmation.email_address.email as email %}Confirme que <a href="mailto:{{ email }}">{{ email }}</a> é um endereço de e-mail para o usuário {{ user_display }}.{% endblocktrans %}</p>
+{% block content %}
+<div class="auth-header">
+    <h1>{% trans "Confirmar Email" %}</h1>
+    <p>{% trans "Confirme seu endereço de email para ativar sua conta" %}</p>
+</div>
 
-                <form method="post" action="{% url 'account_confirm_email' confirmation.key %}">
-                    {% csrf_token %}
-                    <div class="form-actions">
-                        <button type="submit" class="btn-primary">{% trans 'Confirmar' %}</button>
-                    </div>
-                </form>
-            {% else %}
-                {% url 'account_email' as email_url %}
-                <p>{% blocktrans %}Este link de confirmação expirou ou é inválido. Por favor, <a href="{{ email_url }}">solicite um novo link de confirmação de e-mail</a>.{% endblocktrans %}</p>
-            {% endif %}
-        </div>
+{% if confirmation %}
+    {% user_display confirmation.email_address.user as user_display %}
+    <div class="text-center mb-4">
+        <i class="fas fa-envelope-circle-check fa-4x text-primary mb-3"></i>
     </div>
+    
+    <div class="alert alert-info" role="alert">
+        <i class="fas fa-info-circle me-2"></i>
+        <strong>Confirme seu email:</strong>
+        <p class="mb-0 mt-2">
+            {% blocktrans with confirmation.email_address.email as email %}Por favor, confirme que <strong>{{ email }}</strong> é um endereço de email para o usuário <strong>{{ user_display }}</strong>.{% endblocktrans %}
+        </p>
+    </div>
+    
+    <form method="post" action="{% url 'account_confirm_email' confirmation.key %}">
+        {% csrf_token %}
+        
+        <button type="submit" class="btn btn-primary">
+            <i class="fas fa-check me-2"></i>
+            {% trans "Confirmar Email" %}
+        </button>
+    </form>
+{% else %}
+    <div class="text-center mb-4">
+        <i class="fas fa-clock fa-4x text-danger mb-3"></i>
+    </div>
+    
+    <div class="alert alert-danger" role="alert">
+        <i class="fas fa-exclamation-triangle me-2"></i>
+        <strong>Link expirado ou inválido:</strong>
+        <p class="mb-0 mt-2">
+            {% blocktrans %}Este link de confirmação de email expirou ou é inválido. Por favor, <a href="{% url 'account_email' %}">solicite uma nova confirmação de email</a>.{% endblocktrans %}
+        </p>
+    </div>
+{% endif %}
 
-    <script src="https://cdn.jsdelivr.net/npm/particles.js@2.0.0/particles.min.js"></script>
-    <script>
-        particlesJS("particles-js", {
-            particles: {
-                number: { value: 50 },
-                color: { value: "#00ffff" },
-                shape: { type: "circle" },
-                opacity: { value: 0.4 },
-                size: { value: 3 },
-                move: { enable: true, speed: 1 }
-            }
-        });
-    </script>
-</body>
-</html> 
+<div class="auth-links">
+    <a href="{% url 'account_login' %}">
+        <i class="fas fa-arrow-left me-1"></i>
+        {% trans "Voltar para Login" %}
+    </a>
+</div>
+{% endblock %} 

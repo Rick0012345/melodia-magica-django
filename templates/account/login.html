@@ -3,10 +3,10 @@
 {% load i18n %}
 {% load account socialaccount %}
 
-{% block head_title %}{% trans "Sign In" %}{% endblock %}
+{% block head_title %}{% trans "Entrar" %}{% endblock %}
 
 {% block content %}
-<div class="header">
+<div class="auth-header">
     <h1>{% trans "Entrar" %}</h1>
     <p>{% trans "Bem-vindo de volta ao Melodia Mágica!" %}</p>
 </div>
@@ -15,8 +15,6 @@
 
 {% if socialaccount_providers %}
 <div class="social-login">
-    <p>{% blocktrans with site.name as site_name %}Faça login com uma das suas contas existentes:{% endblocktrans %}</p>
-    
     {# Carrega o JS necessário para fluxos OAuth #}
     {% providers_media_js %}
     
@@ -26,40 +24,51 @@
         Entrar com Google
     </a>
     
-    <div class="login-or">{% trans 'ou' %}</div>
+    <div class="divider">
+        <span>{% trans 'ou' %}</span>
+    </div>
 </div>
 {% endif %}
 
-<form class="login-form" method="POST" action="{% url 'account_login' %}">
+<!-- Mensagens de erro -->
+{% if form.errors %}
+<div class="alert alert-danger" role="alert">
+    <i class="fas fa-exclamation-triangle me-2"></i>
+    <strong>Ops!</strong> Verifique os dados inseridos.
+    {% for field in form %}
+        {% for error in field.errors %}
+            <div class="mt-2">{{ error }}</div>
+        {% endfor %}
+    {% endfor %}
+    {% for error in form.non_field_errors %}
+        <div class="mt-2">{{ error }}</div>
+    {% endfor %}
+</div>
+{% endif %}
+
+<form method="POST" action="{% url 'account_login' %}">
     {% csrf_token %}
-    
-    {% if form.errors %}
-    <div class="error-messages">
-        {% for field in form %}
-            {% for error in field.errors %}
-                <div class="error">{{ error }}</div>
-            {% endfor %}
-        {% endfor %}
-        {% for error in form.non_field_errors %}
-            <div class="error">{{ error }}</div>
-        {% endfor %}
-    </div>
-    {% endif %}
 
-    <div class="form-group">
-        <label for="{{ form.login.id_for_label }}">{% trans "Usuário ou E-mail" %}</label>
+    <div class="form-floating">
         {{ form.login }}
+        <label for="{{ form.login.id_for_label }}">
+            <i class="fas fa-user me-2"></i>
+            {% trans "Usuário ou E-mail" %}
+        </label>
     </div>
 
-    <div class="form-group">
-        <label for="{{ form.password.id_for_label }}">{% trans "Senha" %}</label>
+    <div class="form-floating">
         {{ form.password }}
+        <label for="{{ form.password.id_for_label }}">
+            <i class="fas fa-lock me-2"></i>
+            {% trans "Senha" %}
+        </label>
     </div>
 
-    <div class="form-group checkbox-group">
-        <label class="checkbox-label">
-            {{ form.remember }}
-            <span>{% trans "Lembrar de mim" %}</span>
+    <div class="form-check">
+        {{ form.remember }}
+        <label class="form-check-label" for="{{ form.remember.id_for_label }}">
+            {% trans "Lembrar de mim" %}
         </label>
     </div>
 
@@ -67,14 +76,22 @@
     <input type="hidden" name="{{ redirect_field_name }}" value="{{ redirect_field_value }}" />
     {% endif %}
 
-    <div class="form-actions">
-        <button type="submit" class="btn-primary">{% trans "Entrar" %}</button>
-    </div>
+    <button type="submit" class="btn btn-primary">
+        <i class="fas fa-sign-in-alt me-2"></i>
+        {% trans "Entrar" %}
+    </button>
 
-    <div class="form-links">
-        <a href="{% url 'account_reset_password' %}">{% trans "Esqueceu sua senha?" %}</a>
-        <span class="separator">|</span>
-        <a href="{% url 'account_signup' %}">{% trans "Não tem uma conta? Cadastre-se" %}</a>
+    <div class="auth-links">
+        <a href="{% url 'account_reset_password' %}">
+            <i class="fas fa-key me-1"></i>
+            {% trans "Esqueceu sua senha?" %}
+        </a>
+        <div class="mt-2">
+            <a href="{% url 'account_signup' %}">
+                <i class="fas fa-user-plus me-1"></i>
+                {% trans "Não tem uma conta? Cadastre-se" %}
+            </a>
+        </div>
     </div>
 </form>
 {% endblock %} 

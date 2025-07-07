@@ -41,7 +41,7 @@
         
         {% if quizzes %}
             {% for quiz in quizzes %}
-                <div class="card" onclick="location.href='{% url 'game_page' quiz.id %}?reiniciar=true';">
+                <div class="card" onclick="location.href='{% url 'game_page' quiz.id %}';">
                     {{ quiz.nivel_dificuldade }}
                 </div>
             {% endfor %}

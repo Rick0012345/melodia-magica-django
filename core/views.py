@@ -19,6 +19,8 @@ from django.urls import reverse_lazy
 from django.core.mail import send_mail
 from django.conf import settings
 from .models import Quiz, Pergunta, Alternativa, Pontuacao
+from django.http import HttpResponse
+from django.middleware.csrf import get_token
 
 
 
@@ -104,131 +106,243 @@ class GamePageView(TemplateView):
         quiz_id = self.kwargs.get('quiz_id')
         quiz = get_object_or_404(Quiz, id=quiz_id)
         
-        # Verifica se o usuário quer reiniciar o quiz
-        reiniciar = self.request.GET.get('reiniciar') == 'true'
-        if reiniciar:
-            # Limpa toda a sessão do quiz
-            self.request.session.pop('pontuacao', None)
-            self.request.session.pop('acertos', None)
-            self.request.session.pop('erros', None)
-            self.request.session.pop('pergunta_atual_id', None)
-            self.request.session.pop('quiz_finalizado', None)
+        # Sempre resetar o quiz quando carregar a página pela primeira vez (GET normal)
+        # Inicializar variáveis de sessão
+        self.request.session['quiz_iniciado'] = True
+        self.request.session['pontuacao'] = 0
+        self.request.session['acertos'] = 0
+        self.request.session['erros'] = 0
+        self.request.session['pergunta_atual'] = 0
+        self.request.session['quiz_finalizado'] = False
         
-        # Verifica se o quiz está finalizado
-        quiz_finalizado = self.request.session.get('quiz_finalizado', False)
+        # Obter primeira pergunta (sempre começar do início quando carregar via GET)
+        perguntas = list(quiz.perguntas.all().order_by('id'))
+        pergunta = perguntas[0] if perguntas else None
+        progresso = (1 / len(perguntas)) * 100 if perguntas else 0
         
-        if quiz_finalizado:
-            context['quiz'] = quiz
-            context['pergunta'] = None
-            context['pontuacao'] = self.request.session.get('pontuacao', 0)
-            context['acertos'] = self.request.session.get('acertos', 0)
-            context['erros'] = self.request.session.get('erros', 0)
-            return context
+        context.update({
+            'quiz': quiz,
+            'pergunta': pergunta,
+            'pontuacao': self.request.session.get('pontuacao', 0),
+            'acertos': self.request.session.get('acertos', 0),
+            'erros': self.request.session.get('erros', 0),
+            'progresso': progresso
+        })
         
-        # Pega a pergunta atual ou a primeira pergunta
-        pergunta_atual_id = self.request.session.get('pergunta_atual_id')
-        if pergunta_atual_id:
-            pergunta = get_object_or_404(Pergunta, id=pergunta_atual_id)
-        else:
-            pergunta = quiz.perguntas.first()
-        
-        # Calcula o progresso
-        total_perguntas = quiz.perguntas.count()
-        
-        # Pega todas as perguntas ordenadas por ID
-        todas_perguntas = list(quiz.perguntas.order_by('id').values_list('id', flat=True))
-        
-        if pergunta_atual_id:
-            # Encontra a posição da pergunta atual na lista
-            try:
-                posicao_atual = todas_perguntas.index(int(pergunta_atual_id))
-                # Progresso baseado na posição (0-indexed)
-                progresso = ((posicao_atual + 1) / total_perguntas) * 100
-            except ValueError:
-                progresso = 0
-        else:
-            # Se não há pergunta atual, é a primeira pergunta
-            progresso = (1 / total_perguntas) * 100 if total_perguntas > 0 else 0
-        
-        # Garante que o progresso esteja entre 0 e 100
-        progresso = max(0, min(100, progresso))
-        
-        # Debug: Adiciona informações de debug ao contexto
-        context['debug_info'] = {
-            'total_perguntas': total_perguntas,
-            'pergunta_atual_id': pergunta_atual_id,
-            'todas_perguntas_ids': todas_perguntas,
-            'posicao_atual': todas_perguntas.index(int(pergunta_atual_id)) if pergunta_atual_id else 0,
-            'progresso_calculado': progresso
-        }
-        
-        context['quiz'] = quiz
-        context['pergunta'] = pergunta
-        context['progresso'] = progresso
-        context['pontuacao'] = self.request.session.get('pontuacao', 0)
-        context['acertos'] = self.request.session.get('acertos', 0)
-        context['erros'] = self.request.session.get('erros', 0)
         return context
 
     def post(self, request, *args, **kwargs):
         quiz_id = self.kwargs.get('quiz_id')
         quiz = get_object_or_404(Quiz, id=quiz_id)
+        
+        pergunta_id = request.POST.get('pergunta_id')
         resposta = request.POST.get('resposta')
-        pergunta_atual_id = request.POST.get('pergunta_atual_id')
         
-        # Verifica a resposta
-        pergunta_atual = get_object_or_404(Pergunta, id=pergunta_atual_id)
-        pontuacao = request.session.get('pontuacao', 0)
-        acertos = request.session.get('acertos', 0)
-        erros = request.session.get('erros', 0)
+        if not pergunta_id or not resposta:
+            return self.get(request, *args, **kwargs)
         
-        if pergunta_atual.tipo == 'multipla_escolha':
-            alternativa_correta = pergunta_atual.alternativas.filter(correta=True).first()
+        # Obter pergunta
+        pergunta = get_object_or_404(Pergunta, id=pergunta_id)
+        
+        # Verificar resposta
+        acerto = False
+        if pergunta.tipo == 'multipla_escolha':
+            alternativa_correta = pergunta.alternativas.filter(correta=True).first()
             if alternativa_correta and str(alternativa_correta.id) == resposta:
-                pontuacao += 1
-                acertos += 1
+                acerto = True
+        elif pergunta.tipo == 'verdadeiro_falso':
+            if resposta.lower() == 'true':
+                acerto = True
             else:
-                erros += 1
-        elif pergunta_atual.tipo == 'verdadeiro_falso':
-            alternativa_correta = pergunta_atual.alternativas.filter(correta=True).first()
-            if alternativa_correta and str(alternativa_correta.correta).lower() == resposta:
-                pontuacao += 1
-                acertos += 1
-            else:
-                erros += 1
+                acerto = False
         
-        request.session['pontuacao'] = pontuacao
-        request.session['acertos'] = acertos
-        request.session['erros'] = erros
-        
-        # Pega a próxima pergunta
-        proxima_pergunta = quiz.perguntas.filter(id__gt=pergunta_atual_id).order_by('id').first()
-        
-        if proxima_pergunta:
-            request.session['pergunta_atual_id'] = proxima_pergunta.id
-            return redirect('game_page', quiz_id=quiz_id)
+        # Atualizar estatísticas
+        if acerto:
+            request.session['pontuacao'] = request.session.get('pontuacao', 0) + 1
+            request.session['acertos'] = request.session.get('acertos', 0) + 1
         else:
-            # Quiz finalizado - salva a pontuação no banco
+            request.session['erros'] = request.session.get('erros', 0) + 1
+        
+        # Avançar para próxima pergunta
+        pergunta_atual = request.session.get('pergunta_atual', 0)
+        perguntas = list(quiz.perguntas.all().order_by('id'))
+        
+        if pergunta_atual + 1 < len(perguntas):
+            # Ainda há perguntas
+            request.session['pergunta_atual'] = pergunta_atual + 1
+            proxima_pergunta = perguntas[pergunta_atual + 1]
+            progresso = ((pergunta_atual + 2) / len(perguntas)) * 100
+            
+            # Retornar próxima pergunta para HTMX
+            context = {
+                'quiz': quiz,
+                'pergunta': proxima_pergunta,
+                'pontuacao': request.session.get('pontuacao', 0),
+                'acertos': request.session.get('acertos', 0),
+                'erros': request.session.get('erros', 0),
+                'progresso': progresso
+            }
+            
+            html = f'''
+            <div class="question-card" data-acertos="{context['acertos']}" data-erros="{context['erros']}" data-pontos="{context['pontuacao']}" data-progresso="{context['progresso']}">
+                <h2 class="question-title">{proxima_pergunta.pergunta}</h2>
+                
+                <form hx-post="/quiz/game/{quiz.id}/" 
+                      hx-target="#question-area" 
+                      hx-swap="innerHTML"
+                      hx-indicator="#loading">
+                                            <input type="hidden" name="csrfmiddlewaretoken" value="{get_token(request)}">
+                    <input type="hidden" name="pergunta_id" value="{proxima_pergunta.id}">
+            '''
+            
+            if proxima_pergunta.tipo == 'multipla_escolha':
+                for alternativa in proxima_pergunta.alternativas.all():
+                    html += f'''
+                    <label class="answer-option">
+                        <input type="radio" name="resposta" value="{alternativa.id}" required>
+                        <span class="answer-text">{alternativa.texto}</span>
+                    </label>
+                    '''
+            elif proxima_pergunta.tipo == 'verdadeiro_falso':
+                html += '''
+                <label class="answer-option">
+                    <input type="radio" name="resposta" value="true" required>
+                    <span class="answer-text">Verdadeiro</span>
+                </label>
+                <label class="answer-option">
+                    <input type="radio" name="resposta" value="false" required>
+                    <span class="answer-text">Falso</span>
+                </label>
+                '''
+            
+            html += '''
+                    <button type="submit" class="submit-btn">
+                        Responder
+                        <div class="loading-spinner" id="loading">
+                            <i class="fas fa-spinner fa-spin"></i>
+                        </div>
+                    </button>
+                </form>
+            </div>
+            '''
+            
+            return HttpResponse(html)
+        
+        else:
+            # Quiz finalizado
+            request.session['quiz_finalizado'] = True
+            
+            # Salvar pontuação no banco
             if request.user.is_authenticated:
                 Pontuacao.objects.update_or_create(
                     usuario=request.user,
                     quiz=quiz,
-                    defaults={'pontuacao': pontuacao}
+                    defaults={'pontuacao': request.session.get('pontuacao', 0)}
                 )
             
-            request.session['quiz_finalizado'] = True
+            # Retornar resultado
+            pontuacao = request.session.get('pontuacao', 0)
+            acertos = request.session.get('acertos', 0)
+            erros = request.session.get('erros', 0)
             
-            return redirect('game_page', quiz_id=quiz_id)
+            html = f'''
+            <div class="result-container">
+                <h2 class="result-title">🎉 Quiz Finalizado!</h2>
+                
+                <div class="result-card">
+                    <div class="result-stats">
+                        <div class="result-stat success">
+                            <div class="result-stat-value">{acertos}</div>
+                            <div class="result-stat-label">Acertos</div>
+                        </div>
+                        <div class="result-stat danger">
+                            <div class="result-stat-value">{erros}</div>
+                            <div class="result-stat-label">Erros</div>
+                        </div>
+                        <div class="result-stat warning">
+                            <div class="result-stat-value">{pontuacao}</div>
+                            <div class="result-stat-label">Pontos</div>
+                        </div>
+                    </div>
+                    
+                    <div class="result-buttons">
+                        <a href="/quiz/niveis/" class="btn-secondary">
+                            <i class="fas fa-arrow-left"></i> Voltar aos Níveis
+                        </a>
+                        <button hx-get="/quiz/game/{quiz.id}/?reiniciar=true" 
+                                hx-target="#question-area" 
+                                hx-swap="innerHTML"
+                                class="btn-primary">
+                            <i class="fas fa-redo"></i> Jogar Novamente
+                        </button>
+                    </div>
+                </div>
+            </div>
+            '''
+            
+            return HttpResponse(html)
 
     def get(self, request, *args, **kwargs):
-        if request.session.get('quiz_finalizado', False) and request.GET.get('voltar') == 'true':
+        # Verificar se quer reiniciar
+        if request.GET.get('reiniciar') == 'true':
+            # Limpar sessão
+            request.session.pop('quiz_iniciado', None)
             request.session.pop('pontuacao', None)
             request.session.pop('acertos', None)
             request.session.pop('erros', None)
-            request.session.pop('pergunta_atual_id', None)
+            request.session.pop('pergunta_atual', None)
             request.session.pop('quiz_finalizado', None)
             
-            return redirect('niveis')
+            # Retornar primeira pergunta para HTMX
+            quiz_id = self.kwargs.get('quiz_id')
+            quiz = get_object_or_404(Quiz, id=quiz_id)
+            primeira_pergunta = quiz.perguntas.first()
+            
+            if primeira_pergunta:
+                html = f'''
+                <div class="question-card" data-acertos="0" data-erros="0" data-pontos="0" data-progresso="0">
+                    <h2 class="question-title">{primeira_pergunta.pergunta}</h2>
+                    
+                    <form hx-post="/quiz/game/{quiz.id}/" 
+                          hx-target="#question-area" 
+                          hx-swap="innerHTML"
+                          hx-indicator="#loading">
+                                                 <input type="hidden" name="csrfmiddlewaretoken" value="{get_token(request)}">
+                        <input type="hidden" name="pergunta_id" value="{primeira_pergunta.id}">
+                '''
+                
+                if primeira_pergunta.tipo == 'multipla_escolha':
+                    for alternativa in primeira_pergunta.alternativas.all():
+                        html += f'''
+                        <label class="answer-option">
+                            <input type="radio" name="resposta" value="{alternativa.id}" required>
+                            <span class="answer-text">{alternativa.texto}</span>
+                        </label>
+                        '''
+                elif primeira_pergunta.tipo == 'verdadeiro_falso':
+                    html += '''
+                    <label class="answer-option">
+                        <input type="radio" name="resposta" value="true" required>
+                        <span class="answer-text">Verdadeiro</span>
+                    </label>
+                    <label class="answer-option">
+                        <input type="radio" name="resposta" value="false" required>
+                        <span class="answer-text">Falso</span>
+                    </label>
+                    '''
+                
+                html += '''
+                        <button type="submit" class="submit-btn">
+                            Responder
+                            <div class="loading-spinner" id="loading">
+                                <i class="fas fa-spinner fa-spin"></i>
+                            </div>
+                        </button>
+                    </form>
+                </div>
+                '''
+                
+                return HttpResponse(html)
         
         return super().get(request, *args, **kwargs)
     

@@ -9,14 +9,17 @@ services:
       - ./manage.py:/app/manage.py
       - ./core:/app/core
       - ./chatbot:/app/chatbot
+      - ./static:/app/static
     ports:
       - "8000:8000"
     environment:
       - DEBUG=1
       - DJANGO_SETTINGS_MODULE=melodiaMagica.settings
       - DATABASE_URL=postgres://postgres:postgres@db:5432/postgres
+      - REDIS_URL=redis://redis:6379/1
     depends_on:
       - db
+      - redis
 
   db:
     image: postgres:15
@@ -29,5 +32,14 @@ services:
     ports:
       - "5432:5432"
 
+  redis:
+    image: redis:7-alpine
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+    command: redis-server --appendonly yes
+
 volumes:
-  postgres_data: 
+  postgres_data:
+  redis_data: 

@@ -1,6 +1,6 @@
 // Isso da um tham no site
 const particlesArray = [];
-
+q
 function createParticles() {
   const particle = {
     x: Math.random() * window.innerWidth,
@@ -36,7 +36,7 @@ function animateParticles() {
   requestAnimationFrame(animateParticles);
 }
 
-setInterval(createParticles, 100); // Criar partículas constantemente
+setInterval(createParticles, 1800); // Criar partículas constantemente
 animateParticles();
 
 

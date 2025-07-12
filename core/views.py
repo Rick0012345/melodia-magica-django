@@ -144,17 +144,8 @@ class GamePageView(TemplateView):
         # Obter pergunta
         pergunta = get_object_or_404(Pergunta, id=pergunta_id)
         
-        # Verificar resposta
-        acerto = False
-        if pergunta.tipo == 'multipla_escolha':
-            alternativa_correta = pergunta.alternativas.filter(correta=True).first()
-            if alternativa_correta and str(alternativa_correta.id) == resposta:
-                acerto = True
-        elif pergunta.tipo == 'verdadeiro_falso':
-            if resposta.lower() == 'true':
-                acerto = True
-            else:
-                acerto = False
+        # Verificar resposta usando o método helper do modelo
+        acerto = pergunta.validar_resposta(resposta)
         
         # Atualizar estatísticas
         if acerto:

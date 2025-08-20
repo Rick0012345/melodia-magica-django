@@ -21,5 +21,6 @@ urlpatterns = [
     path('login/', LoginView.as_view(), name='login'),
     path("quiz/niveis/", NiveisView.as_view(), name="niveis"),
     path("quiz/game/<int:quiz_id>/", GamePageView.as_view(), name="game_page"),
+    
 
 ]

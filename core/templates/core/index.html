@@ -9,7 +9,7 @@
 <section class="hero-section">
   <div class="container">
     <div class="hero-content">
-      <!-- <h1 class="text-gradient">Melodia Mágica</h1> -->
+      <h1 class="interactive-title">Melodia Mágica</h1>
 
       <div class="hero-buttons">
         {% if user.is_authenticated %}
@@ -26,6 +26,55 @@
 
 <!-- Contêiner para as partículas -->
 <div id="particle-container"></div>
+
+<!-- Footer com os perfis dos desenvolvedores -->
+<footer class="developer-footer">
+  <div class="container">
+    <div class="developer-profiles">
+      <!-- Desenvolvedor 1 -->
+      <div class="developer-profile">
+        <div class="developer-img" style="background-image: url('{% static 'images/dev1.jpg' %}');"></div>
+        <p class="developer-name">Patrick Oliveira</p>
+        <p class="developer-role">Orientador Analista</p>
+      </div>
+
+      <!-- Desenvolvedor 2 -->
+      <div class="developer-profile">
+        <div class="developer-img" style="background-image: url('{% static 'images/dev2.jpg' %}');"></div>
+        <p class="developer-name">Marlon Silva</p>
+        <p class="developer-role">Orientador Analista</p>
+      </div>
+
+      <!-- Desenvolvedor 3 -->
+      <div class="developer-profile">
+        <div class="developer-img" style="background-image: url('{% static 'images/dev3.jpg' %}');"></div>
+        <p class="developer-name">Mizael Marques</p>
+        <p class="developer-role">Desenvolvedor Backend</p>
+      </div>
+
+      <!-- Desenvolvedor 4 -->
+      <div class="developer-profile">
+        <div class="developer-img" style="background-image: url('{% static 'images/dev4.jpg' %}');"></div>
+        <p class="developer-name">Matheus Campos</p>
+        <p class="developer-role">Desenvolvedor Backend</p>
+      </div>
+
+      <!-- Desenvolvedor 5 -->
+      <div class="developer-profile">
+        <div class="developer-img" style="background-image: url('{% static 'images/dev5.jpg' %}');"></div>
+        <p class="developer-name">Pedro Timon</p>
+        <p class="developer-role">Desenvolvedor Frontend</p>
+      </div>
+
+      <!-- Desenvolvedor 6 -->
+      <div class="developer-profile">
+        <div class="developer-img" style="background-image: url('{% static 'images/dev6.jpg' %}');"></div>
+        <p class="developer-name">Ana Carolina</p>
+        <p class="developer-role">Desenvolvedor Frontend</p>
+      </div>
+    </div>
+  </div>
+</footer>
 
 <script src="{% static 'core/js/Index.js' %}"></script>
 

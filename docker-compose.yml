@@ -13,14 +13,13 @@ services:
     ports:
       - "8000:8000"
     environment:
-      - DEBUG=1
       - DJANGO_SETTINGS_MODULE=melodiaMagica.settings
       - DATABASE_URL=postgres://postgres:postgres@db:5432/postgres
-      - REDIS_URL=redis://redis:6379/1
+      - DEBUG=True
+      - SECRET_KEY=django-insecure-temp-key-for-development
+      - ALLOWED_HOSTS=localhost,127.0.0.1,0.0.0.0
     depends_on:
       - db
-      - redis
-
   db:
     image: postgres:15
     volumes:
@@ -32,14 +31,5 @@ services:
     ports:
       - "5432:5432"
 
-  redis:
-    image: redis:7-alpine
-    ports:
-      - "6379:6379"
-    volumes:
-      - redis_data:/data
-    command: redis-server --appendonly yes
-
 volumes:
   postgres_data:
-  redis_data: 

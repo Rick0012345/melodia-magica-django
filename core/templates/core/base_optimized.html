@@ -180,11 +180,9 @@
                 
                 // Carregar scripts locais após jQuery estar disponível
                 loadScript('{% static "core/js/Navbar.js" %}');
+                loadScript('{% static "core/js/messages.js" %}');
             };
             document.head.appendChild(jqueryScript);
-            
-            // Carregar messages.js independentemente (não depende do jQuery)
-            loadScript('{% static "core/js/messages.js" %}');
             loadScript('{% static "chatbot/js/chatbot.js" %}');
         });
     </script>

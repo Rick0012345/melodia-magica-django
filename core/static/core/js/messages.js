@@ -1,8 +1,8 @@
-// Sistema de gerenciamento de mensagens
+// Sistema de gerenciamento de mensagens com jQuery
 class MessageManager {
     constructor() {
         this.messages = [];
-        this.autoHideDelay = 5000; // 5 segundos
+        this.autoHideDelay = 3000; // 3 segundos
         this.animationDuration = 300; // 300ms
         this.init();
     }
@@ -19,86 +19,85 @@ class MessageManager {
     }
 
     initializeExistingMessages() {
-        const globalMessages = document.querySelectorAll('.global-message');
-        const localMessages = document.querySelectorAll('.message');
+        const $globalMessages = $('.global-message');
+        const $localMessages = $('.message');
         
-        [...globalMessages, ...localMessages].forEach((message, index) => {
-            message.id = message.id || `message-${Date.now()}-${index}`;
-            this.messages.push(message);
+        $globalMessages.add($localMessages).each((index, message) => {
+            const $message = $(message);
+            if (!$message.attr('id')) {
+                $message.attr('id', `message-${Date.now()}-${index}`);
+            }
+            this.messages.push($message[0]);
         });
     }
 
     setupCloseButtons() {
-        document.addEventListener('click', (e) => {
-            if (e.target.closest('.global-message-close') || e.target.closest('.message-close')) {
-                const message = e.target.closest('.global-message') || e.target.closest('.message');
-                if (message) {
-                    this.hideMessage(message);
-                }
+        $(document).on('click', '.global-message-close, .message-close', (e) => {
+            const $message = $(e.target).closest('.global-message, .message');
+            if ($message.length) {
+                this.hideMessage($message[0]);
             }
         });
     }
 
     autoHideMessages() {
-        setTimeout(() => {
-            this.messages.forEach(message => {
+        this.messages.forEach(message => {
+            setTimeout(() => {
                 this.hideMessage(message);
-            });
-        }, this.autoHideDelay);
+            }, this.autoHideDelay);
+        });
     }
 
     hideMessage(message) {
-        if (!message) return;
-
-        // Determinar tipo de animação baseado na classe
-        const isGlobal = message.classList.contains('global-message');
-        const animationName = isGlobal ? 'slideOutRight' : 'slideOut';
+        const $message = $(message);
+        if (!$message.length || $message.is(':hidden')) {
+            return;
+        }
         
-        // Aplicar animação de saída
-        message.style.animation = `${animationName} ${this.animationDuration}ms ease-out forwards`;
+        // Adicionar classe de fade-out
+        $message.addClass('fade-out');
         
-        // Remover elemento após animação
+        // Remover após animação
         setTimeout(() => {
-            if (message.parentNode) {
-                message.parentNode.removeChild(message);
+            if ($message.length) {
+                $message.remove();
+                // Remover da lista de mensagens
+                const index = this.messages.indexOf(message);
+                if (index > -1) {
+                    this.messages.splice(index, 1);
+                }
             }
-            // Remover da lista de mensagens
-            this.messages = this.messages.filter(m => m !== message);
         }, this.animationDuration);
     }
 
     // Método para criar nova mensagem dinamicamente
     createMessage(text, type = 'info', isGlobal = true) {
-        const messageId = `message-${Date.now()}`;
+        const messageId = `message-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
         const messageClass = isGlobal ? 'global-message' : 'message';
         const containerClass = isGlobal ? 'global-messages' : 'messages-container';
         
-        // Criar container se não existir
-        let container = document.querySelector(`.${containerClass}`);
-        if (!container) {
-            container = document.createElement('div');
-            container.className = containerClass;
+        // Criar container se não existir usando jQuery
+        let $container = $(`.${containerClass}`);
+        if (!$container.length) {
+            $container = $('<div>').addClass(containerClass);
             if (isGlobal) {
-                container.style.position = 'fixed';
-                container.style.top = '20px';
-                container.style.right = '20px';
-                container.style.zIndex = '9999';
-                container.style.maxWidth = '400px';
-                document.body.appendChild(container);
+                $container.css({
+                    position: 'fixed',
+                    top: '20px',
+                    right: '20px',
+                    zIndex: '9999',
+                    maxWidth: '400px'
+                });
+                $('body').append($container);
             } else {
                 // Para mensagens locais, inserir no início do main
-                const main = document.querySelector('main');
-                if (main) {
-                    main.insertBefore(container, main.firstChild);
+                const $main = $('main');
+                if ($main.length) {
+                    $main.prepend($container);
                 }
             }
         }
 
-        // Criar mensagem
-        const message = document.createElement('div');
-        message.id = messageId;
-        message.className = `${messageClass} ${messageClass}-${type}`;
-        
         // Ícone baseado no tipo
         const iconMap = {
             'success': 'fas fa-check-circle',
@@ -109,28 +108,31 @@ class MessageManager {
         
         const icon = iconMap[type] || iconMap['info'];
         
-        message.innerHTML = `
-            <div class="${messageClass}-icon">
-                <i class="${icon}"></i>
+        // Criar mensagem usando jQuery
+        const $message = $(`
+            <div id="${messageId}" class="${messageClass} ${messageClass}-${type}">
+                <div class="${messageClass}-icon">
+                    <i class="${icon}"></i>
+                </div>
+                <div class="${messageClass}-content">
+                    <p>${text}</p>
+                </div>
+                <button class="${messageClass}-close" onclick="messageManager.hideMessage(this.parentElement)">
+                    <i class="fas fa-times"></i>
+                </button>
             </div>
-            <div class="${messageClass}-content">
-                <p>${text}</p>
-            </div>
-            <button class="${messageClass}-close" onclick="messageManager.hideMessage(this.parentElement)">
-                <i class="fas fa-times"></i>
-            </button>
-        `;
+        `);
 
         // Adicionar ao container
-        container.appendChild(message);
-        this.messages.push(message);
+        $container.append($message);
+        this.messages.push($message[0]);
 
         // Auto-remover após delay
         setTimeout(() => {
-            this.hideMessage(message);
+            this.hideMessage($message[0]);
         }, this.autoHideDelay);
 
-        return message;
+        return $message[0];
     }
 
     // Métodos de conveniência para diferentes tipos de mensagem
@@ -151,17 +153,42 @@ class MessageManager {
     }
 }
 
-// Função global para fechar mensagens (para compatibilidade com onclick)
+// Função para fechar mensagem (compatibilidade com onclick)
 function closeMessage(messageId) {
-    const message = document.getElementById(messageId);
-    if (message && window.messageManager) {
-        window.messageManager.hideMessage(message);
+    const $message = $(`#${messageId}`);
+    if ($message.length && window.messageManager) {
+        window.messageManager.hideMessage($message[0]);
     }
 }
 
-// Inicializar quando o DOM estiver pronto
-document.addEventListener('DOMContentLoaded', function() {
+// Inicializar quando o DOM e jQuery estiverem carregados
+$(document).ready(function() {
+    // Criar instância global do gerenciador de mensagens
     window.messageManager = new MessageManager();
+    
+    // Expor métodos globalmente para uso em templates
+    window.showMessage = function(text, type = 'info', isGlobal = true) {
+        return window.messageManager.createMessage(text, type, isGlobal);
+    };
+    
+    window.showSuccess = function(text, isGlobal = true) {
+        return window.messageManager.success(text, isGlobal);
+    };
+    
+    window.showError = function(text, isGlobal = true) {
+        return window.messageManager.error(text, isGlobal);
+    };
+    
+    window.showWarning = function(text, isGlobal = true) {
+        return window.messageManager.warning(text, isGlobal);
+    };
+    
+    window.showInfo = function(text, isGlobal = true) {
+        return window.messageManager.info(text, isGlobal);
+    };
+    
+    // Debug
+    console.log('MessageManager inicializado com jQuery -', window.messageManager.messages.length, 'mensagens');
     
     // Adicionar animações CSS dinamicamente se não existirem
     if (!document.querySelector('#message-animations')) {
@@ -198,4 +225,4 @@ document.addEventListener('DOMContentLoaded', function() {
 // messageManager.success('Operação realizada com sucesso!');
 // messageManager.error('Ocorreu um erro!');
 // messageManager.warning('Atenção!');
-// messageManager.info('Informação importante!'); 
+// messageManager.info('Informação importante!');

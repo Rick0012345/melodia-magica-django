@@ -16,28 +16,7 @@ body {
   overflow: hidden;
 }
 
-.stars {
-  position: absolute;
-  width: 100%;
-  height: 100%;
-  background: transparent;
-  z-index: 0;
-}
 
-.stars::before {
-  content: '';
-  position: absolute;
-  width: 200%;
-  height: 200%;
-  background: repeating-radial-gradient(circle, rgb(221, 9, 9) 1px, transparent 2px);
-  animation: moveStars 60s linear infinite;
-  opacity: 0.04;
-}
-
-@keyframes moveStars {
-  from { transform: translate(0, 0); }
-  to { transform: translate(-50%, -50%); }
-}
 
 .loginWrapper {
   z-index: 1;

@@ -7,15 +7,28 @@
 
 {% block content %}
 <section class="hero-section">
+  <!-- Vídeo de background -->
+  <video class="hero-video-bg" autoplay muted loop playsinline id="heroVideo">
+    <source src="{% static 'core/video/burn-it-down.mp4' %}" type="video/mp4">
+    Seu navegador não suporta vídeos HTML5.
+  </video>
+  
+  <!-- Botão para ativar som -->
+  <button class="sound-toggle-btn" id="soundToggle" onclick="toggleSound()">
+    <i class="fas fa-volume-mute" id="soundIcon"></i>
+  </button>
+  
+  <!-- Overlay para escurecer o vídeo -->
+  <div class="hero-video-overlay"></div>
+  
   <img src="{% static 'core/images/urso_guitarra.gif' %}" alt="urso guitarrista" class="urso-guitarra">
   <img src="{% static 'core/images/urso_guitarra.gif' %}" alt="urso guitarrista" class="urso-guitarra2">
   <img src="{% static 'core/images/urso_guitarra.gif' %}" alt="urso guitarrista" class="urso-guitarra3">
   <img src="{% static 'core/images/urso_guitarra.gif' %}" alt="urso guitarrista" class="urso-guitarra3">
   <div class="container">
     <div class="hero-content">
-      <!-- <h1 class="interactive-title">Melodia Mágica</h1> -->
-<h3>ATUALIZAÇÕES EM BREVE. . .</h3>
-      <!--
+    <h1 class="interactive-title">Melodia Mágica</h1>
+
       <div class="hero-buttons">
         {% if user.is_authenticated %}
           <a href="{% url 'menu' %}" class="btn btn-primary">Quiz</a>
@@ -25,7 +38,7 @@
           <a href="{% url 'account_signup' %}" class="btn btn-secondary">Cadastrar</a>
         {% endif %}
       </div>
-      -->
+     
       </div>
     </div>
   </div>
@@ -33,54 +46,38 @@
 <!-- Contêiner para as partículas -->
 <div id="particle-container"></div>
 
-<!-- Footer com os perfis dos desenvolvedores -->
-<footer class="developer-footer">
-  <div class="container">
-    <div class="developer-profiles">
-      <!-- Desenvolvedor 1 -->
-      <div class="developer-profile">
-        <div class="developer-img" style="background-image: url('{% static 'core/images/patri.jpeg' %}');"></div>
-        <p class="developer-name">Patrick Oliveira</p>
-        <p class="developer-role">Orientador Analista</p>
-      </div>
-     
-      <!-- Desenvolvedor 2 -->
-      <!--<div class="developer-profile">
-        <div class="developer-img" style="background-image: url('{% static 'core/images/mar.jpeg' %}');"></div>
-        <p class="developer-name">Marlon Machado</p>
-        <p class="developer-role">Orientador Analista</p>
-      </div>
-      -->
-      <!-- Desenvolvedor 3 -->
-      <div class="developer-profile">
-        <div class="developer-img" style="background-image: url('{% static 'images/dev3.jpg' %}');"></div>
-        <p class="developer-name">Mizael Marques</p>
-        <p class="developer-role">Desenvolvedor Backend</p>
-      </div>
+<script>
+function toggleSound() {
+    const video = document.getElementById('heroVideo');
+    const soundIcon = document.getElementById('soundIcon');
+    
+    if (video.muted) {
+        video.muted = false;
+        soundIcon.className = 'fas fa-volume-up';
+    } else {
+        video.muted = true;
+        soundIcon.className = 'fas fa-volume-mute';
+    }
+}
 
-      <!-- Desenvolvedor 4 -->
-      <div class="developer-profile">
-        <div class="developer-img" style="background-image: url('{% static 'core/images/mat.jpeg' %}');"></div>
-        <p class="developer-name">Matheus Campos</p>
-        <p class="developer-role">Desenvolvedor Backend</p>
-      </div>
-
-      <!-- Desenvolvedor 5 -->
-      <div class="developer-profile">
-        <div class="developer-img" style="background-image: url('{% static 'core/images/pedro.jpeg' %}');"></div>
-        <p class="developer-name">Pedro Timon</p>
-        <p class="developer-role">Desenvolvedor Frontend</p>
-      </div>
-
-      <!-- Desenvolvedor 6 -->
-      <div class="developer-profile">
-        <div class="developer-img" style="background-image: url('{% static 'core/images/Ana.jpeg' %}');"></div>
-        <p class="developer-name">Ana Carolina</p>
-        <p class="developer-role">Desenvolvedor Frontend</p>
-      </div>
-    </div>
-  </div>
-</footer>
-
+// Tentar reproduzir o vídeo com som após interação do usuário
+document.addEventListener('DOMContentLoaded', function() {
+    const video = document.getElementById('heroVideo');
+    
+    // Tentar reproduzir automaticamente
+    video.play().catch(function(error) {
+        console.log('Autoplay foi bloqueado:', error);
+    });
+    
+    // Adicionar evento de clique em qualquer lugar para ativar o som
+    document.addEventListener('click', function enableAudio() {
+        if (video.paused) {
+            video.play();
+        }
+        // Remover o listener após a primeira interação
+        document.removeEventListener('click', enableAudio);
+    }, { once: true });
+});
+</script>
 
 {% endblock %}

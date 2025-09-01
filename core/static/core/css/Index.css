@@ -18,6 +18,146 @@ body {
   justify-content: space-between; /* Faz o conteúdo ocupar o espaço disponível e empurra o footer para baixo */
 }
 
+/* HERO SECTION */
+.hero-section {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 100vh;
+  position: relative;
+  overflow: hidden;
+}
+
+/* VÍDEO DE BACKGROUND */
+.hero-video-bg {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  min-width: 100%;
+  min-height: 100%;
+  width: auto;
+  height: auto;
+  z-index: -2;
+  transform: translateX(-50%) translateY(-50%);
+  object-fit: cover;
+}
+
+/* OVERLAY PARA ESCURECER O VÍDEO */
+.hero-video-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.5);
+  z-index: -1;
+}
+
+/* BOTÃO DE CONTROLE DE SOM */
+.sound-toggle-btn {
+  position: absolute;
+  top: 20px;
+  right: 20px;
+  z-index: 20;
+  background: rgba(0, 255, 224, 0.2);
+  border: 2px solid #00ffe0;
+  border-radius: 50%;
+  width: 50px;
+  height: 50px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  backdrop-filter: blur(10px);
+}
+
+.sound-toggle-btn:hover {
+  background: rgba(0, 255, 224, 0.4);
+  transform: scale(1.1);
+  box-shadow: 0 0 20px rgba(0, 255, 224, 0.6);
+}
+
+.sound-toggle-btn i {
+  color: #00ffe0;
+  font-size: 1.2rem;
+  transition: all 0.3s ease;
+}
+
+.sound-toggle-btn:hover i {
+  color: #fff;
+}
+
+.hero-content {
+  text-align: center;
+  z-index: 10;
+  padding: 2rem;
+  position: relative;
+}
+
+.container {
+  position: relative;
+  z-index: 10;
+}
+
+.interactive-title {
+  font-family: 'Orbitron', monospace;
+  font-weight: 900;
+  color: #00ffe0;
+  font-size: 4rem;
+  margin-bottom: 350px;
+  letter-spacing: 3px;
+  text-shadow: 0 0 20px #00ffe0;
+
+}
+
+.hero-buttons {
+  display: flex;
+  gap: 2rem;
+  justify-content: center;
+  align-items: center;
+  flex-wrap: wrap;
+  margin-top: 2rem;
+}
+
+.hero-buttons .btn {
+  padding: 1.2rem 3rem;
+  font-size: 1.3rem;
+  font-weight: 600;
+  border-radius: 50px;
+  text-decoration: none;
+  transition: all 0.3s ease;
+  border: none;
+  cursor: pointer;
+  letter-spacing: 1px;
+  min-width: 200px;
+  text-align: center;
+}
+
+.hero-buttons .btn-primary {
+  background: linear-gradient(135deg, #00ffe0 0%, #007cf0 100%);
+  color: #000;
+  box-shadow: 0 0 20px rgba(0, 255, 224, 0.5);
+}
+
+.hero-buttons .btn-primary:hover {
+  transform: translateY(-5px) scale(1.05);
+  box-shadow: 0 0 30px rgba(0, 255, 224, 0.8), 0 10px 20px rgba(0, 0, 0, 0.3);
+  color: #000;
+}
+
+.hero-buttons .btn-secondary {
+  background: linear-gradient(135deg, #ff61a6 0%, #007cf0 100%);
+  color: #fff;
+  box-shadow: 0 0 20px rgba(255, 97, 166, 0.5);
+}
+
+.hero-buttons .btn-secondary:hover {
+  transform: translateY(-5px) scale(1.05);
+  box-shadow: 0 0 30px rgba(255, 97, 166, 0.8), 0 10px 20px rgba(0, 0, 0, 0.3);
+  color: #fff;
+}
+
 /* ANIMAÇÃO DE FUNDO INTERATIVO - GRADIENTE */
 body {
   background: #000000;
@@ -69,6 +209,7 @@ body {
 .urso-guitarra{
   position: absolute;
   scale: 0.65;
+  margin-right: 1000px;
 }
 .urso-guitarra2{
   position: absolute;
@@ -79,7 +220,7 @@ body {
 .urso-guitarra3{
   position: absolute;
   scale: 0.65;
-  margin-left: 250px;
+  margin-left: 1000px;
 }
 
 .developer-name, .developer-role {
@@ -112,5 +253,68 @@ body {
 
   .developer-role {
     font-size: 0.8rem;
+  }
+
+  /* Hero Section Responsivo */
+  .interactive-title {
+    font-size: 2.5rem;
+    margin-bottom: 1.5rem;
+  }
+
+  .hero-buttons {
+    flex-direction: column;
+    gap: 1.5rem;
+    margin-top: 1.5rem;
+  }
+
+  .hero-buttons .btn {
+    padding: 1rem 2.5rem;
+    font-size: 1.1rem;
+    min-width: 250px;
+  }
+
+  .hero-content {
+    padding: 1rem;
+  }
+
+  /* Vídeo responsivo */
+  .hero-video-bg {
+    min-width: 120%;
+    min-height: 120%;
+  }
+
+  /* Botão de som responsivo */
+  .sound-toggle-btn {
+    width: 45px;
+    height: 45px;
+    top: 15px;
+    right: 15px;
+  }
+
+  .sound-toggle-btn i {
+    font-size: 1.1rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .interactive-title {
+    font-size: 2rem;
+    letter-spacing: 2px;
+  }
+
+  .hero-buttons .btn {
+    padding: 0.9rem 2rem;
+    font-size: 1rem;
+    min-width: 200px;
+  }
+
+  /* Vídeo em dispositivos muito pequenos */
+  .hero-video-bg {
+    min-width: 150%;
+    min-height: 150%;
+  }
+
+  .hero-video-overlay {
+    background: rgba(0, 0, 0, 0.6);
   }
 }

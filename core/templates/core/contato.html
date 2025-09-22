@@ -1,0 +1,162 @@
+{% extends 'core/base.html' %}
+{% load static %}
+
+{% block extrahead %}
+<link rel="stylesheet" href="{% static 'core/css/Contato.css' %}">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&display=swap" rel="stylesheet">
+{% endblock extrahead %}
+
+{% block content %}
+
+<div class="container">
+    <img src="{% static 'core/images/LogoLogin.png' %}" class="contato-imagem" alt="Logo Contato">
+    <h1>Fale Conosco</h1>
+
+    {% if messages %}
+    <div class="messages-container">
+        {% for message in messages %}
+            <div class="message message-{{ message.tags }}">
+                <div class="message-icon">
+                    {% if message.tags == 'success' %}
+                        <i class="fas fa-check-circle"></i>
+                    {% elif message.tags == 'error' %}
+                        <i class="fas fa-exclamation-circle"></i>
+                    {% elif message.tags == 'warning' %}
+                        <i class="fas fa-exclamation-triangle"></i>
+                    {% else %}
+                        <i class="fas fa-info-circle"></i>
+                    {% endif %}
+                </div>
+                <div class="message-content">
+                    <p>{{ message }}</p>
+                </div>
+                <button class="message-close">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+        {% endfor %}
+    </div>
+    {% endif %}
+
+    <!-- Botões de teste para demonstrar o sistema de mensagens -->
+    <div class="test-buttons" style="text-align: center; margin-bottom: 20px;">
+        <h3 style="color: #00ffff; margin-bottom: 15px;">Teste o Sistema de Mensagens</h3>
+        <button onclick="testMessage('success')" style="background: #2ecc71; margin: 5px; padding: 8px 15px; border: none; border-radius: 5px; color: white; cursor: pointer;">
+            <i class="fas fa-check"></i> Sucesso
+        </button>
+        <button onclick="testMessage('error')" style="background: #e74c3c; margin: 5px; padding: 8px 15px; border: none; border-radius: 5px; color: white; cursor: pointer;">
+            <i class="fas fa-times"></i> Erro
+        </button>
+        <button onclick="testMessage('warning')" style="background: #f39c12; margin: 5px; padding: 8px 15px; border: none; border-radius: 5px; color: white; cursor: pointer;">
+            <i class="fas fa-exclamation-triangle"></i> Aviso
+        </button>
+        <button onclick="testMessage('info')" style="background: #3498db; margin: 5px; padding: 8px 15px; border: none; border-radius: 5px; color: white; cursor: pointer;">
+            <i class="fas fa-info"></i> Info
+        </button>
+    </div>
+
+    <div class="contato-grid">
+        <div class="contatos">
+            <h2>Entre em contato</h2>
+            <ul class="redes-sociais">
+                <li><a href="#"><i class="fas fa-envelope"></i> grupofaculpji@gmail.com</a></li>
+                <li><a href="https://www.instagram.com/melodiamagicabj/" target="_blank"><i class="fab fa-instagram"></i> Instagram</a></li>
+                <li><a href="https://www.facebook.com/melodiamagicabj/" target="_blank"><i class="fab fa-facebook"></i> Facebook</a></li>
+                <li><a href="https://api.whatsapp.com/send?phone=5521970000000" target="_blank"><i class="fab fa-whatsapp"></i> WhatsApp</a></li>
+            </ul>
+        </div>
+
+        <div class="formulario-contato">
+            <h2>Envie uma mensagem</h2>
+            <form method="post" action="{% url 'contato' %}">
+                {% csrf_token %}
+                <div class="form-group">
+                    <label for="nome">Nome:</label>
+                    <input type="text" id="nome" name="nome" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="email">E-mail:</label>
+                    <input type="email" id="email" name="email" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="assunto">Assunto:</label>
+                    <input type="text" id="assunto" name="assunto" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="mensagem">Mensagem:</label>
+                    <textarea id="mensagem" name="mensagem" rows="5" required></textarea>
+                </div>
+                
+                <button type="submit" class="btn-enviar">
+                    <i class="fas fa-paper-plane"></i>
+                    Enviar Mensagem
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Seção dos Desenvolvedores -->
+    <div class="developer-section" style="margin-top: 50px;">
+        <h2 style="text-align: center; color: #00ffff; margin-bottom: 30px;">Nossa Equipe</h2>
+        <div class="developer-profiles" style="display: flex; flex-wrap: wrap; justify-content: center; gap: 20px;">
+            <!-- Desenvolvedor 1 -->
+            <div class="developer-profile" style="text-align: center; margin: 10px;">
+                <div class="developer-img" style="background-image: url('{% static 'core/images/patri.jpeg' %}'); width: 120px; height: 120px; border-radius: 50%; background-size: cover; background-position: center; margin: 0 auto 10px;"></div>
+                <p class="developer-name" style="color: #00ffff; font-weight: bold; margin: 5px 0;">Patrick Oliveira</p>
+                <p class="developer-role" style="color: #ccc; font-size: 14px;">Orientador Analista</p>
+            </div>
+
+            <!-- Desenvolvedor 3 -->
+            <div class="developer-profile" style="text-align: center; margin: 10px;">
+                <div class="developer-img" style="background-image: url('{% static 'core/images/dev3.jpeg' %}'); width: 120px; height: 120px; border-radius: 50%; background-size: cover; background-position: center; margin: 0 auto 10px;"></div>
+                <p class="developer-name" style="color: #00ffff; font-weight: bold; margin: 5px 0;">Mizael Marques</p>
+                <p class="developer-role" style="color: #ccc; font-size: 14px;">Desenvolvedor Backend</p>
+            </div>
+
+            <!-- Desenvolvedor 4 -->
+            <div class="developer-profile" style="text-align: center; margin: 10px;">
+                <div class="developer-img" style="background-image: url('{% static 'core/images/mat.jpeg' %}'); width: 120px; height: 120px; border-radius: 50%; background-size: cover; background-position: center; margin: 0 auto 10px;"></div>
+                <p class="developer-name" style="color: #00ffff; font-weight: bold; margin: 5px 0;">Matheus Campos</p>
+                <p class="developer-role" style="color: #ccc; font-size: 14px;">Desenvolvedor Backend</p>
+            </div>
+
+            <!-- Desenvolvedor 5 -->
+            <div class="developer-profile" style="text-align: center; margin: 10px;">
+                <div class="developer-img" style="background-image: url('{% static 'core/images/pedro.jpeg' %}'); width: 120px; height: 120px; border-radius: 50%; background-size: cover; background-position: center; margin: 0 auto 10px;"></div>
+                <p class="developer-name" style="color: #00ffff; font-weight: bold; margin: 5px 0;">Pedro Timon</p>
+                <p class="developer-role" style="color: #ccc; font-size: 14px;">Desenvolvedor Frontend</p>
+            </div>
+
+            <!-- Desenvolvedor 6 -->
+            <div class="developer-profile" style="text-align: center; margin: 10px;">
+                <div class="developer-img" style="background-image: url('{% static 'core/images/Ana.jpeg' %}'); width: 120px; height: 120px; border-radius: 50%; background-size: cover; background-position: center; margin: 0 auto 10px;"></div>
+                <p class="developer-name" style="color: #00ffff; font-weight: bold; margin: 5px 0;">Ana Carolina</p>
+                <p class="developer-role" style="color: #ccc; font-size: 14px;">Desenvolvedor Frontend</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+// Função para testar mensagens dinâmicas
+function testMessage(type) {
+    const messages = {
+        'success': 'Operação realizada com sucesso!',
+        'error': 'Ocorreu um erro. Tente novamente.',
+        'warning': 'Atenção: Esta ação não pode ser desfeita.',
+        'info': 'Informação importante sobre o sistema.'
+    };
+    
+    if (window.messageManager) {
+        window.messageManager[type](messages[type]);
+    } else {
+        console.log('MessageManager não está disponível');
+    }
+}
+</script>
+
+{% endblock %}

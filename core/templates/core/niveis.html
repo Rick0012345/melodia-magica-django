@@ -1,0 +1,59 @@
+{% extends 'core/base.html' %}
+{% load static %}
+
+{% block title %}Níveis - Melodia Mágica{% endblock %}
+{% block extrahead %}
+<link rel="stylesheet" href="{% static 'core/css/background-questoes.css' %}">
+<link rel="stylesheet" href="{% static 'core/css/Niveis.css' %}">
+{% endblock %}
+{% block content %}
+
+<div class="background"> 
+    <div class="parent">
+        <!-- Mensagens informativas -->
+        <div class="niveis-messages">
+            {% if user.is_authenticated %}
+                {% if quizzes %}
+                    <div class="nivel-message nivel-message-info">
+                        <i class="fas fa-gamepad"></i>
+                        <span>Escolha um nível para começar o quiz!</span>
+                    </div>
+                    
+                    {% if user.pontuacao_set.exists %}
+                        <div class="nivel-message nivel-message-success">
+                            <i class="fas fa-star"></i>
+                            <span>Você já completou {{ user.pontuacao_set.count }} nível(is) com sucesso!</span>
+                        </div>
+                    {% endif %}
+                {% else %}
+                    <div class="nivel-message nivel-message-warning">
+                        <i class="fas fa-exclamation-triangle"></i>
+                        <span>Nenhum nível disponível no momento. Volte mais tarde!</span>
+                    </div>
+                {% endif %}
+            {% else %}
+                <div class="nivel-message nivel-message-warning">
+                    <i class="fas fa-user-lock"></i>
+                    <span>Faça login para acessar os níveis e ganhar pontos!</span>
+                </div>
+            {% endif %}
+        </div>
+        
+        {% if quizzes %}
+            {% for quiz in quizzes %}
+                <div class="card" onclick="location.href='{% url 'game_page' quiz.id %}';">
+                    {{ quiz.nivel_dificuldade }}
+                </div>
+            {% endfor %}
+        {% else %}
+            <div class="no-quizzes">
+                <h2>Nenhum nível disponível no momento</h2>
+                <p>Os níveis serão adicionados em breve!</p>
+            </div>
+        {% endif %}
+    </div>
+</div>
+
+
+
+{% endblock %}

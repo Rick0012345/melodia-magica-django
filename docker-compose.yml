@@ -1,0 +1,39 @@
+version: '3.8'
+
+services:
+  web:
+    build: .
+    command: python manage.py runserver 0.0.0.0:8000
+    volumes:
+      - ./melodiaMagica:/app/melodiaMagica
+      - ./manage.py:/app/manage.py
+      - ./core:/app/core
+      - ./chatbot:/app/chatbot
+      - ./static:/app/static
+    ports:
+      - "8000:8000"
+    environment:
+      - DJANGO_SETTINGS_MODULE=melodiaMagica.settings
+      - DATABASE_URL=postgres://postgres:postgres@db:5432/postgres
+      - DEBUG=True
+      - SECRET_KEY=django-insecure-temp-key-for-development
+      - ALLOWED_HOSTS=localhost,127.0.0.1,0.0.0.0
+      - EMAIL_HOST_USER=po44243@gmail.com
+      - EMAIL_HOST_PASSWORD=udhq jsdt ypvi auot
+      - GOOGLE_CLIENT_ID=1004153216660-53mkrla9pgmufof95cgdi6hdh0sckdrc.apps.googleusercontent.com
+      - GOOGLE_CLIENT_SECRET=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
+    depends_on:
+      - db
+  db:
+    image: postgres:15
+    volumes:
+      - postgres_data:/var/lib/postgresql/data/
+    environment:
+      - POSTGRES_DB=postgres
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+    ports:
+      - "5432:5432"
+
+volumes:
+  postgres_data:

@@ -1,0 +1,290 @@
+/* Estilos para o template de criação de perguntas */
+
+body {
+    background: #000000 !important;
+}
+
+.pergunta-form-container {
+    max-width: 900px;
+    margin: 2rem auto;
+    padding: 0 1rem;
+}
+
+.form-card {
+    background: linear-gradient(135deg, #00d4ff 0%, #ff00ff 50%, #ff0080 100%);
+    border-radius: 20px;
+    padding: 2rem;
+    box-shadow: 0 20px 40px rgba(0,0,0,0.3);
+    color: white;
+}
+
+.form-header {
+    text-align: center;
+    margin-bottom: 2rem;
+}
+
+.form-header h1 {
+    font-size: 2.5rem;
+    font-weight: 700;
+    margin-bottom: 0.5rem;
+    text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+}
+
+.quiz-info {
+    background: rgba(255,255,255,0.1);
+    border-radius: 12px;
+    padding: 1rem;
+    margin-bottom: 2rem;
+    text-align: center;
+}
+
+.form-group {
+    margin-bottom: 1.5rem;
+}
+
+.form-label {
+    font-weight: 600;
+    margin-bottom: 0.5rem;
+    display: block;
+    font-size: 1.1rem;
+}
+
+.form-control {
+    border: none;
+    border-radius: 12px;
+    padding: 1rem;
+    font-size: 1rem;
+    background: rgba(255,255,255,0.9);
+    color: #333;
+    transition: all 0.3s ease;
+}
+
+.form-control:focus {
+    background: white;
+    box-shadow: 0 0 20px rgba(255,255,255,0.3);
+    outline: none;
+    transform: translateY(-2px);
+}
+
+.tipo-selector {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+}
+
+.tipo-option {
+    background: rgba(255,255,255,0.1);
+    border: 2px solid rgba(255,255,255,0.3);
+    border-radius: 12px;
+    padding: 1rem;
+    text-align: center;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.tipo-option:hover {
+    background: rgba(255,255,255,0.2);
+    border-color: rgba(255,255,255,0.5);
+    transform: translateY(-2px);
+}
+
+.tipo-option.selected {
+    background: rgba(255,255,255,0.3);
+    border-color: white;
+    box-shadow: 0 0 20px rgba(255,255,255,0.2);
+}
+
+.tipo-option i {
+    font-size: 2rem;
+    margin-bottom: 0.5rem;
+    display: block;
+}
+
+.alternativas-container {
+    margin-top: 1.5rem;
+}
+
+.alternativa-item {
+    background: rgba(255,255,255,0.1);
+    border: 1px solid rgba(255,255,255,0.3);
+    border-radius: 8px;
+    padding: 1rem;
+    margin-bottom: 1rem;
+    transition: all 0.3s ease;
+}
+
+.alternativa-item:hover {
+    background: rgba(255,255,255,0.15);
+}
+
+.alternativa-header {
+    display: flex;
+    justify-content: between;
+    align-items: center;
+    margin-bottom: 0.5rem;
+}
+
+.alternativa-label {
+    font-weight: 600;
+    margin-bottom: 0.5rem;
+}
+
+.btn-remove-alternativa {
+    background: rgba(255,107,107,0.8);
+    border: none;
+    color: white;
+    border-radius: 6px;
+    padding: 0.3rem 0.6rem;
+    font-size: 0.8rem;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.btn-remove-alternativa:hover {
+    background: rgba(255,107,107,1);
+    transform: scale(1.05);
+}
+
+.btn-add-alternativa {
+    background: rgba(255,255,255,0.2);
+    border: 2px dashed rgba(255,255,255,0.5);
+    color: white;
+    border-radius: 8px;
+    padding: 0.8rem;
+    width: 100%;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    margin-bottom: 1rem;
+}
+
+.btn-add-alternativa:hover {
+    background: rgba(255,255,255,0.3);
+    border-color: white;
+}
+
+.vf-options {
+    display: flex;
+    gap: 1rem;
+    margin-top: 1rem;
+}
+
+.vf-option {
+    flex: 1;
+    background: rgba(255,255,255,0.1);
+    border: 2px solid rgba(255,255,255,0.3);
+    border-radius: 8px;
+    padding: 1rem;
+    text-align: center;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.vf-option:hover {
+    background: rgba(255,255,255,0.2);
+    transform: translateY(-2px);
+}
+
+.vf-option.selected {
+    background: rgba(255,255,255,0.3);
+    border-color: white;
+    box-shadow: 0 0 15px rgba(255,255,255,0.2);
+}
+
+.vf-option.verdadeiro {
+    border-color: rgba(40,167,69,0.8);
+}
+
+.vf-option.verdadeiro.selected {
+    background: rgba(40,167,69,0.2);
+    border-color: #28a745;
+}
+
+.vf-option.falso {
+    border-color: rgba(220,53,69,0.8);
+}
+
+.vf-option.falso.selected {
+    background: rgba(220,53,69,0.2);
+    border-color: #dc3545;
+}
+
+.btn-primary {
+    background: linear-gradient(45deg, #00d4ff, #ff00ff);
+    border: none;
+    color: white;
+    border-radius: 12px;
+    padding: 1rem 2rem;
+    font-size: 1.1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 15px rgba(0, 212, 255, 0.3);
+    width: 100%;
+    margin-top: 1rem;
+}
+
+.btn-primary:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 8px 25px rgba(0, 212, 255, 0.5);
+    filter: brightness(1.1);
+}
+
+.btn-primary:active {
+    transform: scale(0.97);
+}
+
+.btn-secondary {
+    background: rgba(255,255,255,0.1);
+    border: 2px solid rgba(255,255,255,0.3);
+    color: white;
+    border-radius: 12px;
+    padding: 0.8rem 1.5rem;
+    font-weight: 600;
+    text-decoration: none;
+    display: inline-block;
+    transition: all 0.3s ease;
+}
+
+.btn-secondary:hover {
+    background: rgba(255,255,255,0.3);
+    color: white;
+    text-decoration: none;
+}
+
+.error-message {
+    background: rgba(255,107,107,0.2);
+    border: 1px solid rgba(255,107,107,0.5);
+    color: #ff6b6b;
+    padding: 0.5rem;
+    border-radius: 8px;
+    margin-top: 0.5rem;
+    font-size: 0.9rem;
+}
+
+.icon {
+    margin-right: 0.5rem;
+}
+
+/* Responsividade */
+@media (max-width: 768px) {
+    .pergunta-form-container {
+        margin: 1rem auto;
+    }
+    
+    .form-card {
+        padding: 1.5rem;
+    }
+    
+    .form-header h1 {
+        font-size: 2rem;
+    }
+    
+    .tipo-selector {
+        grid-template-columns: 1fr;
+    }
+    
+    .vf-options {
+        flex-direction: column;
+    }
+}

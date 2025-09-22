@@ -1,0 +1,226 @@
+{% extends 'core/base.html' %}
+{% load static %}
+
+{% block title %}Gerenciar Quizzes - Melodia Mágica{% endblock %}
+
+{% block extra_css %}
+<style>
+    .quiz-list-text{
+        color: #fff !important;
+    }
+    
+    h2 {
+        color: white !important;
+    }
+    .quiz-container {
+        max-width: 1200px;
+        margin: 2rem auto;
+        padding: 0 1rem;
+    }
+    
+    .quiz-header {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+        padding: 2rem;
+        border-radius: 15px;
+        margin-bottom: 2rem;
+        text-align: center;
+    }
+    
+    .quiz-header h1 {
+        font-size: 2.5rem;
+        font-weight: 700;
+        margin-bottom: 0.5rem;
+    }
+    
+    .quiz-card {
+        background: white;
+        border-radius: 15px;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+        border: none;
+        overflow: hidden;
+    }
+    
+    .quiz-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
+    }
+    
+    .quiz-card-header {
+        background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+        color: white;
+        padding: 1.5rem;
+        border: none;
+    }
+    
+    .btn-modern {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        border: none;
+        border-radius: 25px;
+        padding: 0.75rem 2rem;
+        color: white;
+        font-weight: 600;
+        transition: all 0.3s ease;
+    }
+    
+    .btn-modern:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 10px 20px rgba(102, 126, 234, 0.3);
+        color: white;
+    }
+    
+    .stats-item {
+        text-align: center;
+        padding: 1rem;
+    }
+    
+    .stats-number {
+        font-size: 1.5rem;
+        font-weight: 700;
+        color: #667eea;
+    }
+    
+    .empty-state {
+        text-align: center;
+        padding: 4rem 2rem;
+        background: white;
+        border-radius: 15px;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+    }
+    
+    .empty-state i {
+        font-size: 4rem;
+        color: #dee2e6;
+        margin-bottom: 1rem;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="quiz-container">
+    <div class="quiz-header">
+        <h1><i class="fas fa-music me-3"></i>Gerenciar Quizzes</h1>
+        <p class="mb-0">Lista de todos os quizzes cadastrados</p>
+    </div>
+    
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2><i id="quiz-list-text" class="fas fa-list me-2"></i>Lista de Quizzes</h2>
+        <a href="{% url 'quiz_create' %}" class="btn btn-modern">
+            <i class="fas fa-plus me-2"></i>Novo Quiz
+        </a>
+    </div>
+    {% if quizzes %}
+    <div class="row">
+        {% for quiz in quizzes %}
+        <div class="col-md-6 col-lg-4 mb-4">
+            <div class="card quiz-card h-100">
+                <div class="card-header quiz-card-header d-flex justify-content-between align-items-center">
+                    <h5 class="mb-0">{{ quiz.titulo }}</h5>
+                    <span class="badge bg-light text-dark">Nível {{ quiz.nivel_dificuldade }}</span>
+                </div>
+            <div class="card-body">
+                <p class="card-text">{{ quiz.descricao|truncatewords:20 }}</p>
+                
+                 <div class="row text-center mb-3">
+                     <div class="col-6">
+                         <div class="stats-item border-end">
+                             <div class="stats-number">{{ quiz.perguntas.count }}</div>
+                             <small class="text-muted">Perguntas</small>
+                         </div>
+                     </div>
+                     <div class="col-6">
+                         <div class="stats-item">
+                             <div class="stats-number text-success">{{ quiz.pontuacao_set.count }}</div>
+                             <small class="text-muted">Jogadores</small>
+                         </div>
+                     </div>
+                 </div>
+                
+                <small class="text-muted">
+                    <i class="fas fa-calendar me-1"></i>
+                    Criado em {{ quiz.data_criacao|date:"d/m/Y" }}
+                </small>
+            </div>
+            <div class="card-footer bg-transparent">
+                <div class="btn-group w-100" role="group">
+                    <a href="{% url 'pergunta_list' quiz.id %}" class="btn btn-outline-primary btn-sm">
+                        <i class="fas fa-question-circle me-1"></i>Perguntas
+                    </a>
+                    <a href="{% url 'quiz_update' quiz.id %}" class="btn btn-outline-secondary btn-sm">
+                        <i class="fas fa-edit me-1"></i>Editar
+                    </a>
+                    <a href="{% url 'pergunta_validate' quiz.id %}" class="btn btn-outline-info btn-sm">
+                        <i class="fas fa-check-double me-1"></i>Validar
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+    {% endfor %}
+</div>
+
+    <!-- Estatísticas -->
+    <div class="row mt-4">
+        <div class="col-12">
+            <div class="card quiz-card">
+                <div class="card-header quiz-card-header">
+                    <h5 class="mb-0"><i class="fas fa-chart-bar me-2"></i>Estatísticas Gerais</h5>
+                </div>
+                <div class="card-body">
+                    <div class="row text-center">
+                        <div class="col-md-3">
+                            <div class="stats-item">
+                                <div class="stats-number">{{ quizzes.count }}</div>
+                                <p class="mb-0 text-muted">Total de Quizzes</p>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="stats-item">
+                                <div class="stats-number text-success">{{ total_perguntas }}</div>
+                                <p class="mb-0 text-muted">Total de Perguntas</p>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="stats-item">
+                                <div class="stats-number text-info">{{ total_jogadores }}</div>
+                                <p class="mb-0 text-muted">Total de Jogadores</p>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="stats-item">
+                                <div class="stats-number text-warning">{{ media_nivel|floatformat:1 }}</div>
+                                <p class="mb-0 text-muted">Nível Médio</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    {% else %}
+    <div class="empty-state">
+        <i class="fas fa-question-circle"></i>
+        <h3 class="text-muted mb-3">Nenhum quiz cadastrado</h3>
+        <p class="text-muted mb-4">Comece criando seu primeiro quiz!</p>
+        <a href="{% url 'quiz_create' %}" class="btn btn-modern btn-lg">
+            <i class="fas fa-plus me-2"></i>Criar Primeiro Quiz
+        </a>
+    </div>
+    {% endif %}
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+// Adicionar confirmação para ações perigosas
+document.addEventListener('DOMContentLoaded', function() {
+    // Adicionar tooltips
+    var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
+    var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
+        return new bootstrap.Tooltip(tooltipTriggerEl);
+    });
+});
+</script>
+{% endblock %}

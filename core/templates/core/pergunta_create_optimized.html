@@ -1,0 +1,250 @@
+{% extends 'core/base.html' %}
+{% load static %}
+
+{% block title %}Criar Questão - Melodia Mágica{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'core/css/pergunta-create.css' %}">
+{% endblock %}
+
+{% block content %}
+<div class="pergunta-form-container">
+    <div class="form-card">
+        <div class="form-header">
+            <h1><i class="fas fa-question-circle icon"></i>Criar Nova Questão</h1>
+            <p>Adicione uma questão desafiadora ao seu quiz!</p>
+        </div>
+        
+        {% if quiz %}
+        <div class="quiz-info">
+            <h4><i class="fas fa-book icon"></i>{{ quiz.titulo }}</h4>
+            <p>{{ quiz.descricao }}</p>
+        </div>
+        {% endif %}
+        
+        <form method="post" id="pergunta-form">
+            {% csrf_token %}
+            
+            {% if quiz %}
+            <input type="hidden" name="quiz" value="{{ quiz.id }}">
+            {% endif %}
+            
+            <div class="form-group">
+                <label for="id_pergunta" class="form-label">
+                    <i class="fas fa-edit icon"></i>Texto da Questão
+                </label>
+                <textarea name="pergunta" 
+                          id="id_pergunta" 
+                          class="form-control" 
+                          rows="3" 
+                          placeholder="Digite sua questão aqui..."
+                          required></textarea>
+                {% if form.pergunta.errors %}
+                    <div class="error-message">
+                        {% for error in form.pergunta.errors %}
+                            <i class="fas fa-exclamation-triangle"></i> {{ error }}
+                        {% endfor %}
+                    </div>
+                {% endif %}
+            </div>
+            
+            <div class="form-group">
+                <label class="form-label">
+                    <i class="fas fa-list icon"></i>Tipo de Questão
+                </label>
+                <div class="tipo-selector">
+                    <div class="tipo-option" onclick="selectTipo('multipla_escolha')">
+                        <i class="fas fa-list-ul tipo-icon"></i>
+                        <input type="radio" name="tipo" value="multipla_escolha" id="tipo_multipla">
+                        <strong>Múltipla Escolha</strong>
+                        <p>Questão com várias alternativas</p>
+                    </div>
+                    <div class="tipo-option" onclick="selectTipo('verdadeiro_falso')">
+                        <i class="fas fa-check-circle tipo-icon"></i>
+                        <input type="radio" name="tipo" value="verdadeiro_falso" id="tipo_vf">
+                        <strong>Verdadeiro/Falso</strong>
+                        <p>Questão de verdadeiro ou falso</p>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Seção Verdadeiro/Falso -->
+            <div class="vf-section" id="vf-section">
+                <h5><i class="fas fa-check-double icon"></i>Resposta Correta</h5>
+                <p>Selecione qual é a resposta correta para esta questão:</p>
+                <div class="vf-options">
+                    <div class="vf-option" onclick="selectVF(true)">
+                        <i class="fas fa-check"></i>
+                        <input type="radio" name="resposta_verdadeiro_falso" value="true" id="vf_true">
+                        <strong>Verdadeiro</strong>
+                    </div>
+                    <div class="vf-option" onclick="selectVF(false)">
+                        <i class="fas fa-times"></i>
+                        <input type="radio" name="resposta_verdadeiro_falso" value="false" id="vf_false">
+                        <strong>Falso</strong>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Seção Alternativas -->
+            <div class="alternativas-section" id="alternativas-section">
+                <h5><i class="fas fa-list-ol icon"></i>Alternativas</h5>
+                <p>Adicione as alternativas para sua questão (marque a correta):</p>
+                
+                <div id="alternativas-container">
+                    <!-- Alternativas serão adicionadas dinamicamente -->
+                </div>
+                
+                <button type="button" class="btn-secondary" onclick="addAlternativa()">
+                    <i class="fas fa-plus icon"></i>Adicionar Alternativa
+                </button>
+            </div>
+            
+            <div class="d-flex gap-3 mt-4">
+                <a href="{% if quiz %}{% url 'pergunta_list' quiz.id %}{% else %}{% url 'quiz_list' %}{% endif %}" class="btn-secondary">
+                    <i class="fas fa-arrow-left icon"></i>Voltar
+                </a>
+                <button type="submit" class="btn btn-primary flex-grow-1">
+                    <i class="fas fa-save icon"></i>Criar Questão
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<script>
+let alternativaCount = 0;
+
+function selectTipo(tipo) {
+    // Remove seleção anterior
+    document.querySelectorAll('.tipo-option').forEach(el => el.classList.remove('selected'));
+    
+    // Adiciona seleção atual
+    event.currentTarget.classList.add('selected');
+    
+    // Marca o radio button
+    document.getElementById('tipo_' + (tipo === 'multipla_escolha' ? 'multipla' : 'vf')).checked = true;
+    
+    // Mostra/esconde seções
+    const vfSection = document.getElementById('vf-section');
+    const alternativasSection = document.getElementById('alternativas-section');
+    
+    if (tipo === 'verdadeiro_falso') {
+        vfSection.style.display = 'block';
+        alternativasSection.style.display = 'none';
+    } else {
+        vfSection.style.display = 'none';
+        alternativasSection.style.display = 'block';
+        
+        // Adicionar alternativas padrão se não existirem
+        if (alternativaCount === 0) {
+            addAlternativa();
+            addAlternativa();
+        }
+    }
+}
+
+function selectVF(value) {
+    // Remove seleção atual
+    document.querySelectorAll('.vf-option').forEach(option => {
+        option.classList.remove('selected');
+    });
+    
+    // Adiciona seleção atual
+    event.currentTarget.classList.add('selected');
+    
+    // Marca o radio button correto
+    if (value) {
+        document.getElementById('vf_true').checked = true;
+    } else {
+        document.getElementById('vf_false').checked = true;
+    }
+}
+
+function addAlternativa() {
+    alternativaCount++;
+    const container = document.getElementById('alternativas-container');
+    
+    const alternativaDiv = document.createElement('div');
+    alternativaDiv.className = 'alternativa-item';
+    alternativaDiv.innerHTML = `
+        <div class="alternativa-input">
+            <input type="text" 
+                   name="alternativa_${alternativaCount}" 
+                   class="form-control" 
+                   placeholder="Digite a alternativa ${alternativaCount}..."
+                   required>
+        </div>
+        <div class="correta-checkbox">
+            <input type="radio" 
+                   name="alternativa_correta" 
+                   value="${alternativaCount}" 
+                   id="correta_${alternativaCount}">
+            <label for="correta_${alternativaCount}">Correta</label>
+        </div>
+        <button type="button" class="btn btn-sm btn-outline-light" onclick="removeAlternativa(this)">
+            <i class="fas fa-trash"></i>
+        </button>
+    `;
+    
+    container.appendChild(alternativaDiv);
+}
+
+function removeAlternativa(button) {
+    if (alternativaCount > 2) {
+        button.parentElement.remove();
+        alternativaCount--;
+    } else {
+        alert('Uma questão de múltipla escolha deve ter pelo menos 2 alternativas.');
+    }
+}
+
+// Validação do formulário
+document.getElementById('pergunta-form').addEventListener('submit', function(e) {
+    const pergunta = document.getElementById('id_pergunta').value.trim();
+    const tipoSelecionado = document.querySelector('input[name="tipo"]:checked');
+    
+    if (!pergunta) {
+        e.preventDefault();
+        alert('Por favor, insira o texto da questão.');
+        document.getElementById('id_pergunta').focus();
+        return;
+    }
+    
+    if (!tipoSelecionado) {
+        e.preventDefault();
+        alert('Por favor, selecione o tipo de questão.');
+        return;
+    }
+    
+    if (tipoSelecionado.value === 'verdadeiro_falso') {
+        const vfSelecionado = document.querySelector('input[name="resposta_verdadeiro_falso"]:checked');
+        if (!vfSelecionado) {
+            e.preventDefault();
+            alert('Por favor, selecione a resposta correta (Verdadeiro ou Falso).');
+            return;
+        }
+    } else if (tipoSelecionado.value === 'multipla_escolha') {
+        const alternativas = document.querySelectorAll('input[name^="alternativa_"]');
+        const corretaSelecionada = document.querySelector('input[name="alternativa_correta"]:checked');
+        
+        let alternativasPreenchidas = 0;
+        alternativas.forEach(alt => {
+            if (alt.value.trim()) alternativasPreenchidas++;
+        });
+        
+        if (alternativasPreenchidas < 2) {
+            e.preventDefault();
+            alert('Por favor, preencha pelo menos 2 alternativas.');
+            return;
+        }
+        
+        if (!corretaSelecionada) {
+            e.preventDefault();
+            alert('Por favor, marque qual alternativa é a correta.');
+            return;
+        }
+    }
+});
+</script>
+{% endblock %}

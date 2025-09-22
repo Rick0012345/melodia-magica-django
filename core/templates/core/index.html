@@ -1,0 +1,37 @@
+{% extends 'core/base.html' %}
+{% load static %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'core/css/Index.css' %}">
+{% endblock %}
+
+{% block content %}
+<section class="hero-section">
+  
+  <img src="{% static 'core/images/urso_guitarra.gif' %}" alt="urso guitarrista" class="urso-guitarra">
+  <img src="{% static 'core/images/urso-central.gif' %}" alt="urso guitarrista" class="urso-central">
+  <img src="{% static 'core/images/urso_guitarra.gif' %}" alt="urso guitarrista" class="urso-guitarra3">
+  <div class="container">
+    <div class="hero-content">
+    <h1 class="interactive-title">Melodia Mágica</h1>
+
+      <div class="hero-buttons">
+        {% if user.is_authenticated %}
+          <a href="{% url 'menu' %}" class="btn btn-primary">Quiz</a>
+          <a href="{% url 'niveis' %}" class="btn btn-secondary">Níveis</a>
+        {% else %}
+          <a href="{% url 'account_login' %}" class="btn btn-primary">Entrar</a>
+          <a href="{% url 'account_signup' %}" class="btn btn-secondary">Cadastrar</a>
+        {% endif %}
+      </div>
+     
+      </div>
+    </div>
+  </div>
+</section>
+<!-- Contêiner para as partículas -->
+<div id="particle-container"></div>
+
+
+
+{% endblock %}

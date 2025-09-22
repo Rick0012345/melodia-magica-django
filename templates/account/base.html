@@ -1,0 +1,66 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block head_title %}{% endblock %} - Melodia Mágica</title>
+    
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{% static 'core/css/Base.css' %}">
+    <link rel="stylesheet" href="{% static 'core/css/messages.css' %}">
+    
+</head>
+<body>
+    <!-- Navbar -->
+    {% include 'core/navbar.html' %}
+    
+    <!-- Sistema de mensagens globais -->
+    {% if messages %}
+    <div class="global-messages">
+        {% for message in messages %}
+            <div class="global-message global-message-{{ message.tags }}" id="message-{{ forloop.counter }}">
+                <div class="global-message-icon">
+                    {% if message.tags == 'success' %}
+                        <i class="fas fa-check-circle"></i>
+                    {% elif message.tags == 'error' %}
+                        <i class="fas fa-exclamation-circle"></i>
+                    {% elif message.tags == 'warning' %}
+                        <i class="fas fa-exclamation-triangle"></i>
+                    {% else %}
+                        <i class="fas fa-info-circle"></i>
+                    {% endif %}
+                </div>
+                <div class="global-message-content">
+                    <p>{{ message }}</p>
+                </div>
+                <button class="global-message-close">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+        {% endfor %}
+    </div>
+    {% endif %}
+
+    <div class="container">
+        <div class="auth-container">
+            <div class="auth-card">
+                {% block content %}
+                {% endblock %}
+            </div>
+        </div>
+    </div>
+
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="{% static 'core/js/messages.js' %}"></script>
+    
+    {% block extra_js %}
+    {% endblock %}
+</body>
+</html>

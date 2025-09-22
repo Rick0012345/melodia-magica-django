@@ -1,0 +1,118 @@
+{% extends "account/base.html" %}
+
+{% load i18n %}
+{% load account socialaccount %}
+
+{% block head_title %}{% trans "Cadastrar" %}{% endblock %}
+
+{% block content %}
+<div class="auth-header">
+    <h1>{% trans "Cadastrar" %}</h1>
+    <p>{% trans "Crie sua conta no Melodia Mágica!" %}</p>
+</div>
+
+{% get_providers as socialaccount_providers %}
+
+{% if socialaccount_providers %}
+<div class="social-login">
+    {# Carrega o JS necessário para fluxos OAuth #}
+    {% providers_media_js %}
+    
+    {# Botão direto do Google #}
+    <a href="{% provider_login_url "google" process="signup" %}" class="btn btn-google">
+        <i class="fab fa-google"></i>
+        Cadastrar com Google
+    </a>
+    
+    <div class="divider">
+        <span>{% trans 'ou' %}</span>
+    </div>
+</div>
+{% endif %}
+
+<!-- Mensagens de erro -->
+{% if form.errors %}
+<div class="messages-container">
+    {% for field in form %}
+        {% for error in field.errors %}
+            <div class="message message-error">
+                <div class="message-icon">
+                    <i class="fas fa-exclamation-circle"></i>
+                </div>
+                <div class="message-content">
+                    <p>{{ error }}</p>
+                </div>
+                <button class="message-close">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+        {% endfor %}
+    {% endfor %}
+    {% for error in form.non_field_errors %}
+        <div class="message message-error">
+            <div class="message-icon">
+                <i class="fas fa-exclamation-circle"></i>
+            </div>
+            <div class="message-content">
+                <p>{{ error }}</p>
+            </div>
+            <button class="message-close">
+                <i class="fas fa-times"></i>
+            </button>
+        </div>
+    {% endfor %}
+</div>
+{% endif %}
+
+<form method="POST" action="{% url 'account_signup' %}">
+    {% csrf_token %}
+
+    <div class="form-floating">
+        <input type="text" class="form-control" id="{{ form.username.id_for_label }}" name="username" placeholder="{% trans 'Nome de usuário' %}" value="{{ form.username.value|default:'' }}">
+        <label for="{{ form.username.id_for_label }}">
+            <i class="fas fa-user me-2"></i>
+            {% trans "Nome de usuário" %}
+        </label>
+    </div>
+
+    <div class="form-floating">
+        <input type="email" class="form-control" id="{{ form.email.id_for_label }}" name="email" placeholder="{% trans 'E-mail' %}" value="{{ form.email.value|default:'' }}">
+        <label for="{{ form.email.id_for_label }}">
+            <i class="fas fa-envelope me-2"></i>
+            {% trans "E-mail" %}
+        </label>
+    </div>
+
+    <div class="form-floating">
+        <input type="password" class="form-control" id="{{ form.password1.id_for_label }}" name="password1" placeholder="{% trans 'Senha' %}">
+        <label for="{{ form.password1.id_for_label }}">
+            <i class="fas fa-lock me-2"></i>
+            {% trans "Senha" %}
+        </label>
+    </div>
+
+    <div class="form-floating">
+        <input type="password" class="form-control" id="{{ form.password2.id_for_label }}" name="password2" placeholder="{% trans 'Confirmar Senha' %}">
+        <label for="{{ form.password2.id_for_label }}">
+            <i class="fas fa-lock me-2"></i>
+            {% trans "Confirmar Senha" %}
+        </label>
+    </div>
+
+    {% if redirect_field_value %}
+    <input type="hidden" name="{{ redirect_field_name }}" value="{{ redirect_field_value }}" />
+    {% endif %}
+
+    <button type="submit" class="btn btn-primary">
+        <i class="fas fa-user-plus me-2"></i>
+        {% trans "Cadastrar" %}
+    </button>
+
+    <div class="auth-links">
+        <a href="{% url 'account_login' %}">
+            <i class="fas fa-sign-in-alt me-1"></i>
+            {% trans "Já tem uma conta? Faça login" %}
+        </a>
+    </div>
+</form>
+{% endblock %}

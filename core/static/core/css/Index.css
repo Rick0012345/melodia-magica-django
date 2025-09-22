@@ -1,0 +1,248 @@
+/* RESET */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html, body {
+  height: 100%; /* O corpo vai ocupar 100% da altura da tela */
+}
+
+body {
+  font-family: 'Orbitron', 'Poppins', sans-serif;
+  color: #ffffff;
+  background: #000;
+  display: flex;
+  flex-direction: column; /* Organiza o layout em coluna */
+  justify-content: space-between; /* Faz o conteúdo ocupar o espaço disponível e empurra o footer para baixo */
+}
+
+/* HERO SECTION */
+.hero-section {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 100vh;
+  position: relative;
+  overflow: hidden;
+}
+
+
+
+.hero-content {
+  text-align: center;
+  z-index: 10;
+  padding: 2rem;
+  position: relative;
+}
+
+.container {
+  position: relative;
+  z-index: 10;
+}
+
+.interactive-title {
+  font-family: 'Orbitron', monospace;
+  font-weight: 900;
+  color: #00ffe0;
+  font-size: 4rem;
+  margin-bottom: 350px;
+  letter-spacing: 3px;
+  text-shadow: 0 0 20px #00ffe0;
+
+}
+
+.hero-buttons {
+  display: flex;
+  gap: 2rem;
+  justify-content: center;
+  align-items: center;
+  flex-wrap: wrap;
+  margin-top: 2rem;
+}
+
+.hero-buttons .btn {
+  padding: 1.2rem 3rem;
+  font-size: 1.3rem;
+  font-weight: 600;
+  border-radius: 50px;
+  text-decoration: none;
+  transition: all 0.3s ease;
+  border: none;
+  cursor: pointer;
+  letter-spacing: 1px;
+  min-width: 200px;
+  text-align: center;
+}
+
+.hero-buttons .btn-primary {
+  background: linear-gradient(135deg, #00ffe0 0%, #007cf0 100%);
+  color: #000;
+  box-shadow: 0 0 20px rgba(0, 255, 224, 0.5);
+}
+
+.hero-buttons .btn-primary:hover {
+  transform: translateY(-5px) scale(1.05);
+  box-shadow: 0 0 30px rgba(0, 255, 224, 0.8), 0 10px 20px rgba(0, 0, 0, 0.3);
+  color: #000;
+}
+
+.hero-buttons .btn-secondary {
+  background: linear-gradient(135deg, #ff61a6 0%, #007cf0 100%);
+  color: #fff;
+  box-shadow: 0 0 20px rgba(255, 97, 166, 0.5);
+}
+
+.hero-buttons .btn-secondary:hover {
+  transform: translateY(-5px) scale(1.05);
+  box-shadow: 0 0 30px rgba(255, 97, 166, 0.8), 0 10px 20px rgba(0, 0, 0, 0.3);
+  color: #fff;
+}
+
+/* ANIMAÇÃO DE FUNDO INTERATIVO - GRADIENTE */
+body {
+  background: #000000;
+  background-size: 400% 400%;
+  animation: gradientAnimation 18s ease infinite;
+}
+
+
+
+/* Footer dos Desenvolvedores */
+.developer-footer {
+  position: absolute;
+  bottom: 0;
+  width: 100%;
+  background-color: #ffffff00;
+  padding: -10px ;
+  text-align: center;
+  color: #fbfbfb00;
+}
+
+.developer-profiles {
+  display: flex;
+  justify-content: center;
+  gap: 30px;
+  flex-wrap: wrap;
+}
+
+.developer-profile {
+  text-align: center;
+  max-width: 150px; /* Limita o tamanho máximo de cada perfil */
+  flex: 1 1 200px; /* Flexível, mas com largura mínima */
+  margin-bottom: 20px;
+}
+
+.developer-img {
+  width: 120px;
+  height: 120px;
+  border-radius: 50%;
+  background-size: cover;
+  background-position: center;
+  margin: 0 auto;
+  box-shadow: 0 0 15px rgba(0, 255, 255, 0.2);
+  transition: transform 0.3s ease;
+}
+
+.developer-profile:hover .developer-img {
+  transform: scale(1.05);
+}
+.urso-guitarra{
+  position: absolute;
+  scale: 0.65;
+  margin-right: 1000px;
+  will-change: transform;
+  backface-visibility: hidden;
+  transform: translateZ(0);
+}
+.urso-central{
+  position: absolute;
+  z-index: 100;
+  scale: 1;
+  will-change: transform;
+  backface-visibility: hidden;
+  transform: translateZ(0);
+}
+
+
+.urso-guitarra3{
+  position: absolute;
+  scale: 0.65;
+  margin-left: 1000px;
+  will-change: transform;
+  backface-visibility: hidden;
+  transform: translateZ(0);
+}
+
+.developer-name, .developer-role {
+  color: #fff;
+  margin-top: 10px;
+  font-size: 1rem;
+  font-weight: 600;
+}
+
+.developer-role {
+  font-size: 0.9rem;
+  color: #aaa;
+}
+
+/* RESPONSIVO */
+@media (max-width: 768px) {
+  .developer-profiles {
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .developer-img {
+    width: 100px;
+    height: 100px;
+  }
+
+  .developer-name {
+    font-size: 0.9rem;
+  }
+
+  .developer-role {
+    font-size: 0.8rem;
+  }
+
+  /* Hero Section Responsivo */
+  .interactive-title {
+    font-size: 2.5rem;
+    margin-bottom: 1.5rem;
+  }
+
+  .hero-buttons {
+    flex-direction: column;
+    gap: 1.5rem;
+    margin-top: 1.5rem;
+  }
+
+  .hero-buttons .btn {
+    padding: 1rem 2.5rem;
+    font-size: 1.1rem;
+    min-width: 250px;
+  }
+
+  .hero-content {
+    padding: 1rem;
+  }
+
+
+}
+
+@media (max-width: 480px) {
+  .interactive-title {
+    font-size: 2rem;
+    letter-spacing: 2px;
+  }
+
+  .hero-buttons .btn {
+    padding: 0.9rem 2rem;
+    font-size: 1rem;
+    min-width: 200px;
+  }
+
+
+}

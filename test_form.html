@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Teste Formulário</title>
+</head>
+<body>
+    <h1>Teste do Botão Criar Pergunta</h1>
+    <form method="post" action="http://localhost:8000/quiz/1/pergunta/criar/">
+        <input type="hidden" name="csrfmiddlewaretoken" value="test">
+        <input type="text" name="pergunta-pergunta" placeholder="Texto da pergunta" required>
+        <input type="hidden" name="pergunta-tipo" value="multipla_escolha">
+        <input type="hidden" name="pergunta-quiz" value="1">
+        
+        <!-- Management form para alternativas -->
+        <input type="hidden" name="alternativas-TOTAL_FORMS" value="2">
+        <input type="hidden" name="alternativas-INITIAL_FORMS" value="0">
+        <input type="hidden" name="alternativas-MIN_NUM_FORMS" value="0">
+        <input type="hidden" name="alternativas-MAX_NUM_FORMS" value="1000">
+        
+        <!-- Alternativas -->
+        <input type="text" name="alternativas-0-texto" placeholder="Alternativa 1" required>
+        <input type="checkbox" name="alternativas-0-correta" checked>
+        
+        <input type="text" name="alternativas-1-texto" placeholder="Alternativa 2" required>
+        <input type="checkbox" name="alternativas-1-correta">
+        
+        <button type="submit">Criar Pergunta</button>
+    </form>
+    
+    <script>
+        document.querySelector('form').addEventListener('submit', function(e) {
+            console.log('Formulário sendo enviado...');
+            console.log('Dados do formulário:', new FormData(this));
+        });
+    </script>
+</body>
+</html>

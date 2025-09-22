@@ -1,0 +1,213 @@
+{% extends 'core/admin_base.html' %}
+
+{% block page_title %}
+{% if object %}
+Editar Quiz
+{% else %}
+Novo Quiz
+{% endif %}
+{% endblock %}
+
+{% block page_subtitle %}
+{% if object %}
+Editar informações do quiz "{{ object.titulo }}"
+{% else %}
+Criar um novo quiz
+{% endif %}
+{% endblock %}
+
+{% block breadcrumb %}
+<li class="breadcrumb-item"><a href="{% url 'quiz_list' %}">Quizzes</a></li>
+<li class="breadcrumb-item active">
+    {% if object %}Editar{% else %}Novo{% endif %}
+</li>
+{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-8">
+        <div class="card">
+            <div class="card-header">
+                <h4 class="mb-0">
+                    <i class="fas fa-{% if object %}edit{% else %}plus{% endif %} me-2"></i>
+                    {% if object %}Editar Quiz{% else %}Novo Quiz{% endif %}
+                </h4>
+            </div>
+            <div class="card-body">
+                <form method="post" novalidate>
+                    {% csrf_token %}
+                    
+                    <!-- Título -->
+                    <div class="mb-3">
+                        <label for="{{ form.titulo.id_for_label }}" class="form-label">
+                            <i class="fas fa-heading me-1"></i>Título *
+                        </label>
+                        {{ form.titulo }}
+                        {% if form.titulo.errors %}
+                            <div class="text-danger mt-1">
+                                {% for error in form.titulo.errors %}
+                                    <small><i class="fas fa-exclamation-circle me-1"></i>{{ error }}</small>
+                                {% endfor %}
+                            </div>
+                        {% endif %}
+                        <small class="form-text text-muted">
+                            Digite um título atrativo para o quiz
+                        </small>
+                    </div>
+                    
+                    <!-- Descrição -->
+                    <div class="mb-3">
+                        <label for="{{ form.descricao.id_for_label }}" class="form-label">
+                            <i class="fas fa-align-left me-1"></i>Descrição *
+                        </label>
+                        {{ form.descricao }}
+                        {% if form.descricao.errors %}
+                            <div class="text-danger mt-1">
+                                {% for error in form.descricao.errors %}
+                                    <small><i class="fas fa-exclamation-circle me-1"></i>{{ error }}</small>
+                                {% endfor %}
+                            </div>
+                        {% endif %}
+                        <small class="form-text text-muted">
+                            Descreva o conteúdo e objetivo do quiz
+                        </small>
+                    </div>
+                    
+                    <!-- Nível de Dificuldade -->
+                    <div class="mb-4">
+                        <label for="{{ form.nivel_dificuldade.id_for_label }}" class="form-label">
+                            <i class="fas fa-signal me-1"></i>Nível de Dificuldade *
+                        </label>
+                        {{ form.nivel_dificuldade }}
+                        {% if form.nivel_dificuldade.errors %}
+                            <div class="text-danger mt-1">
+                                {% for error in form.nivel_dificuldade.errors %}
+                                    <small><i class="fas fa-exclamation-circle me-1"></i>{{ error }}</small>
+                                {% endfor %}
+                            </div>
+                        {% endif %}
+                        <small class="form-text text-muted">
+                            Escolha um nível de 1 (muito fácil) a 10 (muito difícil)
+                        </small>
+                        
+                        <!-- Indicador visual do nível -->
+                        <div class="mt-2">
+                            <div class="d-flex justify-content-between align-items-center">
+                                <span class="text-success"><small>Muito Fácil</small></span>
+                                <span class="text-warning"><small>Médio</small></span>
+                                <span class="text-danger"><small>Muito Difícil</small></span>
+                            </div>
+                            <div class="progress" style="height: 5px;">
+                                <div class="progress-bar bg-gradient" id="nivel-indicator" style="width: 10%;"></div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Botões -->
+                    <div class="d-flex justify-content-between">
+                        <a href="{% url 'quiz_list' %}" class="btn btn-secondary">
+                            <i class="fas fa-arrow-left me-2"></i>Cancelar
+                        </a>
+                        <button type="submit" class="btn btn-primary">
+                            <i class="fas fa-save me-2"></i>
+                            {% if object %}Atualizar Quiz{% else %}Criar Quiz{% endif %}
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+        
+        {% if object %}
+        <!-- Ações adicionais para quiz existente -->
+        <div class="card mt-4">
+            <div class="card-header">
+                <h5 class="mb-0"><i class="fas fa-cogs me-2"></i>Ações Adicionais</h5>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-6 mb-3">
+                        <div class="d-grid">
+                            <a href="{% url 'pergunta_list' object.id %}" class="btn btn-outline-primary">
+                                <i class="fas fa-question-circle me-2"></i>
+                                Gerenciar Perguntas
+                                <span class="badge bg-primary ms-2">{{ object.perguntas.count }}</span>
+                            </a>
+                        </div>
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <div class="d-grid">
+                            <a href="{% url 'pergunta_validate' object.id %}" class="btn btn-outline-info">
+                                <i class="fas fa-check-double me-2"></i>
+                                Validar Perguntas
+                            </a>
+                        </div>
+                    </div>
+                </div>
+                
+                {% if object.perguntas.count > 0 %}
+                <div class="alert alert-info">
+                    <i class="fas fa-info-circle me-2"></i>
+                    <strong>Dica:</strong> Este quiz possui {{ object.perguntas.count }} pergunta{{ object.perguntas.count|pluralize }}. 
+                    Certifique-se de validar todas as perguntas antes de disponibilizar o quiz para os usuários.
+                </div>
+                {% else %}
+                <div class="alert alert-warning">
+                    <i class="fas fa-exclamation-triangle me-2"></i>
+                    <strong>Atenção:</strong> Este quiz ainda não possui perguntas. 
+                    <a href="{% url 'pergunta_create' object.id %}" class="alert-link">Clique aqui para adicionar a primeira pergunta</a>.
+                </div>
+                {% endif %}
+            </div>
+        </div>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Atualizar indicador visual do nível de dificuldade
+    const nivelInput = document.getElementById('id_nivel_dificuldade');
+    const nivelIndicator = document.getElementById('nivel-indicator');
+    
+    function updateNivelIndicator() {
+        const valor = parseInt(nivelInput.value) || 1;
+        const porcentagem = (valor / 10) * 100;
+        nivelIndicator.style.width = porcentagem + '%';
+        
+        // Mudar cor baseado no nível
+        nivelIndicator.className = 'progress-bar bg-gradient';
+        if (valor <= 3) {
+            nivelIndicator.classList.add('bg-success');
+        } else if (valor <= 7) {
+            nivelIndicator.classList.add('bg-warning');
+        } else {
+            nivelIndicator.classList.add('bg-danger');
+        }
+    }
+    
+    // Atualizar ao carregar e ao mudar
+    updateNivelIndicator();
+    nivelInput.addEventListener('input', updateNivelIndicator);
+    
+    // Validação em tempo real
+    const form = document.querySelector('form');
+    const inputs = form.querySelectorAll('input, textarea, select');
+    
+    inputs.forEach(input => {
+        input.addEventListener('blur', function() {
+            // Remover classes de erro anteriores
+            this.classList.remove('is-invalid', 'is-valid');
+            
+            // Validação básica
+            if (this.hasAttribute('required') && !this.value.trim()) {
+                this.classList.add('is-invalid');
+            } else if (this.value.trim()) {
+                this.classList.add('is-valid');
+            }
+        });
+    });
+});
+</script>
+{% endblock %}

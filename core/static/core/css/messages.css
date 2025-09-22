@@ -1,0 +1,281 @@
+/* Estilos globais para mensagens */
+.global-messages {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    z-index: 9999;
+    max-width: 400px;
+}
+
+.global-message {
+    display: flex;
+    align-items: center;
+    padding: 15px 20px;
+    border-radius: 10px;
+    margin-bottom: 10px;
+    border-left: 4px solid;
+    animation: slideInRight 0.3s ease-out;
+    position: relative;
+    backdrop-filter: blur(10px);
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+}
+
+@keyframes slideInRight {
+    from {
+        opacity: 0;
+        transform: translateX(100%);
+    }
+    to {
+        opacity: 1;
+        transform: translateX(0);
+    }
+}
+
+@keyframes slideOutRight {
+    from {
+        opacity: 1;
+        transform: translateX(0);
+    }
+    to {
+        opacity: 0;
+        transform: translateX(100%);
+    }
+}
+
+.global-message-success {
+    background-color: rgba(46, 204, 113, 0.9);
+    border-left-color: #27ae60;
+    color: white;
+}
+
+.global-message-error {
+    background-color: rgba(231, 76, 60, 0.9);
+    border-left-color: #c0392b;
+    color: white;
+}
+
+.global-message-warning {
+    background-color: rgba(243, 156, 18, 0.9);
+    border-left-color: #e67e22;
+    color: white;
+}
+
+.global-message-info {
+    background-color: rgba(52, 152, 219, 0.9);
+    border-left-color: #2980b9;
+    color: white;
+}
+
+.global-message-icon {
+    margin-right: 15px;
+    font-size: 20px;
+}
+
+.global-message-content {
+    flex: 1;
+}
+
+.global-message-content p {
+    margin: 0;
+    font-weight: 500;
+}
+
+.global-message-close {
+    background: none;
+    border: none;
+    color: inherit;
+    cursor: pointer;
+    padding: 5px;
+    border-radius: 50%;
+    transition: background-color 0.3s;
+    margin-left: 10px;
+}
+
+.global-message-close:hover {
+    background-color: rgba(255, 255, 255, 0.2);
+}
+
+/* Mensagens locais (dentro de páginas específicas) */
+.messages-container {
+    margin-bottom: 30px;
+}
+
+.message {
+    display: flex;
+    align-items: center;
+    padding: 15px 20px;
+    border-radius: 10px;
+    margin-bottom: 15px;
+    border-left: 4px solid;
+    animation: slideIn 0.3s ease-out;
+    position: relative;
+}
+
+@keyframes slideIn {
+    from {
+        opacity: 0;
+        transform: translateY(-10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.message-success {
+    background-color: rgba(46, 204, 113, 0.1);
+    border-left-color: #2ecc71;
+    color: #2ecc71;
+}
+
+.message-error {
+    background-color: rgba(231, 76, 60, 0.1);
+    border-left-color: #e74c3c;
+    color: #e74c3c;
+}
+
+.message-warning {
+    background-color: rgba(243, 156, 18, 0.1);
+    border-left-color: #f39c12;
+    color: #f39c12;
+}
+
+.message-info {
+    background-color: rgba(52, 152, 219, 0.1);
+    border-left-color: #3498db;
+    color: #3498db;
+}
+
+.message-icon {
+    margin-right: 15px;
+    font-size: 20px;
+}
+
+.message-content {
+    flex: 1;
+}
+
+.message-content p {
+    margin: 0;
+    font-weight: 500;
+}
+
+.message-close {
+    background: none;
+    border: none;
+    color: inherit;
+    cursor: pointer;
+    padding: 5px;
+    border-radius: 50%;
+    transition: background-color 0.3s;
+    margin-left: 10px;
+}
+
+.message-close:hover {
+    background-color: rgba(255, 255, 255, 0.1);
+}
+
+/* Mensagens específicas do menu */
+.menu-messages {
+    margin-bottom: 30px;
+}
+
+.menu-message {
+    display: flex;
+    align-items: center;
+    padding: 12px 20px;
+    border-radius: 8px;
+    margin-bottom: 10px;
+    font-size: 14px;
+    font-weight: 500;
+}
+
+.menu-message i {
+    margin-right: 10px;
+    font-size: 16px;
+}
+
+.menu-message-info {
+    background-color: rgba(52, 152, 219, 0.1);
+    border: 1px solid rgba(52, 152, 219, 0.3);
+    color: #3498db;
+}
+
+.menu-message-success {
+    background-color: rgba(46, 204, 113, 0.1);
+    border: 1px solid rgba(46, 204, 113, 0.3);
+    color: #2ecc71;
+}
+
+.menu-message-warning {
+    background-color: rgba(243, 156, 18, 0.1);
+    border: 1px solid rgba(243, 156, 18, 0.3);
+    color: #f39c12;
+}
+
+/* Mensagens específicas dos níveis */
+.niveis-messages {
+    position: absolute;
+    top: 20px;
+    left: 20px;
+    right: 20px;
+    z-index: 10;
+}
+
+.nivel-message {
+    display: flex;
+    align-items: center;
+    padding: 12px 20px;
+    border-radius: 8px;
+    margin-bottom: 10px;
+    font-size: 14px;
+    font-weight: 500;
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.nivel-message i {
+    margin-right: 10px;
+    font-size: 16px;
+}
+
+.nivel-message-info {
+    background-color: rgba(52, 152, 219, 0.9);
+    color: white;
+}
+
+.nivel-message-success {
+    background-color: rgba(46, 204, 113, 0.9);
+    color: white;
+}
+
+.nivel-message-warning {
+    background-color: rgba(243, 156, 18, 0.9);
+    color: white;
+}
+
+/* Responsividade */
+@media (max-width: 768px) {
+    .global-messages {
+        top: 10px;
+        right: 10px;
+        left: 10px;
+        max-width: none;
+    }
+    
+    .niveis-messages {
+        top: 10px;
+        left: 10px;
+        right: 10px;
+    }
+    
+    .nivel-message {
+        font-size: 12px;
+        padding: 10px 15px;
+    }
+    
+    .menu-message {
+        font-size: 12px;
+        padding: 10px 15px;
+    }
+} 

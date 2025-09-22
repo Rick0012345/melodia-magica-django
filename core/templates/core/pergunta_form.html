@@ -1,0 +1,601 @@
+{% extends 'core/admin_base.html' %}
+{% load static %}
+
+{% block page_title %}
+{% if pergunta %}
+Editar Pergunta
+{% else %}
+Nova Pergunta
+{% endif %}
+{% endblock %}
+
+{% block page_subtitle %}
+{% if pergunta %}
+Editar pergunta do quiz "{{ quiz.titulo }}"
+{% else %}
+Adicionar nova pergunta ao quiz "{{ quiz.titulo }}"
+{% endif %}
+{% endblock %}
+
+{% block breadcrumb %}
+<li class="breadcrumb-item"><a href="{% url 'quiz_list' %}">Quizzes</a></li>
+<li class="breadcrumb-item"><a href="{% url 'pergunta_list' quiz.id %}">{{ quiz.titulo }}</a></li>
+<li class="breadcrumb-item active">
+    {% if pergunta %}Editar{% else %}Nova{% endif %}
+</li>
+{% endblock %}
+
+{% block extra_css %}
+<style>
+.alternativa-form {
+    background: #f8f9fa;
+    border: 2px solid #e9ecef;
+    border-radius: 10px;
+    padding: 15px;
+    margin-bottom: 15px;
+    transition: all 0.3s ease;
+}
+
+.alternativa-form.correta {
+    background: #d1edff;
+    border-color: #0dcaf0;
+}
+
+.alternativa-form:hover {
+    border-color: #6f42c1;
+    box-shadow: 0 2px 8px rgba(111, 66, 193, 0.1);
+}
+
+.tipo-selector {
+    background: white;
+    border: 2px solid #e9ecef;
+    border-radius: 10px;
+    padding: 20px;
+    margin-bottom: 20px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.tipo-selector:hover {
+    border-color: #6f42c1;
+    background: #f8f9fa;
+}
+
+.tipo-selector.selected {
+    border-color: #6f42c1;
+    background: linear-gradient(135deg, #f8f9fa, #e9ecef);
+}
+
+.vf-selector {
+    background: white;
+    border: 2px solid #e9ecef;
+    border-radius: 10px;
+    padding: 15px;
+    margin-bottom: 10px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.vf-selector:hover {
+    border-color: #6f42c1;
+}
+
+.vf-selector.selected {
+    border-color: #20c997;
+    background: #d1edff;
+}
+
+.alternativas-container {
+    display: none;
+}
+
+.alternativas-container.show {
+    display: block;
+    animation: fadeIn 0.3s ease;
+}
+
+.vf-container {
+    display: none;
+}
+
+.vf-container.show {
+    display: block;
+    animation: fadeIn 0.3s ease;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(-10px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+.delete-alternativa {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    background: #dc3545;
+    color: white;
+    border: none;
+    border-radius: 50%;
+    width: 30px;
+    height: 30px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    opacity: 0;
+    transition: all 0.3s ease;
+}
+
+.alternativa-form:hover .delete-alternativa {
+    opacity: 1;
+}
+
+.add-alternativa {
+    border: 2px dashed #6c757d;
+    background: transparent;
+    color: #6c757d;
+    border-radius: 10px;
+    padding: 20px;
+    text-align: center;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.add-alternativa:hover {
+    border-color: #6f42c1;
+    color: #6f42c1;
+    background: #f8f9fa;
+}
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-10">
+        <form method="post" id="pergunta-form" novalidate>
+            {% csrf_token %}
+            
+            <!-- Campo hidden para o quiz -->
+            {{ form.pergunta_form.quiz }}
+            
+            <!-- Informações da Pergunta -->
+            <div class="card mb-4">
+                <div class="card-header">
+                    <h5 class="mb-0">
+                        <i class="fas fa-question-circle me-2"></i>
+                        Informações da Pergunta
+                    </h5>
+                </div>
+                <div class="card-body">
+                    <!-- Texto da Pergunta -->
+                    <div class="mb-4">
+                        <label for="id_pergunta-pergunta" class="form-label">
+                            <i class="fas fa-edit me-1"></i>Texto da Pergunta *
+                        </label>
+                        {{ form.pergunta_form.pergunta }}
+                        {% if form.pergunta_form.pergunta.errors %}
+                            <div class="text-danger mt-1">
+                                {% for error in form.pergunta_form.pergunta.errors %}
+                                    <small><i class="fas fa-exclamation-circle me-1"></i>{{ error }}</small>
+                                {% endfor %}
+                            </div>
+                        {% endif %}
+                    </div>
+                    
+                    <!-- Tipo da Pergunta -->
+                    <div class="mb-4">
+                        <label class="form-label">
+                            <i class="fas fa-list me-1"></i>Tipo da Pergunta *
+                        </label>
+                        
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="tipo-selector" data-tipo="multipla_escolha">
+                                    <div class="d-flex align-items-center">
+                                        <div class="me-3">
+                                            <i class="fas fa-list-ul fa-2x text-primary"></i>
+                                        </div>
+                                        <div>
+                                            <h6 class="mb-1">Múltipla Escolha</h6>
+                                            <small class="text-muted">Pergunta com várias alternativas, apenas uma correta</small>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="tipo-selector" data-tipo="verdadeiro_falso">
+                                    <div class="d-flex align-items-center">
+                                        <div class="me-3">
+                                            <i class="fas fa-check-circle fa-2x text-success"></i>
+                                        </div>
+                                        <div>
+                                            <h6 class="mb-1">Verdadeiro/Falso</h6>
+                                            <small class="text-muted">Pergunta com apenas duas opções: verdadeiro ou falso</small>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Campo hidden para o tipo -->
+                        <input type="hidden" name="pergunta-tipo" id="id_pergunta-tipo" value="{{ form.pergunta_form.tipo.value|default:'' }}">
+                        
+                        {% if form.pergunta_form.tipo.errors %}
+                            <div class="text-danger mt-2">
+                                {% for error in form.pergunta_form.tipo.errors %}
+                                    <small><i class="fas fa-exclamation-circle me-1"></i>{{ error }}</small>
+                                {% endfor %}
+                            </div>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Alternativas (Múltipla Escolha) -->
+            <div class="card mb-4 alternativas-container" id="alternativas-container">
+                <div class="card-header">
+                    <h5 class="mb-0">
+                        <i class="fas fa-list-ul me-2"></i>
+                        Alternativas
+                        <small class="text-muted">(Marque a alternativa correta)</small>
+                    </h5>
+                </div>
+                <div class="card-body">
+                    <div id="alternativas-list">
+                        {{ form.alternativa_formset.management_form }}
+                        {% for alternativa_form in form.alternativa_formset %}
+                        <div class="alternativa-form position-relative" data-form-index="{{ forloop.counter0 }}">
+                            {% if alternativa_form.DELETE %}
+                                {{ alternativa_form.DELETE }}
+                            {% endif %}
+                            {% if alternativa_form.id %}
+                                {{ alternativa_form.id }}
+                            {% endif %}
+                            
+                            <div class="row align-items-center">
+                                <div class="col-md-10">
+                                    <div class="mb-2">
+                                        <label class="form-label">Alternativa {{ forloop.counter }}</label>
+                                        {{ alternativa_form.texto }}
+                                        {% if alternativa_form.texto.errors %}
+                                            <div class="text-danger mt-1">
+                                                {% for error in alternativa_form.texto.errors %}
+                                                    <small>{{ error }}</small>
+                                                {% endfor %}
+                                            </div>
+                                        {% endif %}
+                                    </div>
+                                </div>
+                                <div class="col-md-2 text-center">
+                                    <div class="form-check">
+                                        {{ alternativa_form.correta }}
+                                        <label class="form-check-label" for="{{ alternativa_form.correta.id_for_label }}">
+                                            <strong>Correta</strong>
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <button type="button" class="delete-alternativa" onclick="removeAlternativa(this)">
+                                <i class="fas fa-times"></i>
+                            </button>
+                        </div>
+                        {% endfor %}
+                    </div>
+                    
+                    <!-- Botão para adicionar alternativa -->
+                    <div class="add-alternativa" onclick="addAlternativa()">
+                        <i class="fas fa-plus fa-2x mb-2"></i>
+                        <div>Adicionar Alternativa</div>
+                    </div>
+                    
+                    <!-- Erros do formset -->
+                    {% if form.alternativa_formset.non_form_errors %}
+                        <div class="alert alert-danger mt-3">
+                            {% for error in form.alternativa_formset.non_form_errors %}
+                                <div><i class="fas fa-exclamation-circle me-1"></i>{{ error }}</div>
+                            {% endfor %}
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+            
+            <!-- Resposta Verdadeiro/Falso -->
+            <div class="card mb-4 vf-container" id="vf-container">
+                <div class="card-header">
+                    <h5 class="mb-0">
+                        <i class="fas fa-check-circle me-2"></i>
+                        Resposta Correta
+                    </h5>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="vf-selector" data-vf="true">
+                                <div class="text-center">
+                                    <i class="fas fa-check-circle fa-3x text-success mb-2"></i>
+                                    <h5>Verdadeiro</h5>
+                                    <small class="text-muted">A afirmação é verdadeira</small>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="vf-selector" data-vf="false">
+                                <div class="text-center">
+                                    <i class="fas fa-times-circle fa-3x text-danger mb-2"></i>
+                                    <h5>Falso</h5>
+                                    <small class="text-muted">A afirmação é falsa</small>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Campo hidden para verdadeiro/falso -->
+                    <input type="hidden" name="pergunta-resposta_verdadeiro_falso" id="id_pergunta-resposta_verdadeiro_falso" value="{{ form.pergunta_form.resposta_verdadeiro_falso.value }}">
+                    
+                    {% if form.pergunta_form.resposta_verdadeiro_falso.errors %}
+                        <div class="text-danger mt-2">
+                            {% for error in form.pergunta_form.resposta_verdadeiro_falso.errors %}
+                                <div><i class="fas fa-exclamation-circle me-1"></i>{{ error }}</div>
+                            {% endfor %}
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+            
+            <!-- Botões de Ação -->
+            <div class="card">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between">
+                        <a href="{% url 'pergunta_list' quiz.id %}" class="btn btn-secondary">
+                            <i class="fas fa-arrow-left me-2"></i>Voltar
+                        </a>
+                        <div>
+                            <button type="button" class="btn btn-outline-info me-2" onclick="previewPergunta()">
+                                <i class="fas fa-eye me-2"></i>Visualizar
+                            </button>
+                            <button type="submit" class="btn btn-primary">
+                                <i class="fas fa-save me-2"></i>
+                                {% if pergunta %}Atualizar{% else %}Criar{% endif %} Pergunta
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- Modal de Preview -->
+<div class="modal fade" id="previewModal" tabindex="-1">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Preview da Pergunta</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body" id="preview-content">
+                <!-- Conteúdo será inserido via JavaScript -->
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fechar</button>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+let alternativaIndex = {{ form.alternativa_formset.total_form_count|default:0 }};
+
+document.addEventListener('DOMContentLoaded', function() {
+    // Inicializar interface baseado no tipo atual
+    const tipoAtual = document.getElementById('id_pergunta-tipo').value;
+    if (tipoAtual && tipoAtual !== '') {
+        updateTipoInterface(tipoAtual);
+    }
+    
+    // Inicializar resposta VF se existir
+    const vfValue = document.getElementById('id_pergunta-resposta_verdadeiro_falso').value;
+    if (vfValue !== '') {
+        updateVFInterface(vfValue === 'True');
+    }
+    
+    // Event listeners para seletores de tipo
+    document.querySelectorAll('.tipo-selector').forEach(selector => {
+        selector.addEventListener('click', function() {
+            const tipo = this.dataset.tipo;
+            selectTipo(tipo);
+        });
+    });
+    
+    // Event listeners para seletores VF
+    document.querySelectorAll('.vf-selector').forEach(selector => {
+        selector.addEventListener('click', function() {
+            const vf = this.dataset.vf === 'true';
+            selectVF(vf);
+        });
+    });
+    
+    // Event listeners para alternativas corretas
+    document.addEventListener('change', function(e) {
+        if (e.target.type === 'checkbox' && e.target.name.includes('correta')) {
+            updateAlternativaStyle(e.target);
+        }
+    });
+    
+    // Inicializar estilos das alternativas
+    document.querySelectorAll('input[type="checkbox"][name*="correta"]').forEach(checkbox => {
+        updateAlternativaStyle(checkbox);
+    });
+});
+
+function selectTipo(tipo) {
+    // Atualizar seletores visuais
+    document.querySelectorAll('.tipo-selector').forEach(s => s.classList.remove('selected'));
+    document.querySelector(`[data-tipo="${tipo}"]`).classList.add('selected');
+    
+    // Atualizar campo hidden
+    document.getElementById('id_pergunta-tipo').value = tipo;
+    
+    // Mostrar/ocultar containers
+    updateTipoInterface(tipo);
+}
+
+function updateTipoInterface(tipo) {
+    const alternativasContainer = document.getElementById('alternativas-container');
+    const vfContainer = document.getElementById('vf-container');
+    
+    // Primeiro, ocultar todos os containers
+    alternativasContainer.classList.remove('show');
+    vfContainer.classList.remove('show');
+    
+    if (tipo === 'multipla_escolha') {
+        alternativasContainer.classList.add('show');
+    } else if (tipo === 'verdadeiro_falso') {
+        vfContainer.classList.add('show');
+    }
+    
+    // Atualizar seletor visual
+    document.querySelectorAll('.tipo-selector').forEach(s => s.classList.remove('selected'));
+    if (tipo && tipo !== '') {
+        const selector = document.querySelector(`[data-tipo="${tipo}"]`);
+        if (selector) selector.classList.add('selected');
+    }
+}
+
+function selectVF(isTrue) {
+    // Atualizar seletores visuais
+    document.querySelectorAll('.vf-selector').forEach(s => s.classList.remove('selected'));
+    const selector = document.querySelector(`[data-vf="${isTrue.toString()}"]`);
+    if (selector) {
+        selector.classList.add('selected');
+    }
+    
+    // Atualizar campo hidden
+    document.getElementById('id_pergunta-resposta_verdadeiro_falso').value = isTrue;
+}
+
+function updateVFInterface(isTrue) {
+    document.querySelectorAll('.vf-selector').forEach(s => s.classList.remove('selected'));
+    const selector = document.querySelector(`[data-vf="${isTrue.toString()}"]`);
+    if (selector) {
+        selector.classList.add('selected');
+    }
+}
+
+function addAlternativa() {
+    const container = document.getElementById('alternativas-list');
+    const totalForms = document.getElementById('id_alternativas-TOTAL_FORMS');
+    
+    const newForm = `
+        <div class="alternativa-form position-relative" data-form-index="${alternativaIndex}">
+            <input type="hidden" name="alternativas-${alternativaIndex}-DELETE" id="id_alternativas-${alternativaIndex}-DELETE">
+            <div class="row align-items-center">
+                <div class="col-md-10">
+                    <div class="mb-2">
+                        <label class="form-label">Alternativa ${alternativaIndex + 1}</label>
+                        <input type="text" name="alternativas-${alternativaIndex}-texto" class="form-control" id="id_alternativas-${alternativaIndex}-texto" placeholder="Digite a alternativa">
+                    </div>
+                </div>
+                <div class="col-md-2 text-center">
+                    <div class="form-check">
+                        <input type="checkbox" name="alternativas-${alternativaIndex}-correta" class="form-check-input" id="id_alternativas-${alternativaIndex}-correta">
+                        <label class="form-check-label" for="id_alternativas-${alternativaIndex}-correta">
+                            <strong>Correta</strong>
+                        </label>
+                    </div>
+                </div>
+            </div>
+            <button type="button" class="delete-alternativa" onclick="removeAlternativa(this)">
+                <i class="fas fa-times"></i>
+            </button>
+        </div>
+    `;
+    
+    container.insertAdjacentHTML('beforeend', newForm);
+    
+    // Atualizar contador
+    alternativaIndex++;
+    totalForms.value = alternativaIndex;
+    
+    // Adicionar event listener para o novo checkbox
+    const newCheckbox = document.getElementById(`id_alternativas-${alternativaIndex-1}-correta`);
+    newCheckbox.addEventListener('change', function() {
+        updateAlternativaStyle(this);
+    });
+}
+
+function removeAlternativa(button) {
+    const alternativaForm = button.closest('.alternativa-form');
+    const deleteInput = alternativaForm.querySelector('input[name*="DELETE"]');
+    
+    if (deleteInput) {
+        deleteInput.checked = true;
+        alternativaForm.style.display = 'none';
+    } else {
+        alternativaForm.remove();
+    }
+}
+
+function updateAlternativaStyle(checkbox) {
+    const alternativaForm = checkbox.closest('.alternativa-form');
+    if (checkbox.checked) {
+        alternativaForm.classList.add('correta');
+    } else {
+        alternativaForm.classList.remove('correta');
+    }
+}
+
+function previewPergunta() {
+    const perguntaTexto = document.getElementById('id_pergunta-pergunta').value;
+    const tipo = document.getElementById('id_pergunta-tipo').value;
+    
+    let previewContent = `
+        <div class="question-card">
+            <h4 class="mb-3">${perguntaTexto || 'Digite o texto da pergunta'}</h4>
+    `;
+    
+    if (tipo === 'multipla_escolha') {
+        previewContent += '<div class="mb-3">';
+        document.querySelectorAll('.alternativa-form:not([style*="display: none"])').forEach((form, index) => {
+            const texto = form.querySelector('input[name*="texto"]').value;
+            const correta = form.querySelector('input[name*="correta"]').checked;
+            
+            if (texto) {
+                previewContent += `
+                    <label class="answer-option d-block p-3 border rounded mb-2 ${correta ? 'border-success bg-light' : ''}">
+                        <input type="radio" name="preview_resposta" class="me-2">
+                        <span>${texto}</span>
+                        ${correta ? '<i class="fas fa-check text-success ms-2"></i>' : ''}
+                    </label>
+                `;
+            }
+        });
+        previewContent += '</div>';
+    } else if (tipo === 'verdadeiro_falso') {
+        const vfValue = document.getElementById('id_pergunta-resposta_verdadeiro_falso').value;
+        previewContent += `
+            <div class="mb-3">
+                <label class="answer-option d-block p-3 border rounded mb-2 ${vfValue === 'True' ? 'border-success bg-light' : ''}">
+                    <input type="radio" name="preview_resposta" class="me-2">
+                    <span>Verdadeiro</span>
+                    ${vfValue === 'True' ? '<i class="fas fa-check text-success ms-2"></i>' : ''}
+                </label>
+                <label class="answer-option d-block p-3 border rounded mb-2 ${vfValue === 'False' ? 'border-success bg-light' : ''}">
+                    <input type="radio" name="preview_resposta" class="me-2">
+                    <span>Falso</span>
+                    ${vfValue === 'False' ? '<i class="fas fa-check text-success ms-2"></i>' : ''}
+                </label>
+            </div>
+        `;
+    }
+    
+    previewContent += '</div>';
+    
+    document.getElementById('preview-content').innerHTML = previewContent;
+    new bootstrap.Modal(document.getElementById('previewModal')).show();
+}
+</script>
+{% endblock %}

@@ -1,0 +1,564 @@
+{% extends 'core/base.html' %}
+{% load static %}
+
+{% block title %}Gerenciar Alternativas - Melodia Mágica{% endblock %}
+
+{% block extra_css %}
+<style>
+    .alternativas-container {
+        max-width: 1000px;
+        margin: 2rem auto;
+        padding: 0 1rem;
+    }
+    
+    .form-card {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        border-radius: 20px;
+        padding: 2rem;
+        box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+        color: white;
+    }
+    
+    .form-header {
+        text-align: center;
+        margin-bottom: 2rem;
+    }
+    
+    .form-header h1 {
+        font-size: 2.5rem;
+        font-weight: 700;
+        margin-bottom: 0.5rem;
+        text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+    }
+    
+    .pergunta-info {
+        background: rgba(255,255,255,0.1);
+        border-radius: 12px;
+        padding: 1.5rem;
+        margin-bottom: 2rem;
+    }
+    
+    .pergunta-text {
+        font-size: 1.2rem;
+        font-weight: 600;
+        margin-bottom: 1rem;
+    }
+    
+    .pergunta-details {
+        display: flex;
+        gap: 2rem;
+        flex-wrap: wrap;
+        font-size: 0.9rem;
+        opacity: 0.9;
+    }
+    
+    .detail-item {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+    
+    .alternativas-list {
+        margin-bottom: 2rem;
+    }
+    
+    .alternativa-card {
+        background: rgba(255,255,255,0.1);
+        border-radius: 12px;
+        padding: 1.5rem;
+        margin-bottom: 1rem;
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+        transition: all 0.3s ease;
+        border: 2px solid transparent;
+    }
+    
+    .alternativa-card:hover {
+        background: rgba(255,255,255,0.15);
+        transform: translateY(-2px);
+    }
+    
+    .alternativa-card.correta {
+        border-color: #4CAF50;
+        background: rgba(76, 175, 80, 0.2);
+    }
+    
+    .alternativa-numero {
+        background: rgba(255,255,255,0.2);
+        border-radius: 50%;
+        width: 40px;
+        height: 40px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-weight: bold;
+        font-size: 1.1rem;
+    }
+    
+    .alternativa-numero.correta {
+        background: #4CAF50;
+    }
+    
+    .alternativa-content {
+        flex: 1;
+    }
+    
+    .alternativa-texto {
+        font-size: 1.1rem;
+        margin-bottom: 0.5rem;
+    }
+    
+    .alternativa-status {
+        font-size: 0.9rem;
+        opacity: 0.8;
+    }
+    
+    .alternativa-actions {
+        display: flex;
+        gap: 0.5rem;
+    }
+    
+    .btn-icon {
+        background: rgba(255,255,255,0.2);
+        border: none;
+        border-radius: 8px;
+        padding: 0.5rem;
+        color: white;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 40px;
+        height: 40px;
+    }
+    
+    .btn-icon:hover {
+        background: rgba(255,255,255,0.3);
+        transform: scale(1.1);
+    }
+    
+    .btn-icon.edit {
+        background: rgba(52, 152, 219, 0.3);
+    }
+    
+    .btn-icon.edit:hover {
+        background: rgba(52, 152, 219, 0.5);
+    }
+    
+    .btn-icon.delete {
+        background: rgba(231, 76, 60, 0.3);
+    }
+    
+    .btn-icon.delete:hover {
+        background: rgba(231, 76, 60, 0.5);
+    }
+    
+    .btn-icon.correct {
+        background: rgba(46, 204, 113, 0.3);
+    }
+    
+    .btn-icon.correct:hover {
+        background: rgba(46, 204, 113, 0.5);
+    }
+    
+    .add-alternativa-section {
+        background: rgba(255,255,255,0.1);
+        border-radius: 12px;
+        padding: 1.5rem;
+        margin-bottom: 2rem;
+    }
+    
+    .form-group {
+        margin-bottom: 1.5rem;
+    }
+    
+    .form-label {
+        font-weight: 600;
+        margin-bottom: 0.5rem;
+        display: block;
+        font-size: 1.1rem;
+    }
+    
+    .form-control {
+        border: none;
+        border-radius: 12px;
+        padding: 1rem;
+        font-size: 1rem;
+        background: rgba(255,255,255,0.9);
+        color: #333;
+        transition: all 0.3s ease;
+        width: 100%;
+    }
+    
+    .form-control:focus {
+        background: white;
+        box-shadow: 0 0 0 3px rgba(255,255,255,0.3);
+        outline: none;
+    }
+    
+    .checkbox-group {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        margin-top: 1rem;
+    }
+    
+    .checkbox-group input[type="checkbox"] {
+        width: 20px;
+        height: 20px;
+        accent-color: #4CAF50;
+    }
+    
+    .btn-primary {
+        background: linear-gradient(45deg, #ff6b6b, #ee5a24);
+        border: none;
+        border-radius: 12px;
+        padding: 1rem 2rem;
+        font-weight: 600;
+        font-size: 1.1rem;
+        transition: all 0.3s ease;
+        color: white;
+        cursor: pointer;
+    }
+    
+    .btn-primary:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 10px 20px rgba(0,0,0,0.2);
+    }
+    
+    .btn-secondary {
+        background: rgba(255,255,255,0.2);
+        border: 2px solid rgba(255,255,255,0.3);
+        color: white;
+        border-radius: 12px;
+        padding: 0.8rem 1.5rem;
+        font-weight: 600;
+        text-decoration: none;
+        display: inline-block;
+        transition: all 0.3s ease;
+    }
+    
+    .btn-secondary:hover {
+        background: rgba(255,255,255,0.3);
+        color: white;
+        text-decoration: none;
+    }
+    
+    .empty-state {
+        text-align: center;
+        padding: 3rem;
+        opacity: 0.7;
+    }
+    
+    .empty-state i {
+        font-size: 4rem;
+        margin-bottom: 1rem;
+        opacity: 0.5;
+    }
+    
+    .error-message {
+        background: rgba(255,107,107,0.2);
+        border: 1px solid rgba(255,107,107,0.5);
+        color: #ff6b6b;
+        padding: 0.5rem;
+        border-radius: 8px;
+        margin-top: 0.5rem;
+        font-size: 0.9rem;
+    }
+    
+    .success-message {
+        background: rgba(76,175,80,0.2);
+        border: 1px solid rgba(76,175,80,0.5);
+        color: #4CAF50;
+        padding: 1rem;
+        border-radius: 8px;
+        margin-bottom: 1rem;
+        font-size: 0.9rem;
+    }
+    
+    .icon {
+        margin-right: 0.5rem;
+    }
+    
+    @media (max-width: 768px) {
+        .alternativas-container {
+            margin: 1rem auto;
+        }
+        
+        .form-card {
+            padding: 1.5rem;
+        }
+        
+        .form-header h1 {
+            font-size: 2rem;
+        }
+        
+        .pergunta-details {
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+        
+        .alternativa-card {
+            flex-direction: column;
+            align-items: flex-start;
+            gap: 1rem;
+        }
+        
+        .alternativa-actions {
+            align-self: flex-end;
+        }
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="alternativas-container">
+    <div class="form-card">
+        <div class="form-header">
+            <h1><i class="fas fa-list-ul icon"></i>Gerenciar Alternativas</h1>
+            <p>Adicione e gerencie as alternativas para sua questão</p>
+        </div>
+        
+        {% if messages %}
+            {% for message in messages %}
+                <div class="success-message">
+                    <i class="fas fa-check-circle icon"></i>{{ message }}
+                </div>
+            {% endfor %}
+        {% endif %}
+        
+        {% if pergunta %}
+        <div class="pergunta-info">
+            <div class="pergunta-text">
+                <i class="fas fa-question-circle icon"></i>{{ pergunta.pergunta }}
+            </div>
+            <div class="pergunta-details">
+                <div class="detail-item">
+                    <i class="fas fa-book"></i>
+                    <span>Quiz: {{ pergunta.quiz.titulo }}</span>
+                </div>
+                <div class="detail-item">
+                    <i class="fas fa-tag"></i>
+                    <span>Tipo: {{ pergunta.get_tipo_display }}</span>
+                </div>
+                <div class="detail-item">
+                    <i class="fas fa-list-ol"></i>
+                    <span>{{ alternativas.count }} alternativa{{ alternativas.count|pluralize }}</span>
+                </div>
+            </div>
+        </div>
+        {% endif %}
+        
+        <!-- Lista de Alternativas Existentes -->
+        <div class="alternativas-list">
+            <h3><i class="fas fa-list icon"></i>Alternativas Existentes</h3>
+            
+            {% if alternativas %}
+                {% for alternativa in alternativas %}
+                <div class="alternativa-card {% if alternativa.correta %}correta{% endif %}">
+                    <div class="alternativa-numero {% if alternativa.correta %}correta{% endif %}">
+                        {{ forloop.counter }}
+                    </div>
+                    <div class="alternativa-content">
+                        <div class="alternativa-texto">{{ alternativa.texto }}</div>
+                        <div class="alternativa-status">
+                            {% if alternativa.correta %}
+                                <i class="fas fa-check-circle"></i> Resposta Correta
+                            {% else %}
+                                <i class="fas fa-circle"></i> Alternativa
+                            {% endif %}
+                        </div>
+                    </div>
+                    <div class="alternativa-actions">
+                        <button class="btn-icon edit" onclick="editAlternativa({{ alternativa.id }}, '{{ alternativa.texto|escapejs }}', {{ alternativa.correta|yesno:'true,false' }})" title="Editar">
+                            <i class="fas fa-edit"></i>
+                        </button>
+                        {% if not alternativa.correta %}
+                        <button class="btn-icon correct" onclick="markAsCorrect({{ alternativa.id }})" title="Marcar como correta">
+                            <i class="fas fa-check"></i>
+                        </button>
+                        {% endif %}
+                        <button class="btn-icon delete" onclick="deleteAlternativa({{ alternativa.id }})" title="Excluir">
+                            <i class="fas fa-trash"></i>
+                        </button>
+                    </div>
+                </div>
+                {% endfor %}
+            {% else %}
+                <div class="empty-state">
+                    <i class="fas fa-list-ul"></i>
+                    <h4>Nenhuma alternativa cadastrada</h4>
+                    <p>Adicione alternativas para esta questão usando o formulário abaixo.</p>
+                </div>
+            {% endif %}
+        </div>
+        
+        <!-- Formulário para Adicionar Nova Alternativa -->
+        <div class="add-alternativa-section">
+            <h3><i class="fas fa-plus icon"></i>Adicionar Nova Alternativa</h3>
+            
+            <form method="post" id="alternativa-form">
+                {% csrf_token %}
+                
+                {% if pergunta %}
+                <input type="hidden" name="pergunta" value="{{ pergunta.id }}">
+                {% endif %}
+                
+                <div class="form-group">
+                    <label for="id_texto" class="form-label">
+                        <i class="fas fa-edit icon"></i>Texto da Alternativa
+                    </label>
+                    <textarea name="texto" 
+                              id="id_texto" 
+                              class="form-control" 
+                              rows="2" 
+                              placeholder="Digite o texto da alternativa..."
+                              required></textarea>
+                    {% if form.texto.errors %}
+                        <div class="error-message">
+                            {% for error in form.texto.errors %}
+                                <i class="fas fa-exclamation-triangle"></i> {{ error }}
+                            {% endfor %}
+                        </div>
+                    {% endif %}
+                </div>
+                
+                <div class="checkbox-group">
+                    <input type="checkbox" name="correta" id="id_correta">
+                    <label for="id_correta" class="form-label">
+                        <i class="fas fa-check-circle icon"></i>Esta é a resposta correta
+                    </label>
+                </div>
+                
+                <div class="d-flex gap-3 mt-4">
+                    <a href="{% if pergunta %}{% url 'pergunta_list' pergunta.quiz.id %}{% else %}{% url 'quiz_list' %}{% endif %}" class="btn-secondary">
+                        <i class="fas fa-arrow-left icon"></i>Voltar
+                    </a>
+                    <button type="submit" class="btn btn-primary flex-grow-1">
+                        <i class="fas fa-plus icon"></i>Adicionar Alternativa
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- Modal para Edição -->
+<div id="editModal" class="modal" style="display: none;">
+    <div class="modal-content">
+        <h4>Editar Alternativa</h4>
+        <form id="editForm">
+            <input type="hidden" id="editId">
+            <div class="form-group">
+                <label>Texto da Alternativa:</label>
+                <textarea id="editTexto" class="form-control" rows="2"></textarea>
+            </div>
+            <div class="checkbox-group">
+                <input type="checkbox" id="editCorreta">
+                <label>Esta é a resposta correta</label>
+            </div>
+            <div class="modal-actions">
+                <button type="button" onclick="closeEditModal()">Cancelar</button>
+                <button type="button" onclick="saveEdit()">Salvar</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<script>
+function editAlternativa(id, texto, correta) {
+    document.getElementById('editId').value = id;
+    document.getElementById('editTexto').value = texto;
+    document.getElementById('editCorreta').checked = correta;
+    document.getElementById('editModal').style.display = 'block';
+}
+
+function closeEditModal() {
+    document.getElementById('editModal').style.display = 'none';
+}
+
+function saveEdit() {
+    const id = document.getElementById('editId').value;
+    const texto = document.getElementById('editTexto').value;
+    const correta = document.getElementById('editCorreta').checked;
+    
+    // Aqui você implementaria a chamada AJAX para salvar
+    // Por enquanto, vamos apenas recarregar a página
+    alert('Funcionalidade de edição será implementada via AJAX');
+    closeEditModal();
+}
+
+function markAsCorrect(id) {
+    if (confirm('Tem certeza que deseja marcar esta alternativa como correta?')) {
+        // Implementar chamada AJAX
+        alert('Funcionalidade será implementada via AJAX');
+    }
+}
+
+function deleteAlternativa(id) {
+    if (confirm('Tem certeza que deseja excluir esta alternativa?')) {
+        // Implementar chamada AJAX
+        alert('Funcionalidade de exclusão será implementada via AJAX');
+    }
+}
+
+// Validação do formulário
+document.getElementById('alternativa-form').addEventListener('submit', function(e) {
+    const texto = document.getElementById('id_texto').value.trim();
+    
+    if (!texto) {
+        e.preventDefault();
+        alert('Por favor, insira o texto da alternativa.');
+        document.getElementById('id_texto').focus();
+        return;
+    }
+    
+    if (texto.length < 3) {
+        e.preventDefault();
+        alert('O texto da alternativa deve ter pelo menos 3 caracteres.');
+        document.getElementById('id_texto').focus();
+        return;
+    }
+});
+</script>
+
+<style>
+.modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0,0,0,0.5);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+}
+
+.modal-content {
+    background: white;
+    padding: 2rem;
+    border-radius: 12px;
+    max-width: 500px;
+    width: 90%;
+    color: #333;
+}
+
+.modal-actions {
+    display: flex;
+    gap: 1rem;
+    justify-content: flex-end;
+    margin-top: 1rem;
+}
+
+.modal-actions button {
+    padding: 0.5rem 1rem;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+}
+</style>
+{% endblock %}

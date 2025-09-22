@@ -1,0 +1,117 @@
+/* Background styles for questões (questions) pages */
+
+.background {
+    min-height: 100vh;
+    background: linear-gradient(135deg, #0f0c29 0%, #24243e 50%, #2b5876 100%);
+    background-attachment: fixed;
+    position: relative;
+    overflow: hidden;
+}
+
+.background::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: 
+        radial-gradient(circle at 20% 80%, rgba(120, 119, 198, 0.3) 0%, transparent 50%),
+        radial-gradient(circle at 80% 20%, rgba(255, 119, 198, 0.15) 0%, transparent 50%),
+        radial-gradient(circle at 40% 40%, #78dbe226 0%, transparent 50%);
+        pointer-events: none;
+}
+
+@keyframes backgroundShift {
+    0%, 100% {
+        transform: translateX(0) translateY(0);
+    }
+    33% {
+        transform: translateX(-20px) translateY(-10px);
+    }
+    66% {
+        transform: translateX(20px) translateY(10px);
+    }
+}
+
+.parent {
+    position: relative;
+    z-index: 1;
+    padding: 20px;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    align-items: center;
+    gap: 20px;
+    min-height: calc(100vh - 80px);
+}
+
+/* Message styles for níveis page */
+.niveis-messages {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    margin-bottom: 30px;
+}
+
+.nivel-message {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 15px 20px;
+    border-radius: 10px;
+    font-weight: 500;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.nivel-message i {
+    font-size: 1.2em;
+}
+
+.nivel-message-info {
+    background: rgba(0, 123, 255, 0.15);
+    color: #87ceeb;
+    border-left: 4px solid #007bff;
+}
+
+.nivel-message-success {
+    background: rgba(40, 167, 69, 0.15);
+    color: #90ee90;
+    border-left: 4px solid #28a745;
+}
+
+.nivel-message-warning {
+    background: rgba(255, 193, 7, 0.15);
+    color: #ffd700;
+    border-left: 4px solid #ffc107;
+}
+
+/* Responsive design */
+@media (max-width: 768px) {
+    .parent {
+        padding: 15px;
+    }
+    
+    .nivel-message {
+        padding: 12px 15px;
+        font-size: 0.9em;
+    }
+}
+
+@media (max-width: 480px) {
+    .parent {
+        padding: 10px;
+    }
+    
+    .niveis-messages {
+        margin-bottom: 20px;
+    }
+    
+    .nivel-message {
+        padding: 10px 12px;
+        font-size: 0.85em;
+    }
+}

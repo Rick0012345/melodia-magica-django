@@ -12,6 +12,7 @@ urlpatterns = [
     
     # Quiz e jogos
     path('niveis/', views.NiveisView.as_view(), name='niveis'),
+    path('quiz/niveis/', views.NiveisView.as_view(), name='quiz_niveis'),
     path('game/<int:quiz_id>/', views.GamePageView.as_view(), name='game_page'),
     
     # Gerenciamento de quizzes e perguntas (views existentes)

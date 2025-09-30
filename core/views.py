@@ -473,7 +473,7 @@ class PerguntaUpdateView(LoginRequiredMixin, UserPassesTestMixin, TemplateView):
         context['pergunta'] = self.pergunta
         context['form'] = PerguntaComAlternativasForm(
             pergunta_instance=self.pergunta,
-            quiz_instance=self.quiz
+            quiz=self.quiz
         )
         return context
     
@@ -484,7 +484,7 @@ class PerguntaUpdateView(LoginRequiredMixin, UserPassesTestMixin, TemplateView):
         form = PerguntaComAlternativasForm(
             request.POST,
             pergunta_instance=self.pergunta,
-            quiz_instance=self.quiz
+            quiz=self.quiz
         )
         
         if form.is_valid():

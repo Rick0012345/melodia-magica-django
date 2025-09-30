@@ -227,7 +227,7 @@ Revisar e validar perguntas do quiz "{{ quiz.titulo }}"
                     
                     <div class="col-md-4 text-end">
                         <div class="d-flex flex-column gap-2">
-                            <a href="{% url 'pergunta_update' quiz.id validacao.pergunta.id %}" class="btn btn-outline-primary btn-sm">
+                            <a href="{% url 'pergunta_update' validacao.pergunta.id %}" class="btn btn-outline-primary btn-sm">
                                 <i class="fas fa-edit me-1"></i>Editar
                             </a>
                             <small class="text-muted">

@@ -1,0 +1,9 @@
+Pergunta,Tipo,Resposta_VF,Alternativa_A,Alternativa_B,Alternativa_C,Alternativa_D,Alternativa_Correta
+"Qual é a nota musical que corresponde à primeira linha do pentagrama na clave de sol?",multipla_escolha,,Mi,Fá,Sol,Lá,A
+"A clave de fá é também conhecida como clave de baixo?",verdadeiro_falso,True,,,,
+"Quantas linhas tem um pentagrama?",multipla_escolha,,3,4,5,6,C
+"O compasso 4/4 significa que há 4 tempos por compasso?",verdadeiro_falso,True,,,,
+"Qual instrumento é conhecido como o rei dos instrumentos?",multipla_escolha,,Piano,Violino,Órgão,Guitarra,C
+"Uma oitava musical contém 12 semitons?",verdadeiro_falso,True,,,,
+"Qual é o nome da pausa que equivale a uma semibreve?",multipla_escolha,,Pausa de semínima,Pausa de mínima,Pausa de semibreve,Pausa de colcheia,C
+"Mozart nasceu na Áustria?",verdadeiro_falso,True,,,,

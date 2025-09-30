@@ -29,4 +29,9 @@ urlpatterns = [
     path('quiz/criar-otimizado/', views.QuizCreateOptimizedView.as_view(), name='quiz_create_optimized'),
     path('quiz/<int:quiz_id>/pergunta/criar-otimizada/', views.PerguntaCreateOptimizedView.as_view(), name='pergunta_create_optimized'),
     path('pergunta/<int:pergunta_id>/alternativa/criar-otimizada/', views.AlternativaCreateOptimizedView.as_view(), name='alternativa_create_optimized'),
+    
+    # Importação de perguntas
+    path('importar-perguntas/', views.ImportarPerguntasView.as_view(), name='importar_perguntas'),
+    path('quiz/<int:quiz_id>/importar-perguntas/', views.ImportarPerguntasView.as_view(), name='importar_perguntas_quiz'),
+    path('download-template/', views.DownloadTemplateView.as_view(), name='download_template'),
 ]

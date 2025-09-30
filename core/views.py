@@ -28,7 +28,10 @@ from django.utils.decorators import method_decorator
 from django.db import transaction
 import time
 import json
-
+import pandas as pd
+import io
+from django.core.files.storage import default_storage
+from django.core.files.base import ContentFile
 
 
 class HomeView(TemplateView):
@@ -668,4 +671,278 @@ class AlternativaCreateOptimizedView(LoginRequiredMixin, UserPassesTestMixin, Cr
             context['pergunta'] = pergunta
             context['alternativas'] = pergunta.alternativas.all()
         return context
+
+
+class ImportarPerguntasView(LoginRequiredMixin, UserPassesTestMixin, TemplateView):
+    """View para importar perguntas de planilhas Excel/CSV"""
+    template_name = 'core/importar_perguntas.html'
+    login_url = 'account_login'
+    
+    def test_func(self):
+        return self.request.user.is_staff
+    
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        quiz_id = self.kwargs.get('quiz_id')
+        if quiz_id:
+            context['quiz'] = get_object_or_404(Quiz, id=quiz_id)
+        else:
+            context['quizzes'] = Quiz.objects.all().order_by('-data_criacao')
+        return context
+    
+    def post(self, request, *args, **kwargs):
+        try:
+            # Verificar se foi enviado um arquivo
+            if 'arquivo' not in request.FILES:
+                messages.error(request, 'Por favor, selecione um arquivo para importar.')
+                return self.get(request, *args, **kwargs)
+            
+            arquivo = request.FILES['arquivo']
+            quiz_id = request.POST.get('quiz_id')
+            
+            # Validar quiz
+            if not quiz_id:
+                messages.error(request, 'Por favor, selecione um quiz.')
+                return self.get(request, *args, **kwargs)
+            
+            quiz = get_object_or_404(Quiz, id=quiz_id)
+            
+            # Validar tipo de arquivo
+            if not arquivo.name.endswith(('.xlsx', '.xls', '.csv')):
+                messages.error(request, 'Formato de arquivo não suportado. Use Excel (.xlsx, .xls) ou CSV.')
+                return self.get(request, *args, **kwargs)
+            
+            # Processar arquivo
+            resultado = self.processar_planilha(arquivo, quiz)
+            
+            if resultado['sucesso']:
+                messages.success(
+                    request, 
+                    f'Importação concluída! {resultado["importadas"]} perguntas importadas com sucesso.'
+                )
+                if resultado['erros']:
+                    messages.warning(
+                        request,
+                        f'{len(resultado["erros"])} linhas com erro foram ignoradas. Verifique o formato.'
+                    )
+                return redirect('pergunta_list', quiz_id=quiz.id)
+            else:
+                messages.error(request, f'Erro na importação: {resultado["erro"]}')
+                return self.get(request, *args, **kwargs)
+                
+        except Exception as e:
+            messages.error(request, f'Erro inesperado: {str(e)}')
+            return self.get(request, *args, **kwargs)
+    
+    def processar_planilha(self, arquivo, quiz):
+        """Processa a planilha e importa as perguntas"""
+        try:
+            # Ler arquivo
+            if arquivo.name.endswith('.csv'):
+                df = pd.read_csv(arquivo, encoding='utf-8')
+            else:
+                df = pd.read_excel(arquivo)
+            
+            # Validar colunas obrigatórias
+            colunas_obrigatorias = ['pergunta', 'tipo']
+            colunas_faltando = [col for col in colunas_obrigatorias if col not in df.columns]
+            
+            if colunas_faltando:
+                return {
+                    'sucesso': False,
+                    'erro': f'Colunas obrigatórias faltando: {", ".join(colunas_faltando)}'
+                }
+            
+            importadas = 0
+            erros = []
+            
+            with transaction.atomic():
+                for index, row in df.iterrows():
+                    try:
+                        linha_num = index + 2  # +2 porque pandas começa em 0 e temos cabeçalho
+                        
+                        # Validar dados obrigatórios
+                        if pd.isna(row['pergunta']) or not str(row['pergunta']).strip():
+                            erros.append(f'Linha {linha_num}: Pergunta não pode estar vazia')
+                            continue
+                        
+                        if pd.isna(row['tipo']) or str(row['tipo']).strip() not in ['multipla_escolha', 'verdadeiro_falso']:
+                            erros.append(f'Linha {linha_num}: Tipo deve ser "multipla_escolha" ou "verdadeiro_falso"')
+                            continue
+                        
+                        tipo = str(row['tipo']).strip()
+                        pergunta_texto = str(row['pergunta']).strip()
+                        
+                        # Criar pergunta
+                        pergunta = Pergunta.objects.create(
+                            quiz=quiz,
+                            pergunta=pergunta_texto,
+                            tipo=tipo
+                        )
+                        
+                        # Processar baseado no tipo
+                        if tipo == 'verdadeiro_falso':
+                            # Para verdadeiro/falso, usar coluna 'resposta_correta'
+                            if 'resposta_correta' in df.columns and not pd.isna(row['resposta_correta']):
+                                resposta = str(row['resposta_correta']).strip().lower()
+                                if resposta in ['verdadeiro', 'true', '1', 'sim']:
+                                    pergunta.resposta_verdadeiro_falso = True
+                                elif resposta in ['falso', 'false', '0', 'não', 'nao']:
+                                    pergunta.resposta_verdadeiro_falso = False
+                                else:
+                                    erros.append(f'Linha {linha_num}: Resposta correta inválida para V/F')
+                                    pergunta.delete()
+                                    continue
+                                pergunta.save()
+                            else:
+                                erros.append(f'Linha {linha_num}: Coluna "resposta_correta" obrigatória para V/F')
+                                pergunta.delete()
+                                continue
+                        
+                        elif tipo == 'multipla_escolha':
+                            # Para múltipla escolha, processar alternativas
+                            alternativas_criadas = 0
+                            alternativa_correta_definida = False
+                            
+                            for i in range(1, 6):  # Suporta até 5 alternativas
+                                col_alternativa = f'alternativa_{i}'
+                                col_correta = f'alternativa_{i}_correta'
+                                
+                                if col_alternativa in df.columns and not pd.isna(row[col_alternativa]):
+                                    texto_alternativa = str(row[col_alternativa]).strip()
+                                    if texto_alternativa:
+                                        # Verificar se é a alternativa correta
+                                        is_correta = False
+                                        if col_correta in df.columns and not pd.isna(row[col_correta]):
+                                            valor_correta = str(row[col_correta]).strip().lower()
+                                            is_correta = valor_correta in ['true', '1', 'sim', 'verdadeiro']
+                                        
+                                        if is_correta and alternativa_correta_definida:
+                                            erros.append(f'Linha {linha_num}: Apenas uma alternativa pode ser correta')
+                                            pergunta.delete()
+                                            break
+                                        
+                                        Alternativa.objects.create(
+                                            pergunta=pergunta,
+                                            texto=texto_alternativa,
+                                            correta=is_correta
+                                        )
+                                        alternativas_criadas += 1
+                                        
+                                        if is_correta:
+                                            alternativa_correta_definida = True
+                            
+                            # Validar múltipla escolha
+                            if alternativas_criadas < 2:
+                                erros.append(f'Linha {linha_num}: Múltipla escolha precisa de pelo menos 2 alternativas')
+                                pergunta.delete()
+                                continue
+                            
+                            if not alternativa_correta_definida:
+                                erros.append(f'Linha {linha_num}: Múltipla escolha precisa de uma alternativa correta')
+                                pergunta.delete()
+                                continue
+                        
+                        importadas += 1
+                        
+                    except Exception as e:
+                        erros.append(f'Linha {linha_num}: Erro ao processar - {str(e)}')
+                        continue
+            
+            return {
+                'sucesso': True,
+                'importadas': importadas,
+                'erros': erros
+            }
+            
+        except Exception as e:
+            return {
+                'sucesso': False,
+                'erro': f'Erro ao ler arquivo: {str(e)}'
+            }
+
+
+class DownloadTemplateView(LoginRequiredMixin, UserPassesTestMixin, TemplateView):
+    """View para download do template da planilha"""
+    login_url = 'account_login'
+    
+    def test_func(self):
+        return self.request.user.is_staff
+    
+    def get(self, request, *args, **kwargs):
+        # Criar template da planilha
+        template_data = {
+            'pergunta': [
+                'Qual é a capital do Brasil?',
+                'O Django é um framework Python?',
+                'Quantos dias tem uma semana?'
+            ],
+            'tipo': [
+                'multipla_escolha',
+                'verdadeiro_falso',
+                'multipla_escolha'
+            ],
+            'alternativa_1': [
+                'São Paulo',
+                '',
+                '5'
+            ],
+            'alternativa_1_correta': [
+                'false',
+                '',
+                'false'
+            ],
+            'alternativa_2': [
+                'Rio de Janeiro',
+                '',
+                '6'
+            ],
+            'alternativa_2_correta': [
+                'false',
+                '',
+                'false'
+            ],
+            'alternativa_3': [
+                'Brasília',
+                '',
+                '7'
+            ],
+            'alternativa_3_correta': [
+                'true',
+                '',
+                'true'
+            ],
+            'alternativa_4': [
+                'Salvador',
+                '',
+                '8'
+            ],
+            'alternativa_4_correta': [
+                'false',
+                '',
+                'false'
+            ],
+            'resposta_correta': [
+                '',
+                'verdadeiro',
+                ''
+            ]
+        }
+        
+        df = pd.DataFrame(template_data)
+        
+        # Criar arquivo Excel em memória
+        output = io.BytesIO()
+        with pd.ExcelWriter(output, engine='openpyxl') as writer:
+            df.to_excel(writer, index=False, sheet_name='Template')
+        
+        output.seek(0)
+        
+        response = HttpResponse(
+            output.getvalue(),
+            content_type='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
+        )
+        response['Content-Disposition'] = 'attachment; filename="template_perguntas.xlsx"'
+        
+        return response
     

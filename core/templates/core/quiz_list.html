@@ -106,9 +106,14 @@
     
     <div class="d-flex justify-content-between align-items-center mb-4">
         <h2><i id="quiz-list-text" class="fas fa-list me-2"></i>Lista de Quizzes</h2>
-        <a href="{% url 'quiz_create' %}" class="btn btn-modern">
-            <i class="fas fa-plus me-2"></i>Novo Quiz
-        </a>
+        <div class="btn-group" role="group">
+            <a href="{% url 'quiz_create' %}" class="btn btn-modern">
+                <i class="fas fa-plus me-2"></i>Novo Quiz
+            </a>
+            <a href="{% url 'importar_perguntas' %}" class="btn btn-success">
+                <i class="fas fa-file-import me-2"></i>Importar Perguntas
+            </a>
+        </div>
     </div>
     {% if quizzes %}
     <div class="row">

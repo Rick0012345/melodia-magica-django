@@ -44,6 +44,7 @@ venv.bak/
 *.swo
 *~
 .DS_Store
+n8n_data/
 
 # Arquivos de sistema
 .DS_Store

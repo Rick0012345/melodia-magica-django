@@ -2,83 +2,29 @@ from django.shortcuts import render
 from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
 from django.contrib.auth.decorators import login_required
+from django.conf import settings
 import json
 import uuid
+import logging
 from .models import ChatMessage
+from .n8n_service import N8nService
+
+logger = logging.getLogger(__name__)
 
 def get_chatbot_response(message):
-    """Função para gerar respostas do chatbot baseadas nas regras e informações do jogo"""
-    message = message.lower().strip()
+    """Função de fallback simples quando n8n não está disponível"""
+    return """🤖 Desculpe, estou com dificuldades técnicas no momento. 
     
-    # Palavras-chave para regras
-    regras_keywords = ['regra', 'regras', 'como jogar', 'como funciona', 'pontuação', 'ponto', 'pontos']
-    
-    # Palavras-chave para informações sobre o jogo
-    sobre_keywords = ['sobre', 'melodia mágica', 'quiz', 'jogo', 'música', 'instrumento', 'instrumentos']
-    
-    # Palavras-chave para saudações
-    saudacao_keywords = ['oi', 'olá', 'hello', 'hi', 'bom dia', 'boa tarde', 'boa noite']
-    
-    # Palavras-chave para ajuda
-    ajuda_keywords = ['ajuda', 'help', 'socorro', 'não entendo', 'confuso']
-    
-    if any(keyword in message for keyword in saudacao_keywords):
-        return "Olá! 👋 Bem-vindo ao Melodia Mágica! Sou seu assistente virtual. Posso te ajudar com informações sobre as regras do jogo e sobre o projeto. O que você gostaria de saber?"
-    
-    elif any(keyword in message for keyword in regras_keywords):
-        return """📋 **REGRAS DO QUIZ:**
+Posso te ajudar com informações básicas sobre o Melodia Mágica:
+• É um quiz musical educativo para crianças
+• Teste seus conhecimentos sobre instrumentos musicais
+• Aprenda de forma divertida e interativa
 
-1. **Responda as perguntas**: Você verá uma pergunta com várias opções de resposta. Escolha a opção que você acha correta.
-
-2. **Pontuação**: Você ganha 1 ponto por cada resposta correta.
-
-3. **Resultado final**: Ao final, você verá a quantidade de respostas corretas e sua pontuação total.
-
-4. **Reiniciar**: Você pode tentar o quiz novamente para melhorar sua pontuação.
-
-Está pronto para começar? 🎮"""
-    
-    elif any(keyword in message for keyword in sobre_keywords):
-        return """🎶 **SOBRE O MELODIA MÁGICA:**
-
-Bem-vindo ao nosso Quiz Melodia Mágica! 🎉✨
-
-Aqui, as crianças podem aprender sobre música de maneira divertida e interativa, testando seus conhecimentos com perguntas sobre instrumentos musicais, sons, e muito mais!
-
-Nosso quiz foi criado especialmente para os pequenos, com perguntas fáceis e divertidas que tornam o aprendizado um verdadeiro jogo.
-
-**Características:**
-• Perguntas sobre instrumentos musicais
-• Sons e melodias
-• Aprendizado divertido
-• Interface amigável para crianças
-
-Quer saber mais sobre as regras? 🎵"""
-    
-    elif any(keyword in message for keyword in ajuda_keywords):
-        return """🤖 **COMO POSSO TE AJUDAR:**
-
-Posso responder suas dúvidas sobre:
-
-• **Regras do jogo** - Como jogar e pontuar
-• **Sobre o projeto** - Informações sobre o Melodia Mágica
-• **Saudações** - Para conversar comigo
-
-Basta me perguntar sobre qualquer um desses tópicos! 😊"""
-    
-    else:
-        return """🤔 Não entendi sua pergunta. 
-
-Posso te ajudar com:
-• Regras do jogo
-• Informações sobre o Melodia Mágica
-• Como jogar
-
-Tente perguntar de outra forma! 😊"""
+Tente novamente em alguns instantes! 😊"""
 
 @csrf_exempt
 def chat_message(request):
-    """View para processar mensagens do chatbot"""
+    """View para processar mensagens do chatbot com integração n8n"""
     if request.method == 'POST':
         try:
             data = json.loads(request.body)
@@ -87,13 +33,33 @@ def chat_message(request):
             if not message:
                 return JsonResponse({'error': 'Mensagem vazia'}, status=400)
             
-            # Gerar resposta do chatbot
-            response = get_chatbot_response(message)
-            
             # Gerar session_id se não existir
             session_id = data.get('session_id')
             if not session_id:
                 session_id = str(uuid.uuid4())
+            
+            # Verificar se deve usar n8n ou fallback
+            use_n8n = getattr(settings, 'USE_N8N_CHATBOT', True)
+            
+            if use_n8n:
+                # Usar n8n com LLM
+                n8n_service = N8nService()
+                user_id = request.user.id if request.user.is_authenticated else None
+                
+                logger.info(f"Enviando mensagem para n8n: {message[:50]}...")
+                result = n8n_service.send_message_to_n8n(message, session_id, user_id)
+                
+                if result['success']:
+                    response = result['response']
+                    logger.info("Resposta recebida do n8n com sucesso")
+                else:
+                    # Se n8n falhou, usar chatbot local como fallback
+                    response = get_chatbot_response(message)
+                    logger.warning("N8n falhou, usando chatbot local como fallback")
+            else:
+                # Usar chatbot local como fallback
+                response = get_chatbot_response(message)
+                logger.info("Usando chatbot local (n8n desabilitado)")
             
             # Salvar mensagem no banco de dados
             user = request.user if request.user.is_authenticated else None
@@ -106,12 +72,14 @@ def chat_message(request):
             
             return JsonResponse({
                 'response': response,
-                'session_id': session_id
+                'session_id': session_id,
+                'source': 'n8n' if use_n8n else 'local'
             })
             
         except json.JSONDecodeError:
             return JsonResponse({'error': 'JSON inválido'}, status=400)
         except Exception as e:
+            logger.error(f"Erro no chat_message: {str(e)}")
             return JsonResponse({'error': str(e)}, status=500)
     
     return JsonResponse({'error': 'Método não permitido'}, status=405)

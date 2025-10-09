@@ -1,9 +1,8 @@
 from pathlib import Path
 import os
-# from dotenv import load_dotenv
+from decouple import config
 
-# Carrega as variáveis de ambiente
-# load_dotenv()
+# Carrega as variáveis de ambiente do arquivo .env
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -13,15 +12,13 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/5.2/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-# SECRET_KEY = 'django-insecure-j^8$!!ais38&4nce@^%+7b2r^d_i&1%%bb8@#!%salg*fmf-n8'  # Removido
-SECRET_KEY = os.getenv('SECRET_KEY', 'your-secret-key-here')
+SECRET_KEY = config('SECRET_KEY', default='django-insecure-j^8$!!ais38&4nce@^%+7b2r^d_i&1%%bb8@#!%salg*fmf-n8')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-# DEBUG = True  # Removido
-DEBUG = True  # Ativado temporariamente para debug
+DEBUG = config('DEBUG', default=True, cast=bool)
 
-# ALLOWED_HOSTS = []  # Removido
-ALLOWED_HOSTS = os.getenv('ALLOWED_HOSTS', 'localhost,127.0.0.1').split(',')
+# ALLOWED_HOSTS
+ALLOWED_HOSTS = config('ALLOWED_HOSTS', default='localhost,127.0.0.1').split(',')
 
 
 # Application definition
@@ -85,11 +82,11 @@ WSGI_APPLICATION = 'melodiaMagica.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'postgres',
-        'USER': 'postgres',
-        'PASSWORD': 'postgres',
-        'HOST': 'db',  # Nome do serviço do PostgreSQL no docker-compose
-        'PORT': '5432',
+        'NAME': config('DB_NAME', default='postgres'),
+        'USER': config('DB_USER', default='postgres'),
+        'PASSWORD': config('DB_PASSWORD', default='postgres'),
+        'HOST': config('DB_HOST', default='db'),  # Nome do serviço do PostgreSQL no docker-compose
+        'PORT': config('DB_PORT', default='5432'),
     }
 }
 
@@ -113,6 +110,11 @@ AUTH_PASSWORD_VALIDATORS = [
 ]
 
 
+# # N8N Integration
+# Configurações do N8N
+USE_N8N_CHATBOT = config('USE_N8N_CHATBOT', cast=bool)
+N8N_WEBHOOK_URL = config('N8N_WEBHOOK_URL')
+
 # Internationalization
 # https://docs.djangoproject.com/en/5.2/topics/i18n/
 
@@ -123,6 +125,25 @@ TIME_ZONE = 'America/Sao_Paulo'
 USE_I18N = True
 
 USE_TZ = True
+
+# Logging configuration
+LOGGING = {
+    'version': 1,
+    'disable_existing_loggers': False,
+    'handlers': {
+        'console': {
+            'level': 'INFO',
+            'class': 'logging.StreamHandler',
+        },
+    },
+    'loggers': {
+        'chatbot': {
+            'handlers': ['console'],
+            'level': 'INFO',
+            'propagate': True,
+        },
+    },
+}
 
 
 # Static files (CSS, JavaScript, Images)
@@ -164,13 +185,14 @@ ACCOUNT_LOGIN_REDIRECT_URL = '/menu/'
 ACCOUNT_SIGNUP_REDIRECT_URL = '/menu/'
 
 # Configurações de email para Gmail
+# Configurações de Email
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 EMAIL_HOST = 'smtp.gmail.com'
 EMAIL_PORT = 587
 EMAIL_USE_TLS = True
-EMAIL_HOST_USER = os.getenv('EMAIL_HOST_USER', 'seu-email@gmail.com')
-EMAIL_HOST_PASSWORD = os.getenv('EMAIL_HOST_PASSWORD', 'sua-senha-de-app')
-DEFAULT_FROM_EMAIL = os.getenv('EMAIL_HOST_USER', 'seu-email@gmail.com')
+EMAIL_HOST_USER = config('EMAIL_HOST_USER', default='seu-email@gmail.com')
+EMAIL_HOST_PASSWORD = config('EMAIL_HOST_PASSWORD', default='sua-senha-de-app')
+DEFAULT_FROM_EMAIL = config('EMAIL_HOST_USER', default='seu-email@gmail.com')
 
 # Configurações adicionais do Allauth para email
 ACCOUNT_EMAIL_SUBJECT_PREFIX = '[Melodia Mágica] '

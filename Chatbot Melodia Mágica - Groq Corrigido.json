@@ -1,0 +1,179 @@
+{
+  "name": "Chatbot Melodia Mágica - Groq Corrigido",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "chatbot-webhook",
+        "responseMode": "responseNode",
+        "options": {}
+      },
+      "id": "e928b40f-4cec-4f9f-9407-99362c93691b",
+      "name": "Webhook - Receber Mensagem",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2,
+      "position": [
+        64,
+        128
+      ],
+      "webhookId": "chatbot-webhook"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "string": [
+            {
+              "value1": "{{ $json.message }}",
+              "operation": "isNotEmpty"
+            }
+          ]
+        }
+      },
+      "id": "00559ed4-8283-43bb-a067-622dbf29af15",
+      "name": "Validar Mensagem",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 1,
+      "position": [
+        224,
+        128
+      ]
+    },
+    {
+      "parameters": {
+        "agent": "conversationalAgent",
+        "promptType": "define",
+        "text": "{{ $json.message }}",
+        "options": {
+          "systemMessage": "=Você é a Melodia, assistente virtual do jogo educativo 'Melodia Mágica'. Seja sempre amigável, educativo e adequado para crianças. Foque em música e instrumentos musicais. Use emojis musicais 🎵🎶🎼. Mantenha respostas concisas mas informativas.\n\nresponda sempre em português",
+          "maxIterations": 3,
+          "returnIntermediateSteps": false
+        }
+      },
+      "id": "004bdd65-2329-496d-9a34-3c97bd74447e",
+      "name": "AI Agent - Melodia",
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 1.6,
+      "position": [
+        448,
+        -144
+      ]
+    },
+    {
+      "parameters": {
+        "model": "meta-llama/llama-4-scout-17b-16e-instruct",
+        "options": {
+          "temperature": 0.7
+        }
+      },
+      "id": "2d7c4506-e69d-492c-8973-bf1cbcdf0215",
+      "name": "Groq LLM",
+      "type": "@n8n/n8n-nodes-langchain.lmChatGroq",
+      "typeVersion": 1,
+      "position": [
+        448,
+        48
+      ],
+      "credentials": {
+        "groqApi": {
+          "id": "zLRZx39eYWb9vqID",
+          "name": "Groq account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "={{ { \"response\": $json.output, \"session_id\": $('Webhook - Receber Mensagem').item.json.session_id, \"timestamp\": new Date().toISOString(), \"source\": \"n8n-groq-agent\" } }}",
+        "options": {}
+      },
+      "id": "361c21f7-0e9b-4e9b-95a4-b4cc8e684632",
+      "name": "Responder ao Django",
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1,
+      "position": [
+        832,
+        32
+      ]
+    },
+    {
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "={{ { \"response\": \"Desculpe, não recebi sua mensagem. Tente novamente! 😊\", \"session_id\": $('Webhook - Receber Mensagem').item.json.session_id, \"error\": \"empty_message\" } }}",
+        "options": {}
+      },
+      "id": "ad2b67b4-d0d0-4b68-9d1c-76a9f0bb69a6",
+      "name": "Resposta de Erro",
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1,
+      "position": [
+        384,
+        224
+      ]
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Webhook - Receber Mensagem": {
+      "main": [
+        [
+          {
+            "node": "Validar Mensagem",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Validar Mensagem": {
+      "main": [
+        [
+          {
+            "node": "AI Agent - Melodia",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Resposta de Erro",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "AI Agent - Melodia": {
+      "main": [
+        [
+          {
+            "node": "Responder ao Django",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Groq LLM": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "AI Agent - Melodia",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": true,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "d7053e3b-d4bf-49db-bf9e-cf7edf898af3",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "375a4a76cca8398bd27ce3fa6d063864b13586450dfd848c88ea6be156ef5fbb"
+  },
+  "id": "pwC0ZZX8pK9b8mrl",
+  "tags": []
+}

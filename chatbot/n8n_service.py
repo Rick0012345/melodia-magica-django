@@ -61,6 +61,15 @@ class N8nService:
             if response.status_code == 200:
                 try:
                     data = response.json()
+                    # Algumas execuções do n8n retornam uma lista de itens.
+                    # Se for o caso, usamos o primeiro item.
+                    if isinstance(data, list):
+                        logger.info("Resposta do n8n é uma lista; usando primeiro item")
+                        if len(data) > 0:
+                            data = data[0]
+                        else:
+                            logger.warning("Lista vazia recebida do n8n; usando fallback")
+                            return self._fallback_response()
                     logger.info(f"JSON parseado com sucesso: {json.dumps(data, indent=2)}")
                     
                     # Verificar se há erro na resposta do n8n
@@ -74,7 +83,17 @@ class N8nService:
                             return self._fallback_response()
                     
                     # Verificar se a resposta contém conteúdo válido
-                    response_text = data.get('response', '').strip()
+                    # Alguns nós do n8n retornam o texto em 'output' ou 'text'
+                    response_text = (
+                        data.get('response')
+                        or data.get('output')
+                        or data.get('text')
+                        or ''
+                    )
+                    if isinstance(response_text, str):
+                        response_text = response_text.strip()
+                    else:
+                        response_text = str(response_text).strip()
                     if not response_text or response_text == "Desculpe, não recebi sua mensagem. Tente novamente! 😊":
                         logger.warning("Resposta do n8n está vazia ou é mensagem de erro padrão, usando fallback")
                         return self._fallback_response()
@@ -119,12 +138,7 @@ class N8nService:
         """Resposta de fallback quando n8n não está disponível"""
         return {
             'success': False,
-            'response': """🤖 Desculpe, estou com dificuldades técnicas no momento. 
-            
-Posso te ajudar com informações básicas sobre o Melodia Mágica:
-• É um quiz musical educativo para crianças
-• Teste seus conhecimentos sobre instrumentos musicais
-• Aprenda de forma divertida e interativa
+            'response': """🤖 Desculpe, estou com dificuldades técnicas no momento.
 
 Tente novamente em alguns instantes! 😊"""
         }

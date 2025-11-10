@@ -1,5 +1,5 @@
 {
-  "name": "Chatbot Melodia Mágica - Groq Corrigido",
+  "name": "Chatbot Melodia Mágica - Groq Redis Memory - Otimizado",
   "nodes": [
     {
       "parameters": {
@@ -23,7 +23,7 @@
         "conditions": {
           "string": [
             {
-              "value1": "{{ $json.message }}",
+              "value1": "={{ $json.message }}",
               "operation": "isNotEmpty"
             }
           ]
@@ -42,9 +42,9 @@
       "parameters": {
         "agent": "conversationalAgent",
         "promptType": "define",
-        "text": "{{ $json.message }}",
+        "text": "={{ $json.message }}",
         "options": {
-          "systemMessage": "=Você é a Melodia, assistente virtual do jogo educativo 'Melodia Mágica'. Seja sempre amigável, educativo e adequado para crianças. Foque em música e instrumentos musicais. Use emojis musicais 🎵🎶🎼. Mantenha respostas concisas mas informativas.\n\nresponda sempre em português",
+          "systemMessage": "Você é a Melodia, assistente virtual especializada do jogo educativo 'Melodia Mágica'. \n\nSua personalidade:\n- Sempre amigável, educativa e adequada para crianças\n- Use emojis musicais 🎵🎶🎼🥁🎸🎹 para tornar as conversações mais divertidas\n- Mantenha respostas concisas mas informativas\n- Lembre-se das informações que o usuário compartilha (nome, instrumentos favoritos, etc.)\n\nSuas especialidades:\n- Instrumentos musicais (bateria, piano, violão, etc.)\n- Teoria musical básica\n- História da música\n- Técnicas musicais para iniciantes\n- Curiosidades sobre música\n\nComportamento conversacional:\n- SEMPRE se lembre do nome do usuário quando ele se apresentar\n- Faça referência às preferências musicais mencionadas anteriormente\n- Seja proativa em sugerir tópicos relacionados aos interesses do usuário\n- Se o usuário mencionar um instrumento, ofereça dicas específicas sobre ele\n- Mantenha o contexto da conversa anterior\n\nExemplos de respostas contextuais:\n- Se o usuário disse que se chama Patrick e gosta de bateria, responda: \"Oi Patrick! Que legal que você gosta de bateria! 🥁\"\n- Continue conversas anteriores de forma natural\n- Ofereça informações progressivas sobre os tópicos de interesse\n\nSempre responda em português brasileiro e mantenha o foco em música e educação musical.",
           "maxIterations": 3,
           "returnIntermediateSteps": false
         }
@@ -60,9 +60,10 @@
     },
     {
       "parameters": {
-        "model": "meta-llama/llama-4-scout-17b-16e-instruct",
+        "model": "llama-3.1-70b-versatile",
         "options": {
-          "temperature": 0.7
+          "temperature": 0.7,
+          "maxTokens": 500
         }
       },
       "id": "2d7c4506-e69d-492c-8973-bf1cbcdf0215",
@@ -82,8 +83,30 @@
     },
     {
       "parameters": {
+        "sessionIdType": "customKey",
+        "sessionKey": "={{ $('Webhook - Receber Mensagem').item.json.session_id }}",
+        "sessionTTL": 120,
+        "contextWindowLength": 15
+      },
+      "id": "9b3f6f19-6b8a-4d4c-9d5f-3e1a0a9f11aa",
+      "name": "Redis Chat Memory",
+      "type": "@n8n/n8n-nodes-langchain.memoryRedisChat",
+      "typeVersion": 1.5,
+      "position": [
+        448,
+        -272
+      ],
+      "credentials": {
+        "redis": {
+          "id": "redis-local",
+          "name": "Redis Local"
+        }
+      }
+    },
+    {
+      "parameters": {
         "respondWith": "json",
-        "responseBody": "={{ { \"response\": $json.output, \"session_id\": $('Webhook - Receber Mensagem').item.json.session_id, \"timestamp\": new Date().toISOString(), \"source\": \"n8n-groq-agent\" } }}",
+        "responseBody": "={{ { \"response\": $json.output, \"session_id\": $('Webhook - Receber Mensagem').item.json.session_id, \"timestamp\": new Date().toISOString(), \"source\": \"n8n-groq-agent-optimized\" } }}",
         "options": {}
       },
       "id": "361c21f7-0e9b-4e9b-95a4-b4cc8e684632",
@@ -159,6 +182,17 @@
           {
             "node": "AI Agent - Melodia",
             "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Redis Chat Memory": {
+      "ai_memory": [
+        [
+          {
+            "node": "AI Agent - Melodia",
+            "type": "ai_memory",
             "index": 0
           }
         ]

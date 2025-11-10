@@ -14,11 +14,6 @@ logger = logging.getLogger(__name__)
 def get_chatbot_response(message):
     """Função de fallback simples quando n8n não está disponível"""
     return """🤖 Desculpe, estou com dificuldades técnicas no momento. 
-    
-Posso te ajudar com informações básicas sobre o Melodia Mágica:
-• É um quiz musical educativo para crianças
-• Teste seus conhecimentos sobre instrumentos musicais
-• Aprenda de forma divertida e interativa
 
 Tente novamente em alguns instantes! 😊"""
 

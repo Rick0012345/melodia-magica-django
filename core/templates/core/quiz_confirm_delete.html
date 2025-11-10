@@ -1,0 +1,35 @@
+{% extends 'core/admin_base.html' %}
+
+{% block page_title %}Excluir Quiz{% endblock %}
+{% block page_subtitle %}Confirmar exclusão do quiz{% endblock %}
+
+{% block breadcrumb %}
+<li class="breadcrumb-item"><a href="{% url 'quiz_list' %}">Quizzes</a></li>
+<li class="breadcrumb-item active">Excluir</li>
+{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-8">
+        <div class="card">
+            <div class="card-header">
+                <h5 class="mb-0"><i class="fas fa-trash-alt me-2"></i>Confirmar Exclusão</h5>
+            </div>
+            <div class="card-body">
+                <p class="mb-3">Tem certeza que deseja excluir o quiz <strong>"{{ object.titulo }}"</strong>? Esta ação é permanente e removerá todas as perguntas associadas.</p>
+                <form method="post">
+                    {% csrf_token %}
+                    <div class="d-flex justify-content-between">
+                        <a href="{% url 'quiz_list' %}" class="btn btn-secondary">
+                            <i class="fas fa-arrow-left me-2"></i>Cancelar
+                        </a>
+                        <button type="submit" class="btn btn-danger">
+                            <i class="fas fa-trash-alt me-2"></i>Excluir Quiz
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

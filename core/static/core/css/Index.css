@@ -229,6 +229,16 @@ body {
     padding: 1rem;
   }
 
+  /* Evitar elementos absolutos pesados em telas pequenas */
+  .urso-guitarra, .urso-central, .urso-guitarra3 {
+    display: none;
+  }
+
+  /* Ajustar altura útil considerando navbar fixa */
+  .hero-section {
+    min-height: calc(100vh - 80px);
+  }
+
 
 }
 

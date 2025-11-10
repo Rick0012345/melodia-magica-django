@@ -15,7 +15,8 @@ document.addEventListener('DOMContentLoaded', function() {
     const sendButton = document.getElementById('chatbot-send');
     
     if (input) {
-        input.addEventListener('keypress', function(e) {
+        // Usar 'keydown' pois 'keypress' é deprecado e pode não disparar para Enter
+        input.addEventListener('keydown', function(e) {
             if (e.key === 'Enter' && !e.shiftKey) {
                 e.preventDefault();
                 sendMessage();
@@ -24,12 +25,14 @@ document.addEventListener('DOMContentLoaded', function() {
         
         input.addEventListener('input', function() {
             // Habilitar/desabilitar botão de envio baseado no conteúdo
-            if (this.value.trim()) {
-                sendButton.style.opacity = '1';
-                sendButton.style.cursor = 'pointer';
-            } else {
-                sendButton.style.opacity = '0.6';
-                sendButton.style.cursor = 'not-allowed';
+            if (sendButton) {
+                if (this.value.trim()) {
+                    sendButton.style.opacity = '1';
+                    sendButton.style.cursor = 'pointer';
+                } else {
+                    sendButton.style.opacity = '0.6';
+                    sendButton.style.cursor = 'not-allowed';
+                }
             }
         });
     }
@@ -267,4 +270,4 @@ document.addEventListener('click', function(e) {
     if (content && content.contains(e.target)) {
         e.stopPropagation();
     }
-}); 
+});

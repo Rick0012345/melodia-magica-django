@@ -1,0 +1,183 @@
+{
+  "name": "Chatbot Melodia Mágica - Groq Redis Memory - Otimizado",
+  "active": true,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "nodes": [
+    {
+      "typeVersion": 2.1,
+      "onError": "continueRegularOutput",
+      "webhookId": "chatbot-webhook",
+      "name": "Webhook - Receber Mensagem",
+      "id": "e928b40f-4cec-4f9f-9407-99362c93691b",
+      "position": [64, 128],
+      "type": "n8n-nodes-base.webhook",
+      "parameters": {
+        "options": {},
+        "path": "chatbot-webhook",
+        "responseMode": "responseNode",
+        "httpMethod": "POST"
+      }
+    },
+    {
+      "name": "Validar Mensagem",
+      "typeVersion": 2.2,
+      "onError": "continueErrorOutput",
+      "id": "00559ed4-8283-43bb-a067-622dbf29af15",
+      "position": [224, 128],
+      "type": "n8n-nodes-base.if",
+      "parameters": {
+        "conditions": {
+          "string": [
+            {
+              "operation": "isNotEmpty",
+              "value1": "={{ $json.message }}"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "AI Agent - Melodia",
+      "typeVersion": 2.2,
+      "id": "004bdd65-2329-496d-9a34-3c97bd74447e",
+      "position": [448, -144],
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "parameters": {
+        "options": {
+          "returnIntermediateSteps": false,
+          "maxIterations": 3,
+          "systemMessage": "Você é a Melodia, assistente virtual especializada do jogo educativo 'Melodia Mágica'. \n\nSua personalidade:\n- Sempre amigável, educativa e adequada para crianças\n- Use emojis musicais 🎵🎶🎼🥁🎸🎹 para tornar as conversações mais divertidas\n- Mantenha respostas concisas mas informativas\n- Lembre-se das informações que o usuário compartilha (nome, instrumentos favoritos, etc.)\n\nSuas especialidades:\n- Instrumentos musicais (bateria, piano, violão, etc.)\n- Teoria musical básica\n- História da música\n- Técnicas musicais para iniciantes\n- Curiosidades sobre música\n\nComportamento conversacional:\n- SEMPRE se lembre do nome do usuário quando ele se apresentar\n- Faça referência às preferências musicais mencionadas anteriormente\n- Seja proativa em sugerir tópicos relacionados aos interesses do usuário\n- Se o usuário mencionar um instrumento, ofereça dicas específicas sobre ele\n- Mantenha o contexto da conversa anterior\n\nExemplos de respostas contextuais:\n- Se o usuário disse que se chama Patrick e gosta de bateria, responda: \"Oi Patrick! Que legal que você gosta de bateria! 🥁\"\n- Continue conversas anteriores de forma natural\n- Ofereça informações progressivas sobre os tópicos de interesse\n\nSempre responda em português brasileiro e mantenha o foco em música e educação musical."
+        },
+        "promptType": "define",
+        "agent": "conversationalAgent",
+        "text": "={{ $json.message }}"
+      }
+    },
+    {
+      "typeVersion": 1,
+      "credentials": {
+        "groqApi": {
+          "name": "Groq account",
+          "id": "zLRZx39eYWb9vqID"
+        }
+      },
+      "name": "Groq LLM",
+      "id": "2d7c4506-e69d-492c-8973-bf1cbcdf0215",
+      "position": [448, 48],
+      "type": "@n8n/n8n-nodes-langchain.lmChatGroq",
+      "parameters": {
+        "options": {
+          "maxTokens": 500,
+          "temperature": 0.7
+        },
+        "model": "llama-3.1-70b-versatile"
+      }
+    },
+    {
+      "name": "Redis Chat Memory",
+      "typeVersion": 1.5,
+      "onError": "continueRegularOutput",
+      "id": "9b3f6f19-6b8a-4d4c-9d5f-3e1a0a9f11aa",
+      "position": [448, -272],
+      "type": "@n8n/n8n-nodes-langchain.memoryRedisChat",
+      "parameters": {
+        "sessionIdType": "customKey",
+        "sessionTTL": 120,
+        "sessionKey": "={{ $('Webhook - Receber Mensagem').item.json.session_id }}",
+        "contextWindowLength": 15
+      }
+    },
+    {
+      "name": "Responder ao Django",
+      "typeVersion": 1.4,
+      "onError": "continueRegularOutput",
+      "id": "361c21f7-0e9b-4e9b-95a4-b4cc8e684632",
+      "position": [832, 32],
+      "type": "n8n-nodes-base.respondToWebhook",
+      "parameters": {
+        "options": {},
+        "respondWith": "json",
+        "responseBody": "={{ { \"response\": $json.output, \"session_id\": $('Webhook - Receber Mensagem').item.json.session_id, \"timestamp\": new Date().toISOString(), \"source\": \"n8n-groq-agent-optimized\" } }}"
+      }
+    },
+    {
+      "name": "Resposta de Erro",
+      "typeVersion": 1.4,
+      "onError": "continueRegularOutput",
+      "id": "ad2b67b4-d0d0-4b68-9d1c-76a9f0bb69a6",
+      "position": [384, 224],
+      "type": "n8n-nodes-base.respondToWebhook",
+      "parameters": {
+        "options": {},
+        "respondWith": "json",
+        "responseBody": "={{ { \"response\": \"Desculpe, não recebi sua mensagem. Tente novamente! 😊\", \"session_id\": $('Webhook - Receber Mensagem').item.json.session_id, \"error\": \"empty_message\" } }}"
+      }
+    }
+  ],
+  "connections": {
+    "AI Agent - Melodia": {
+      "main": [
+        [
+          {
+            "type": "main",
+            "index": 0,
+            "node": "Responder ao Django"
+          }
+        ]
+      ]
+    },
+    "Groq LLM": {
+      "ai_languageModel": [
+        [
+          {
+            "type": "ai_languageModel",
+            "index": 0,
+            "node": "AI Agent - Melodia"
+          }
+        ]
+      ]
+    },
+    "Webhook - Receber Mensagem": {
+      "main": [
+        [
+          {
+            "type": "main",
+            "index": 0,
+            "node": "Validar Mensagem"
+          }
+        ]
+      ]
+    },
+    "Redis Chat Memory": {
+      "ai_memory": [
+        [
+          {
+            "type": "ai_memory",
+            "index": 0,
+            "node": "AI Agent - Melodia"
+          }
+        ]
+      ]
+    },
+    "Validar Mensagem": {
+      "main": [
+        [
+          {
+            "type": "main",
+            "index": 0,
+            "node": "AI Agent - Melodia"
+          }
+        ],
+        [
+          {
+            "type": "main",
+            "index": 0,
+            "node": "Resposta de Erro"
+          }
+        ]
+      ]
+    }
+  }
+}

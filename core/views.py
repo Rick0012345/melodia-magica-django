@@ -16,7 +16,7 @@ from django.contrib.auth.mixins import (
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth import authenticate, login
 from django.contrib import messages
-from django.urls import reverse_lazy
+from django.urls import reverse_lazy, reverse
 from django.core.mail import send_mail
 from django.conf import settings
 from .models import Quiz, Pergunta, Alternativa, Pontuacao
@@ -190,11 +190,12 @@ class GamePageView(TemplateView):
                 'progresso': progresso
             }
             
+            action_url = reverse('game_page', kwargs={'quiz_id': quiz.id})
             html = f'''
             <div class="question-card" data-acertos="{context['acertos']}" data-erros="{context['erros']}" data-pontos="{context['pontuacao']}" data-progresso="{context['progresso']}">
                 <h2 class="question-title">{proxima_pergunta.pergunta}</h2>
                 
-                <form hx-post="/quiz/game/{quiz.id}/" 
+                <form hx-post="{action_url}" 
                       hx-target="#question-area" 
                       hx-swap="innerHTML"
                       hx-indicator="#loading">
@@ -306,11 +307,12 @@ class GamePageView(TemplateView):
             primeira_pergunta = quiz.perguntas.first()
             
             if primeira_pergunta:
+                action_url = reverse('game_page', kwargs={'quiz_id': quiz.id})
                 html = f'''
                 <div class="question-card" data-acertos="0" data-erros="0" data-pontos="0" data-progresso="0">
                     <h2 class="question-title">{primeira_pergunta.pergunta}</h2>
                     
-                    <form hx-post="/quiz/game/{quiz.id}/" 
+                    <form hx-post="{action_url}" 
                           hx-target="#question-area" 
                           hx-swap="innerHTML"
                           hx-indicator="#loading">
@@ -395,6 +397,22 @@ class QuizUpdateView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
     def form_valid(self, form):
         messages.success(self.request, 'Quiz atualizado com sucesso!')
         return super().form_valid(form)
+
+class QuizDeleteView(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
+    """Deletar quiz"""
+    model = Quiz
+    template_name = 'core/quiz_confirm_delete.html'
+    login_url = 'account_login'
+
+    def test_func(self):
+        return self.request.user.is_staff or self.request.user.is_superuser
+
+    def get_success_url(self):
+        return reverse_lazy('quiz_list')
+
+    def delete(self, request, *args, **kwargs):
+        messages.success(request, 'Quiz deletado com sucesso!')
+        return super().delete(request, *args, **kwargs)
 
 class PerguntaListView(LoginRequiredMixin, UserPassesTestMixin, ListView):
     """Lista perguntas de um quiz específico"""
@@ -743,6 +761,64 @@ class ImportarPerguntasView(LoginRequiredMixin, UserPassesTestMixin, TemplateVie
             else:
                 df = pd.read_excel(arquivo)
             
+            # Normalizar e mapear cabeçalhos para aceitar formatos alternativos
+            def _norm(s):
+                return str(s).strip().lower().replace(' ', '_').replace('-', '_')
+
+            # Mapa de colunas encontradas (normalizado -> original)
+            norm_to_orig = { _norm(col): col for col in df.columns }
+
+            # Construir mapa de renomeações para o formato canônico
+            rename_map = {}
+            # Pergunta e tipo
+            for cand in ['pergunta', 'questao', 'questão']:
+                if cand in norm_to_orig:
+                    rename_map[norm_to_orig[cand]] = 'pergunta'
+                    break
+            if 'tipo' in norm_to_orig:
+                rename_map[norm_to_orig['tipo']] = 'tipo'
+            # Verdadeiro/Falso resposta
+            for cand in ['resposta_correta', 'resposta_vf', 'correta_vf', 'vf']:
+                if cand in norm_to_orig:
+                    rename_map[norm_to_orig[cand]] = 'resposta_correta'
+                    break
+            # Alternativas por letra
+            alt_letter_map = {
+                'alternativa_a': 'alternativa_1',
+                'alternativa_b': 'alternativa_2',
+                'alternativa_c': 'alternativa_3',
+                'alternativa_d': 'alternativa_4',
+                'alternativa_e': 'alternativa_5',
+            }
+            for k, v in alt_letter_map.items():
+                if k in norm_to_orig:
+                    rename_map[norm_to_orig[k]] = v
+            # Alternativas numéricas sem underscore (alternativa1)
+            for i in range(1, 6):
+                key = f'alternativa{i}'
+                if key in norm_to_orig:
+                    rename_map[norm_to_orig[key]] = f'alternativa_{i}'
+            # Flags de correta por letra
+            letter_correct_map = {
+                'alternativa_a_correta': 'alternativa_1_correta',
+                'alternativa_b_correta': 'alternativa_2_correta',
+                'alternativa_c_correta': 'alternativa_3_correta',
+                'alternativa_d_correta': 'alternativa_4_correta',
+                'alternativa_e_correta': 'alternativa_5_correta',
+            }
+            for k, v in letter_correct_map.items():
+                if k in norm_to_orig:
+                    rename_map[norm_to_orig[k]] = v
+            # Coluna única indicando qual alternativa é a correta
+            for cand in ['alternativa_correta', 'correta', 'resposta_correta_alt']:
+                if cand in norm_to_orig:
+                    rename_map[norm_to_orig[cand]] = 'alternativa_correta'
+                    break
+
+            # Aplicar renomeações
+            if rename_map:
+                df = df.rename(columns=rename_map)
+            
             # Validar colunas obrigatórias
             colunas_obrigatorias = ['pergunta', 'tipo']
             colunas_faltando = [col for col in colunas_obrigatorias if col not in df.columns]
@@ -766,11 +842,24 @@ class ImportarPerguntasView(LoginRequiredMixin, UserPassesTestMixin, TemplateVie
                             erros.append(f'Linha {linha_num}: Pergunta não pode estar vazia')
                             continue
                         
-                        if pd.isna(row['tipo']) or str(row['tipo']).strip() not in ['multipla_escolha', 'verdadeiro_falso']:
+                        # Normalizar tipo e aceitar sinônimos
+                        if pd.isna(row['tipo']):
                             erros.append(f'Linha {linha_num}: Tipo deve ser "multipla_escolha" ou "verdadeiro_falso"')
                             continue
-                        
-                        tipo = str(row['tipo']).strip()
+                        tipo_raw = str(row['tipo']).strip()
+                        tipo_norm = _norm(tipo_raw)
+                        if tipo_norm in {
+                            'multipla_escolha', 'multipla', 'multipla__escolha', 'múltipla_escolha', 'múltipla',
+                            'multiple_choice', 'multiple__choice', 'mc'
+                        }:
+                            tipo = 'multipla_escolha'
+                        elif tipo_norm in {
+                            'verdadeiro_falso', 'verdadeiro__falso', 'vf', 'true_false', 'true__false', 'tf'
+                        }:
+                            tipo = 'verdadeiro_falso'
+                        else:
+                            erros.append(f'Linha {linha_num}: Tipo inválido "{tipo_raw}". Use "multipla_escolha" ou "verdadeiro_falso"')
+                            continue
                         pergunta_texto = str(row['pergunta']).strip()
                         
                         # Criar pergunta
@@ -782,66 +871,90 @@ class ImportarPerguntasView(LoginRequiredMixin, UserPassesTestMixin, TemplateVie
                         
                         # Processar baseado no tipo
                         if tipo == 'verdadeiro_falso':
-                            # Para verdadeiro/falso, usar coluna 'resposta_correta'
-                            if 'resposta_correta' in df.columns and not pd.isna(row['resposta_correta']):
-                                resposta = str(row['resposta_correta']).strip().lower()
-                                if resposta in ['verdadeiro', 'true', '1', 'sim']:
-                                    pergunta.resposta_verdadeiro_falso = True
-                                elif resposta in ['falso', 'false', '0', 'não', 'nao']:
-                                    pergunta.resposta_verdadeiro_falso = False
-                                else:
-                                    erros.append(f'Linha {linha_num}: Resposta correta inválida para V/F')
-                                    pergunta.delete()
-                                    continue
-                                pergunta.save()
-                            else:
-                                erros.append(f'Linha {linha_num}: Coluna "resposta_correta" obrigatória para V/F')
+                            # Para verdadeiro/falso, aceitar várias colunas e valores
+                            valor_vf = None
+                            for vf_col in ['resposta_correta', 'resposta_vf', 'correta_vf', 'vf']:
+                                if vf_col in df.columns and not pd.isna(row.get(vf_col)):
+                                    valor_vf = str(row.get(vf_col)).strip().lower()
+                                    break
+                            if valor_vf is None:
+                                erros.append(f'Linha {linha_num}: Coluna de resposta obrigatória para V/F (ex.: "resposta_correta" ou "resposta_vf")')
                                 pergunta.delete()
                                 continue
+                            if valor_vf in ['verdadeiro', 'true', '1', 'sim', 'v', 'yes', 's']:
+                                pergunta.resposta_verdadeiro_falso = True
+                            elif valor_vf in ['falso', 'false', '0', 'não', 'nao', 'f', 'no', 'n']:
+                                pergunta.resposta_verdadeiro_falso = False
+                            else:
+                                erros.append(f'Linha {linha_num}: Resposta correta inválida para V/F')
+                                pergunta.delete()
+                                continue
+                            pergunta.save()
                         
                         elif tipo == 'multipla_escolha':
-                            # Para múltipla escolha, processar alternativas
-                            alternativas_criadas = 0
-                            alternativa_correta_definida = False
+                            # Para múltipla escolha, aceitar alternativas por número ou letra e coluna única de correta
+                            alt_texts = []
+                            alt_flags = []  # flags booleans por coluna alternativa_i_correta
+                            for i in range(1, 6):
+                                col_alt = f'alternativa_{i}'
+                                col_flag = f'alternativa_{i}_correta'
+                                if col_alt in df.columns and not pd.isna(row.get(col_alt)):
+                                    texto = str(row.get(col_alt)).strip()
+                                    if texto:
+                                        alt_texts.append(texto)
+                                        # flag de correta se existir
+                                        flag_val = False
+                                        if col_flag in df.columns and not pd.isna(row.get(col_flag)):
+                                            v = str(row.get(col_flag)).strip().lower()
+                                            flag_val = v in ['true', '1', 'sim', 'verdadeiro']
+                                        alt_flags.append(flag_val)
+                            alternativas_criadas = len(alt_texts)
                             
-                            for i in range(1, 6):  # Suporta até 5 alternativas
-                                col_alternativa = f'alternativa_{i}'
-                                col_correta = f'alternativa_{i}_correta'
-                                
-                                if col_alternativa in df.columns and not pd.isna(row[col_alternativa]):
-                                    texto_alternativa = str(row[col_alternativa]).strip()
-                                    if texto_alternativa:
-                                        # Verificar se é a alternativa correta
-                                        is_correta = False
-                                        if col_correta in df.columns and not pd.isna(row[col_correta]):
-                                            valor_correta = str(row[col_correta]).strip().lower()
-                                            is_correta = valor_correta in ['true', '1', 'sim', 'verdadeiro']
-                                        
-                                        if is_correta and alternativa_correta_definida:
-                                            erros.append(f'Linha {linha_num}: Apenas uma alternativa pode ser correta')
-                                            pergunta.delete()
-                                            break
-                                        
-                                        Alternativa.objects.create(
-                                            pergunta=pergunta,
-                                            texto=texto_alternativa,
-                                            correta=is_correta
-                                        )
-                                        alternativas_criadas += 1
-                                        
-                                        if is_correta:
-                                            alternativa_correta_definida = True
-                            
-                            # Validar múltipla escolha
+                            # Validar quantidade mínima
                             if alternativas_criadas < 2:
                                 erros.append(f'Linha {linha_num}: Múltipla escolha precisa de pelo menos 2 alternativas')
                                 pergunta.delete()
                                 continue
                             
-                            if not alternativa_correta_definida:
+                            # Determinar alternativa correta
+                            correta_idx = None
+                            if any(alt_flags):
+                                # Deve haver exatamente uma correta
+                                idxs = [i for i, f in enumerate(alt_flags) if f]
+                                if len(idxs) > 1:
+                                    erros.append(f'Linha {linha_num}: Apenas uma alternativa pode ser correta')
+                                    pergunta.delete()
+                                    continue
+                                correta_idx = idxs[0]
+                            else:
+                                # Fallback: coluna alternativa_correta com letra/numero/texto
+                                if 'alternativa_correta' in df.columns and not pd.isna(row.get('alternativa_correta')):
+                                    val = str(row.get('alternativa_correta')).strip().lower()
+                                    # letra -> índice
+                                    letter_to_idx = {'a': 0, 'b': 1, 'c': 2, 'd': 3, 'e': 4}
+                                    if val in letter_to_idx:
+                                        correta_idx = letter_to_idx[val]
+                                    elif val in ['1', '2', '3', '4', '5']:
+                                        correta_idx = int(val) - 1
+                                    else:
+                                        # tentar por texto
+                                        try:
+                                            correta_idx = [t.lower() for t in alt_texts].index(val)
+                                        except ValueError:
+                                            correta_idx = None
+                                
+                            if correta_idx is None or correta_idx >= alternativas_criadas:
                                 erros.append(f'Linha {linha_num}: Múltipla escolha precisa de uma alternativa correta')
                                 pergunta.delete()
                                 continue
+                            
+                            # Criar alternativas
+                            for i, texto in enumerate(alt_texts):
+                                Alternativa.objects.create(
+                                    pergunta=pergunta,
+                                    texto=texto,
+                                    correta=(i == correta_idx)
+                                )
                         
                         importadas += 1
                         

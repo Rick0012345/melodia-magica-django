@@ -19,6 +19,7 @@ urlpatterns = [
     path('quizzes/', views.QuizListView.as_view(), name='quiz_list'),
     path('quiz/criar/', views.QuizCreateView.as_view(), name='quiz_create'),
     path('quiz/<int:pk>/editar/', views.QuizUpdateView.as_view(), name='quiz_update'),
+    path('quiz/<int:pk>/excluir/', views.QuizDeleteView.as_view(), name='quiz_delete'),
     path('quiz/<int:quiz_id>/perguntas/', views.PerguntaListView.as_view(), name='pergunta_list'),
     path('quiz/<int:quiz_id>/pergunta/criar/', views.PerguntaCreateView.as_view(), name='pergunta_create'),
     path('pergunta/<int:pk>/editar/', views.PerguntaUpdateView.as_view(), name='pergunta_update'),

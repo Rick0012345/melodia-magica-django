@@ -1,6 +1,29 @@
-body{
+body {
     background-color: black;
+    margin: 0;
+    padding: 0;
+    overflow-x: hidden;
 }
+
+/* Container geral */
+.background {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    padding: 40px 20px;
+}
+
+/* Wrapper dos cards */
+.parent {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    align-items: center;
+    gap: 30px;
+}
+
+/* Estilo dos cards */
 .card {
     position: relative;
     width: 150px;
@@ -28,6 +51,13 @@ body{
     animation: pulsar 1.5s infinite ease-in-out;
 }
 
+@keyframes pulsar {
+    0% { transform: scale(1); }
+    50% { transform: scale(1.05); }
+    100% { transform: scale(1); }
+}
+
+/* Se não houver quizzes */
 .no-quizzes {
     text-align: center;
     padding: 40px;
@@ -47,15 +77,15 @@ body{
     font-size: 18px;
 }
 
-@keyframes pulsar {
-    0% { transform: scale(1); }
-    50% { transform: scale(1.05); }
-    100% { transform: scale(1); }
-}
+/* ========================
+   RESPONSIVIDADE
+======================== */
 
+/* Tablets */
 @media (max-width: 850px) {
     .parent {
-        padding: 15px;
+        gap: 20px;
+        padding: 20px;
     }
     .card {
         width: 120px;
@@ -64,17 +94,35 @@ body{
     }
 }
 
+/* Celulares */
 @media (max-width: 500px) {
-    .parent {
-        padding: 10px;
+    .background {
+        padding: 20px 10px;
     }
-    
+
+    .parent {
+        flex-direction: row;
+        flex-wrap: wrap;
+        justify-content: center;
+        gap: 15px;
+    }
+
     .card {
-        width: 100px;
-        height: 100px;
-        font-size: 32px;
+        width: 90px;
+        height: 90px;
+        font-size: 28px;
+    }
+
+    .no-quizzes {
+        padding: 20px;
+        font-size: 16px;
+    }
+
+    .no-quizzes h2 {
+        font-size: 20px;
+    }
+
+    .no-quizzes p {
+        font-size: 14px;
     }
 }
-
-
-

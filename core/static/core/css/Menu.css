@@ -1,3 +1,5 @@
+
+/* ============ BASE ============ */
 body {
   margin: 0;
   display: flex;
@@ -7,6 +9,7 @@ body {
   overflow: hidden;
   position: relative;
   background-color: #000000;
+  font-family: 'Orbitron', sans-serif;
 }
 
 #s-js {
@@ -96,6 +99,7 @@ body {
   transform: scale(1.08);
 }
 
+/* Efeitos */
 .menu-button:before {
   content: '';
   position: absolute;
@@ -121,29 +125,81 @@ body {
 
 /* Animações */
 @keyframes glow {
-  0% {
-    text-shadow: 0 0 10px #00ffff, 0 0 20px #ff00ff;
-  }
-  100% {
-    text-shadow: 0 0 20px #00ffff, 0 0 30px #ff00ff;
-  }
+  0% { text-shadow: 0 0 10px #00ffff, 0 0 20px #ff00ff; }
+  100% { text-shadow: 0 0 20px #00ffff, 0 0 30px #ff00ff; }
 }
 
 @keyframes fadeInUp {
-  from {
-    opacity: 0;
-    transform: translateY(20px);
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* ============ RESPONSIVIDADE ============ */
+
+/* Tablets */
+@media (max-width: 768px) {
+  .container {
+    width: 80%;
+    padding: 30px;
   }
-  to {
-    opacity: 1;
-    transform: translateY(0);
+
+  .header {
+    font-size: 26px;
+  }
+
+  .menu-button {
+    width: 180px;
+    font-size: 15px;
+  }
+
+  .profile {
+    font-size: 1.4rem;
   }
 }
 
-/* Responsivo */
-@media (max-width: 500px) {
+/* Celulares médios (tipo Galaxy, iPhone) */
+@media (max-width: 480px) {
+  body {
+    padding: 20px;
+  }
+
   .container {
-    width: 90%;
-    padding: 30px 20px;
+    width: 100%;
+    padding: 25px 15px;
+    border-radius: 10px;
+    box-shadow: 0 0 10px #00ffff, 0 0 20px #ff00ff;
+  }
+
+  .header {
+    font-size: 22px;
+    margin-bottom: 15px;
+  }
+
+  .profile {
+    font-size: 1.2rem;
+    text-align: center;
+  }
+
+  .menu-button {
+    width: 160px;
+    font-size: 14px;
+    padding: 10px;
   }
 }
+
+/* Celulares muito pequenos */
+@media (max-width: 350px) {
+  .container {
+    padding: 20px 10px;
+  }
+
+  .header {
+    font-size: 18px;
+  }
+
+  .menu-button {
+    width: 140px;
+    font-size: 13px;
+  }
+}
+

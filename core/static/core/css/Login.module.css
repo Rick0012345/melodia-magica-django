@@ -234,3 +234,88 @@ body {
 .btn-google i {
     margin-right: 8px;
 }
+
+/* =========================
+   RESPONSIVIDADE LOGIN PAGE
+   ========================= */
+
+/* Tablets e telas médias */
+@media (max-width: 992px) {
+  .loginCard {
+    padding: 30px;
+  }
+
+  .navbar {
+    padding: 0.8rem 1.5rem;
+  }
+
+  .navbar-links {
+    gap: 1rem;
+  }
+}
+
+/* Celulares (até 768px) */
+@media (max-width: 768px) {
+  body {
+    padding: 20px;
+    align-items: flex-start;
+  }
+
+  .loginWrapper {
+    max-width: 100%;
+    padding: 10px;
+  }
+
+  .loginCard {
+    padding: 25px 20px;
+    border-radius: 15px;
+  }
+
+  .loginHeader h2 {
+    font-size: 22px;
+  }
+
+  .inputGroup input {
+    font-size: 14px;
+    padding: 10px;
+  }
+
+  .btnLogin {
+    font-size: 14px;
+    padding: 10px;
+  }
+
+  .btnSocial {
+    font-size: 13px;
+    padding: 10px;
+  }
+
+  .navbar-links {
+    display: none; /* Esconde os links longos para telas pequenas */
+  }
+
+  .navbar-brand {
+    font-size: 1rem;
+  }
+}
+
+/* Celulares pequenos (até 480px) */
+@media (max-width: 480px) {
+  .loginCard {
+    padding: 20px;
+  }
+
+  .loginHeader h2 {
+    font-size: 20px;
+  }
+
+  .btnLogin,
+  .btnSocial {
+    font-size: 13px;
+    padding: 9px;
+  }
+
+  .showPass {
+    font-size: 11px;
+  }
+}

@@ -279,3 +279,92 @@
         padding: 10px 15px;
     }
 } 
+
+/* ========== RESPONSIVIDADE ATUALIZADA ========== */
+
+/* Tablets (já estava bem configurado) */
+@media (max-width: 768px) {
+  .global-messages {
+    top: 10px;
+    right: 10px;
+    left: 10px;
+    max-width: none;
+  }
+
+  .niveis-messages {
+    top: 10px;
+    left: 10px;
+    right: 10px;
+  }
+
+  .nivel-message,
+  .menu-message {
+    font-size: 13px;
+    padding: 10px 15px;
+  }
+}
+
+/* Celulares médios (480 px) */
+@media (max-width: 480px) {
+  .global-messages {
+    top: 8px;
+    right: 8px;
+    left: 8px;
+  }
+
+  .global-message {
+    padding: 12px 15px;
+    font-size: 13px;
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .global-message-icon {
+    margin-right: 8px;
+    font-size: 18px;
+  }
+
+  .global-message-close {
+    position: absolute;
+    top: 5px;
+    right: 8px;
+  }
+
+  .menu-message,
+  .nivel-message {
+    font-size: 12px;
+    padding: 8px 12px;
+    border-radius: 6px;
+    flex-wrap: wrap;
+  }
+
+  .menu-message i,
+  .nivel-message i {
+    margin-right: 6px;
+    font-size: 14px;
+  }
+}
+
+/* Celulares muito pequenos (360 px e abaixo) */
+@media (max-width: 360px) {
+  .global-message,
+  .menu-message,
+  .nivel-message {
+    font-size: 11px;
+    padding: 6px 10px;
+  }
+
+  .global-message-content p {
+    font-size: 11px;
+  }
+
+  .global-message-icon {
+    display: none; /* economiza espaço visual */
+  }
+
+  .global-messages {
+    top: 5px;
+    right: 5px;
+    left: 5px;
+  }
+}

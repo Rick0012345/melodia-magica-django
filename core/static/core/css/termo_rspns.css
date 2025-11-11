@@ -32,3 +32,55 @@
   .termo-button:hover {
     background-color: #0056b3;
   }
+
+  /* Tablets (até 768px) */
+@media (max-width: 768px) {
+  .termo-container {
+    padding: 15px;
+  }
+
+  .termo-title {
+    font-size: 22px;
+  }
+
+  .termo-text {
+    font-size: 15px;
+  }
+
+  .termo-button {
+    font-size: 15px;
+    padding: 9px 18px;
+  }
+}
+
+/* Celulares médios (até 480px) */
+@media (max-width: 480px) {
+  .termo-title {
+    font-size: 20px;
+  }
+
+  .termo-text {
+    font-size: 14px;
+  }
+
+  .termo-button {
+    font-size: 14px;
+    padding: 8px 16px;
+  }
+}
+
+/* Celulares pequenos (até 350px) */
+@media (max-width: 350px) {
+  .termo-title {
+    font-size: 18px;
+  }
+
+  .termo-text {
+    font-size: 13px;
+  }
+
+  .termo-button {
+    font-size: 13px;
+    padding: 7px 14px;
+  }
+}

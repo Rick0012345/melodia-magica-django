@@ -73,3 +73,57 @@ body{
   text-align: center;
   margin-bottom: 20px;
 }
+
+/* Celulares médios (até 600px) */
+@media (max-width: 600px) {
+  .letras {
+    font-size: 2.2rem;
+  }
+
+  .service-card {
+    padding: 25px 20px;
+    width: 90%;
+  }
+
+  .service-card h3 {
+    font-size: 1.3rem;
+  }
+
+  .service-card p {
+    font-size: 0.95rem;
+  }
+
+  .service-icon {
+    font-size: 3rem;
+  }
+}
+
+/* Celulares pequenos (até 400px) */
+@media (max-width: 400px) {
+  .letras {
+    font-size: 1.8rem;
+    margin-bottom: 15px;
+  }
+
+  .service-card {
+    padding: 20px 15px;
+    width: 100%;
+  }
+
+  .service-card h3 {
+    font-size: 1.1rem;
+  }
+
+  .service-card p {
+    font-size: 0.9rem;
+  }
+
+  .service-icon {
+    font-size: 2.5rem;
+  }
+
+  .btn.btn-primary {
+    font-size: 0.85rem;
+    padding: 8px 14px;
+  }
+}
